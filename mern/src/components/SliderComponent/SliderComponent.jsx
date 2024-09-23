@@ -20,7 +20,7 @@ const SliderComponent = ({arrImages}) => {
           <img
             src={image}
             alt="slider"
-            style={{ width: '100%', height: 'auto' }}
+            style={{ width: '100%', height: 'auto', opacity: 1}}
           />
         </div>
       ))}

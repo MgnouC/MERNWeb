@@ -1,23 +1,35 @@
-import { Card } from 'antd'
+import { Card, Image } from 'antd'
 import { Meta } from 'antd/es/list/Item'
 import React from 'react'
-import { StyleNameProduct, WrapperReportText } from './style'
+import { StyleNameProduct, WrapperDiscountText, WrapperReportText, WrapperPriceText, WrapperCardStyle } from './style'
 import { StarFilled } from '@ant-design/icons'
-
+import logo from '../../assets/images/logo.png'
 const CardComponent = () => {
   return (
-    <Card
+    <WrapperCardStyle
         hoverable
+        styleHeader ={{  width: '100%', height: '100%', opacity: '1' }}
         style={{ width: 240 }}
         styleBody = {{padding: '10px', }}
         cover={<img alt="example" src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png" />}
     >
         <StyleNameProduct>IPhone</StyleNameProduct>
         <WrapperReportText>
+          <span>
             <StarFilled style={{fontSize: '10px', color: "rgb(251, 195, 0)", paddingRight: '2px'}} /> <span>4.96/5</span>
+            <span>| Đã bán 100+</span>
+          </span>
         </WrapperReportText>
-
-  </Card>  )    
+          <WrapperPriceText style={{boxSizing: "border-box"}}>
+            1.000.000d
+          <div style={{display: "flex", gap: '4px' ,height: '18px'}}>
+            <WrapperDiscountText>
+              -5%
+            </WrapperDiscountText>
+          </div> 
+          </WrapperPriceText>
+       
+    </WrapperCardStyle>  )    
 }
 
 export default CardComponent

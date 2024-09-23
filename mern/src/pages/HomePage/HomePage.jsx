@@ -24,7 +24,6 @@ const HomePage = () => {
         <SliderComponent arrImages ={[Slide1,Slide2,Slide3]}/>
         <div>
           <CardComponent style =  {{ margin: '20px 0px', display : 'flex', alignItem:  'center', justifyContent: 'space-between', gap: '20px'}}/>
-
         </div>
       </div>
     </div>
