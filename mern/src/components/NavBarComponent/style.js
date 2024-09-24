@@ -4,7 +4,7 @@ export const WrapperLableText = styled.h4`
     display: flex;
     gap: 4px;
     align-items: center;
-    font-weight: 400;
+    //font-weight: 400;
     font-size: 14px;
     line-height: 150%;
     color: rgb(0, 62, 161);
