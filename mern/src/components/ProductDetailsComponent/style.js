@@ -30,6 +30,7 @@ export const WrapperPriceProduct  = styled.div`
 `
 
 export const WrapperPriceTextProduct = styled.h1`
+    color: #ee4d2d;
     background: #fff;
     font-size: 32px;
     line-height: 40px;
