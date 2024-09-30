@@ -1,7 +1,7 @@
 import { Card, Image } from 'antd'
 import { Meta } from 'antd/es/list/Item'
 import React from 'react'
-import { StyleNameProduct, WrapperDiscountText, WrapperReportText, WrapperPriceText, WrapperCardStyle } from './style'
+import { StyleNameProduct, WrapperDiscountText, WrapperReportText, WrapperPriceText, WrapperCardStyle, WrapperStyleTextSell } from './style'
 import { StarFilled } from '@ant-design/icons'
 import logo from '../../assets/images/logo.png'
 const CardComponent = () => {
@@ -17,7 +17,7 @@ const CardComponent = () => {
         <WrapperReportText>
           <span>
             <StarFilled style={{fontSize: '10px', color: "rgb(251, 195, 0)", paddingRight: '2px'}} /> <span>4.96/5</span>
-            <span>| Đã bán 100+</span>
+            <WrapperStyleTextSell> | Đã bán 100+</WrapperStyleTextSell>
           </span>
         </WrapperReportText>
           <WrapperPriceText style={{boxSizing: "border-box"}}>
