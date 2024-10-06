@@ -77,7 +77,7 @@ const deleteProduct = (id) => {
                 reject({ message: "Product not found", status: 400 });
             }
 
-            await  User.deleteOne({ _id: id });
+            await  Product.deleteOne({ _id: id });
 
             resolve({
                 status: 'OK',
@@ -88,9 +88,28 @@ const deleteProduct = (id) => {
         }
     });
 };
+
+const getAllProduct = () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            //const checkUser = await User.findOne({ _id: id })
+            const allProduct =  await Product.find().sort({ createdAt: -1 });
+            resolve  ({
+                status: 'OK',
+                message: 'SUCCESS',
+                data: allProduct
+            })
+            
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
+
 module.exports = {
     createProduct,
     updateProduct,
     getDetailsProduct,
-    deleteProduct
+    deleteProduct,
+    getAllProduct
 }

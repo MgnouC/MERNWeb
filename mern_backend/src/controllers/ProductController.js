@@ -65,7 +65,6 @@ const getDetailsProduct = async (req,res)  => {
 const deleteProduct = async (req,res)  => {
     try {
         const productId = req.params.id
-        // const token = req.headers
         if(!productId)  {
             return res.status(200).json({
                 status: 'ERR',
@@ -82,9 +81,23 @@ const deleteProduct = async (req,res)  => {
         })
     }
 }
+
+const getAllProduct = async (req,res)  => {
+    try {
+        const response = await ProductService.getAllProduct()
+        return res.status(200).json(response)
+
+    } catch(e){
+        return res.status(404).json({
+            message:e
+        })
+    }
+}
+
 module.exports = {
     createProduct,
     updateProduct,
     getDetailsProduct,
-    deleteProduct
+    deleteProduct,
+    getAllProduct
 }
