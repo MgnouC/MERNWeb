@@ -18,6 +18,7 @@ const SliderComponent = ({arrImages}) => {
       {arrImages.map((image, index) => (
         <div key={index} style={{ padding: '0 120px' }}>
           <img
+            key={image}
             src={image}
             alt="slider"
             style={{ width: '100%', height: 'auto', opacity: 1}}

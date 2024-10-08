@@ -8,9 +8,9 @@ const CardComponent = () => {
   return (
     <WrapperCardStyle
         hoverable
-        styleHeader ={{  width: '100%', height: '100%', opacity: '1' }}
+        styleheader ={{  width: '100%', height: '100%', opacity: '1' }}
         style={{ width: 240 }}
-        styleBody = {{padding: '10px', }}
+        stylebody = {{padding: '10px', }}
         cover={<img alt="example" src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png" />}
     >
         <StyleNameProduct>IPhone</StyleNameProduct>
