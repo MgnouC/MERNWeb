@@ -15,12 +15,12 @@ const ButtonInputSearch = (props) => {
         colorButton ='#EC8313'
     } = props
     return (
-        <div style={{display :'flex', background : '#EC8313'}}>
+        <div style={{display :'flex', background : '#EC8313', }}>
             <InputComponent
                 size = {size} 
                 placeholder={placeholder}
                 variant={variant}
-                style={{backgroundColor: backgroundColorInput}}
+                style={{backgroundColor: backgroundColorInput,border: !variant &&'none'}}
                 />
             <ButtonComponent
                 size = {size} 

@@ -4,8 +4,13 @@ import { WrapperHeader, WrapperHeaderAccount, WrapperTextHeader, WrapperTextHead
 import Search from 'antd/es/transfer/search'
 import { CaretDownOutlined, ShoppingCartOutlined, UserOutlined } from '@ant-design/icons';
 import ButtonInputSearch from '../ButtonInputSearch/ButtonInputSearch';
+import { useNavigate } from 'react-router-dom';
 
 const HeaderComponent = () => {
+  const navigate  = useNavigate()
+  const handleNavigateLogin = () => {
+    navigate('/sign-in');  
+  }
   return (
     <div style={{width : '100%', display: 'flex', justifyContent: 'center', alignContent: 'center'}}>
       <WrapperHeader gutter =  {[16]}>
@@ -24,14 +29,14 @@ const HeaderComponent = () => {
 
         <Col span={8} style = {{ display : 'flex', gap : '20px'}} >
           <WrapperHeaderAccount>
-          <UserOutlined style={{fontSize :'30px' }}  />
-            <div>
-              <WrapperTextHeaderSmall>Đăng nhập/Đăng ký</WrapperTextHeaderSmall>
-              <div>
-                <WrapperTextHeaderSmall>Tài Khoản</WrapperTextHeaderSmall>
-                <CaretDownOutlined />
+            <UserOutlined style={{fontSize :'30px' }}  />
+              <div onClick = {handleNavigateLogin} style={{ cursor : 'pointer'}}>
+                <WrapperTextHeaderSmall>Đăng nhập/Đăng ký</WrapperTextHeaderSmall>
+                <div>
+                  <WrapperTextHeaderSmall>Tài Khoản</WrapperTextHeaderSmall>
+                  <CaretDownOutlined />
+                </div>
               </div>
-            </div>
           </WrapperHeaderAccount> 
           <div>
                 <Badge count ={4} size='small' margin = '2px'>

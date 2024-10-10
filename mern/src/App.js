@@ -11,12 +11,12 @@ function App() {
   //   fetchApi()
   // },[])
   
-  const fetchApi = async () => {
-    const res = await axios.get(`${process.env.REACT_APP_API_URL_BACKEND}/product/get-all`)
-    return  res.data
-  }
-  const query = useQuery({ queryKey: ['todos'], queryFn: fetchApi })
-  console.log(query)
+  // const fetchApi = async () => {
+  //   const res = await axios.get(`${process.env.REACT_APP_API_URL_BACKEND}/product/get-all`)
+  //   return  res.data
+  // }
+  // const query = useQuery({ queryKey: ['todos'], queryFn: fetchApi })
+  // console.log(query)
   return (
     <div>
       <Router>

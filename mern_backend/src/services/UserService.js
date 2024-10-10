@@ -5,7 +5,7 @@ const { generalAccessToke, generalAccessToken, generalRefreshToken } = require("
 
 const createUser = (newUser) => {
     return new Promise(async (resolve, reject) => {
-        const {name, email, password, confirmPassword, phone } = newUser
+        const { email, password, confirmPassword } = newUser
         try {
             const checkUser = await User.findOne({email})
             if(checkUser) { 
@@ -14,17 +14,15 @@ const createUser = (newUser) => {
             const  hashedPassword = await bcrypt.hash(password, 10)
             console.log(hashedPassword)
             const createUser = await User.create({
-                name,
                 email,
                 password:  hashedPassword,
-                phone
+                confirmPassword: hashedPassword
             })
             if(createUser){
                 resolve({
                     status: 'OK',
                     message: "SUCCESS",
                     data:  createUser
-
                 })
             }
         } catch (e) {
@@ -36,7 +34,7 @@ const createUser = (newUser) => {
 
 const loginUser = (userLogin) => {
     return new Promise(async (resolve, reject) => {
-        const {name, email, password, confirmPassword, phone } = userLogin
+        const {email, password } = userLogin
         try {
             const checkUser = await User.findOne({email})
             if(checkUser === null ) {
