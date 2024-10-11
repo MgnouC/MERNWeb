@@ -1,28 +1,30 @@
 const express = require("express");
-const dotenv = require('dotenv');
-const {default: mongoose} = require('mongoose');
-const routes = require('./routes');
+const dotenv = require("dotenv");
+const { default: mongoose } = require("mongoose");
+const routes = require("./routes");
 const bodyParser = require("body-parser");
-const cors = require('cors')
-dotenv.config()
+const cookieParser = require("cookie-parser");
+const cors = require("cors");
+dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 3001
+const port = process.env.PORT || 3001;
 
-app.use(bodyParser.json())
-app.use(cors())
+app.use(bodyParser.json());
+app.use(cors());
+app.use(cookieParser());
 
 routes(app);
 
-mongoose.connect(`${process.env.MONGO_DB}`)
-    .then(() => {
-        console.log('Connected to MongoDB success')
-    })
-    .catch((err)=>{
-        console.log(err)
-    })
+mongoose
+  .connect(`${process.env.MONGO_DB}`)
+  .then(() => {
+    console.log("Connected to MongoDB success");
+  })
+  .catch((err) => {
+    console.log(err);
+  });
 
-
-app.listen(port, ()=> {
-    console.log('Server is running in port: ', + port)
-}) 
+app.listen(port, () => {
+  console.log("Server is running in port: ", +port);
+});
