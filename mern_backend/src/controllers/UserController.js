@@ -52,15 +52,32 @@ const loginUser = async (req, res) => {
     }
 
     const response = await UserService.loginUser(req.body);
-    const { refresh_token, ...newResponse } = response;
-    res.cookie("refresh_token", refresh_token, {
-      HttpOnly: true,
-      Secure: true,
+    const { refreshToken, ...newResponse } = response;
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: false,
+      samesite: "strict",
     });
     return res.status(200).json(newResponse);
   } catch (e) {
     return res.status(404).json({
       message: e,
+    });
+  }
+};
+
+const logoutUser = async (req, res) => {
+  try {
+    // Xóa cookie refreshToken
+    res.clearCookie("refreshToken", { path: '/' });
+    return res.status(200).json({
+      status: "OK",
+      message: "The user has been logged out",
+    });
+  } catch (e) {
+    return res.status(500).json({
+      message: "An error occurred during logout",
+      error: e.message,
     });
   }
 };
@@ -136,9 +153,8 @@ const getDetailsUser = async (req, res) => {
 };
 
 const refreshToken = async (req, res) => {
-  console.log(req.cookie);
   try {
-    const token = req.cookie.refresh_token;
+    const token = req.cookies.refreshToken;
     if (!token) {
       return res.status(200).json({
         status: "ERR",
@@ -155,9 +171,13 @@ const refreshToken = async (req, res) => {
   }
 };
 
+
+
+
 module.exports = {
   createUser,
   loginUser,
+  logoutUser,
   updateUser,
   deleteUser,
   getAllUser,

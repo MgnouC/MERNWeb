@@ -1,7 +1,6 @@
 const User = require("../models/UserModel");
 const bcrypt = require("bcrypt");
 const {
-  generalAccessToke,
   generalAccessToken,
   generalRefreshToken,
 } = require("./JwtService");
@@ -53,7 +52,7 @@ const loginUser = (userLogin) => {
         id: checkUser.id,
         isAdmin: checkUser.isAdmin,
       });
-      const refresh_token = await generalRefreshToken({
+      const refreshToken = await generalRefreshToken({
         id: checkUser.id,
         isAdmin: checkUser.isAdmin,
       });
@@ -62,7 +61,7 @@ const loginUser = (userLogin) => {
         status: "OK",
         message: "SUCCESS",
         access_token,
-        refresh_token,
+        refreshToken,
       });
     } catch (e) {
       reject(e);

@@ -19,6 +19,10 @@ const SignUpPage = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const handleSignUp = () => {
+    if (!email || !password || !confirmPassword) {
+      message.error("Vui lòng nhập email và mật khẩu!");
+      return;
+    }
     mutation.mutate({ email, password, confirmPassword });
   };
 
@@ -40,13 +44,13 @@ const SignUpPage = () => {
     }
   }, [isSuccess, isError]);
 
-  const handleOnChangeEmail = (value) => {
+  const handleonchangeEmail = (value) => {
     setEmail(value);
   };
-  const handleOnChangePassword = (value) => {
+  const handleonchangePassword = (value) => {
     setPassword(value);
   };
-  const handleOnChangeConfirmPassword = (value) => {
+  const handleonchangeConfirmPassword = (value) => {
     setConfirmPassword(value);
   };
 
@@ -78,7 +82,7 @@ const SignUpPage = () => {
             <InputForm
               placeholder="tentui@gmail.com"
               value={email}
-              handleOnChange={handleOnChangeEmail}
+              handleonchange={handleonchangeEmail}
             />
 
             <div style={{ position: "relative" }}>
@@ -102,7 +106,7 @@ const SignUpPage = () => {
                 placeholder="passla123nha"
                 type={isShowPassword ? "text" : "password"}
                 value={password}
-                handleOnChange={handleOnChangePassword}
+                handleonchange={handleonchangePassword}
               />
             </div>
             <div style={{ position: "relative" }}>
@@ -124,7 +128,7 @@ const SignUpPage = () => {
                 placeholder="bamlannuachochac"
                 type={isShowPassword ? "text" : "password"}
                 value={confirmPassword}
-                handleOnChange={handleOnChangeConfirmPassword}
+                handleonchange={handleonchangeConfirmPassword}
               />
             </div>
 
@@ -132,6 +136,7 @@ const SignUpPage = () => {
               <p style={{ color: "green" }}>Đăng nhập thành công</p>
             )}
             <ButtonComponent
+              disabled={!email.length || !password.length || !confirmPassword.length} // Đảm bảo button bị vô hiệu hóa
               onClick={handleSignUp}
               size={40}
               styleButton={{

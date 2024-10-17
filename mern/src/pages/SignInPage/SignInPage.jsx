@@ -24,6 +24,7 @@ const SignInPage = () => {
   //const mutationKey = ['posts']
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
   const mutation = useMutationHooks((data) => UserService.loginUser(data));
   const { data, isSuccess, isError } = mutation;
 
@@ -31,7 +32,7 @@ const SignInPage = () => {
     if (isSuccess) {
       message.success("Sign up successfully");
       navigate("/");
-      localStorage.setItem("access_token", data?.access_token);
+      localStorage.setItem("access_token", JSON.stringify(data?.access_token));
       if (data?.access_token) {
         const decoded = jwtDecode(data?.access_token);
         console.log("decoded", decoded);
@@ -47,22 +48,30 @@ const SignInPage = () => {
 
   const handleGetDetailsUser = async (id, token) => {
     const res = await UserService.getDetailsUser(id, token);
-    dispatch(updateUser({ ...res?.data, access_token: token }));
+    dispatch(updateUser({ ...res.data, access_token: token }));
   };
 
   console.log("mutation", mutation);
 
   const handleSignIn = () => {
+    // Kiểm tra nếu email hoặc password rỗng thì không thực hiện đăng nhập
+    if (!email || !password) {
+      message.error("Vui lòng nhập email và mật khẩu!");
+      return;
+    }
+
+    // Thực hiện đăng nhập nếu đủ thông tin
     mutation.mutate({ email, password });
     console.log("sign-in", email, password);
   };
+
   const handleNavigateLogin = () => {
     navigate("/sign-up");
   };
-  const handleOnChangeEmail = (value) => {
+  const handleonchangeEmail = (value) => {
     setEmail(value);
   };
-  const handleOnChangePassword = (value) => {
+  const handleonchangePassword = (value) => {
     setPassword(value);
   };
 
@@ -93,7 +102,7 @@ const SignInPage = () => {
             <InputForm
               style={{ marginBottom: "10px" }}
               placeholder="tentui@gmail.com"
-              handleOnChange={handleOnChangeEmail}
+              handleonchange={handleonchangeEmail}
             />
             <div style={{ position: "relative" }}>
               <span
@@ -115,14 +124,14 @@ const SignInPage = () => {
               <InputForm
                 placeholder="passla123nha"
                 type={isShowPassword ? "text" : "password"}
-                handleOnChange={handleOnChangePassword}
+                handleonchange={handleonchangePassword}
               />
             </div>
             {data?.status === 200 && (
               <p style={{ color: "green" }}>Đăng nhập thành công</p>
             )}
             <ButtonComponent
-              disable={!email.length || !password.length}
+              disabled={!email.length || !password.length} // Đảm bảo button bị vô hiệu hóa
               onClick={handleSignIn}
               border={false}
               size={40}
