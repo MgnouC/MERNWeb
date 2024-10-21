@@ -47,22 +47,32 @@ const HeaderComponent = () => {
       <WrapperContentPopup onClick={() => navigate("/profile-user")}>
         Thông tin tài khoản
       </WrapperContentPopup>
+      {user?.isAdmin && (
+        <WrapperContentPopup onClick={() => navigate("/system/admin")}>
+          Quản lí hệ thống
+        </WrapperContentPopup>
+      )}
     </div>
   );
 
   return (
     <div
       style={{
-        minWidth: '1200px',
+        minWidth: "1200px",
         width: "100%",
         display: "flex",
         justifyContent: "center",
         alignContent: "center",
       }}
     >
-      <WrapperHeader gutter={[16] }>
+      <WrapperHeader gutter={[16]}>
         <Col span={6}>
-          <WrapperTextHeader>SELLSOME</WrapperTextHeader>
+          <WrapperTextHeader
+            style={{ cursor: "pointer" }}
+            onClick={() => navigate("/")}
+          >
+            SELLSOME
+          </WrapperTextHeader>
         </Col>
 
         <Col span={13}>
@@ -80,8 +90,9 @@ const HeaderComponent = () => {
             {user.access_token ? (
               <>
                 <Popover content={content} trigger="click">
-                  <div style={{ cursor: "pointer" }}>{user?.name ||  user?.email}</div>
-
+                  <div style={{ cursor: "pointer" }}>
+                    {user?.name || user?.email}
+                  </div>
                 </Popover>
               </>
             ) : (

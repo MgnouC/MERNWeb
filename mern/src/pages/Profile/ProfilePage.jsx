@@ -11,6 +11,9 @@ import { useSelector } from "react-redux";
 import * as UserService from "../../services/UserServices";
 import { useMutationHooks } from "../../hooks/useMutationHook";
 import * as message from "../../components/Message/Mesage";
+// import { UploadOutlined } from "@ant-design/icons";
+// import { Button, Upload } from "antd";
+// import { getBase64 } from "../../utils";
 
 const ProfilePage = () => {
   const user = useSelector((state) => state.user);
@@ -37,17 +40,21 @@ const ProfilePage = () => {
   const handleOnChangeAddress = (value) => {
     setAddress(value);
   };
-  const handleOnUploadAvatar = (value) => {
-    setAvatar(value);
-  };
+  // const handleOnUploadAvatar = async ({ fileList }) => {
+  //   const file = fileList[0];
+  //   if (!file.url && !file.preview) {
+  //     file.preview = await getBase64(file.originFileObj);
+  //   }
+  //   setAvatar(file.preview);
+  // };
   const handleUpdate = () => {
-    mutation.mutate({ id: user?.id, name, email, phone, address, avatar });
+    mutation.mutate({ id: user?.id, name, email, phone, address /*avatar*/ });
     if (isSuccess) {
       message.success("Update User successfully");
     } else if (isError) {
       message.error("Update User failed");
     }
-    console.log("update", name, email, avatar, phone, address);
+    console.log("update", name, email, /*avatar*/ phone, address);
   };
 
   useEffect(() => {
@@ -55,7 +62,7 @@ const ProfilePage = () => {
     setEmail(user?.email);
     setPhone(user?.phone);
     setAddress(user?.address);
-    setAvatar(user?.avatar);
+    //setAvatar(user?.avatar);
   }, [user]);
 
   return (
@@ -207,16 +214,24 @@ const ProfilePage = () => {
             }}
           ></ButtonComponent>
         </WrapperInput>
-        <WrapperInput>
+        {/* <WrapperInput>
           <WrapperLabel htmlFor="avatar">Avatar</WrapperLabel>
-          <InputForm
-            id="avatar"
-            type="string"
-            placeholder="Nhập hinh anh của bạn"
-            style={{ width: "300px" }}
-            value={avatar}
-            handleonchange={handleOnUploadAvatar}
-          />
+          <Upload handleonchange={handleOnUploadAvatar}>
+            <Button icon={<UploadOutlined />}>Click to Upload</Button>
+          </Upload>
+          {avatar && (
+            <img
+              src={avatar}
+              alt="avatar"
+              style={{
+                width: "40px",
+                height: "30px",
+                objectFit: "cover",
+              }}
+              alt="avatar"
+            />
+          )}
+
           <ButtonComponent
             onClick={handleUpdate}
             border={false}
@@ -240,7 +255,7 @@ const ProfilePage = () => {
               fontWeight: "700",
             }}
           ></ButtonComponent>
-        </WrapperInput>
+        </WrapperInput> */}
       </WrapperContentProfile>
     </div>
   );

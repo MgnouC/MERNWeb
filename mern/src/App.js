@@ -1,25 +1,36 @@
 import React, { Fragment, useEffect, useCallback } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import { routes } from "./routes";
 import DefaultComponent from "./components/DefaultComponent/DefaultComponent";
 import { isJSONString } from "./utils";
 import { jwtDecode } from "jwt-decode";
 import * as UserService from "./services/UserServices";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { updateUser } from "./redux/slides/userSlice";
+//import AdminRoute from "./components/AdminRoute/AdminRoute";
+// or
 //import axios from "axios";
 
 function App() {
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.user);
 
-  const handleGetDetailsUser = useCallback(async (id, token) => {
-    try {
-      const res = await UserService.getDetailsUser(id, token);
-      dispatch(updateUser({ ...res?.data, access_token: token }));
-    } catch (error) {
-      console.error("Error fetching user details:", error);
-    }
-  }, [dispatch]);
+  const handleGetDetailsUser = useCallback(
+    async (id, token) => {
+      try {
+        const res = await UserService.getDetailsUser(id, token);
+        dispatch(updateUser({ ...res?.data, access_token: token }));
+      } catch (error) {
+        console.error("Error fetching user details:", error);
+      }
+    },
+    [dispatch]
+  );
 
   useEffect(() => {
     const setupInterceptor = () => {
@@ -76,24 +87,32 @@ function App() {
   return (
     <div>
       <Router>
-        <Routes>
-          {routes.map((route) => {
-            const Page = route.page;
-            const Layout = route.isShowHeader ? DefaultComponent : Fragment;
-            return (
-              <Route
-                key={route.path}
-                path={route.path}
-                element={
-                  <Layout>
-                    <Page />
-                  </Layout>
-                }
-              />
-            );
-          })}
-        </Routes>
-      </Router>
+  <Routes>
+    {routes.map((route) => {
+      const Page = route.page;
+      const ischeckAuth = !route.isPrivate ||  user.isAdmin; // Cập nhật điều kiện xác thực
+      const Layout = route.isShowHeader ? DefaultComponent : Fragment;
+      
+      return (
+        <Route 
+          key={route.path} 
+          path={route.path}
+          element={
+            //route.path === '/system/admin'
+            ischeckAuth ? (  // Nếu người dùng được xác thực
+              <Layout>
+                <Page  />
+              </Layout>
+            ) : (
+              <Navigate to="/home" />  // Nếu không, điều hướng tới /login
+            )
+          }
+        />
+      );
+    })}
+  </Routes>
+</Router>
+
     </div>
   );
 }
