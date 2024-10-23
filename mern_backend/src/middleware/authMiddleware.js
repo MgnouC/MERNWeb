@@ -1,6 +1,8 @@
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 dotenv.config();
+const multer = require('multer');
+//const upload = multer({ dest: 'uploads/' }); // Lưu file ảnh vào thư mục 'uploads'
 
 const authMiddleware = (req, res, next) => {
   const token = req.headers.token?.split(" ")[1];

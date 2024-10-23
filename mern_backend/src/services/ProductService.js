@@ -5,13 +5,15 @@ const Product = require("../models/ProductModel")
 const createProduct = (newProduct) => {
     return new Promise(async (resolve, reject) => {
         try {
-        const {name, image, type, countInStock, price, rating, description} = newProduct
+           
+
+        const {name, type, price, image, description, rating, countInStock} = newProduct
             const checkProduct = await Product.findOne({name})
             if(checkProduct) { 
                 reject({message: "Product already exists", status: 400})
             }
-            const createProduct = await Product.create({
-                name, image, type, countInStock, price, rating, description
+            const createProduct = await Product.createProduct({
+                name, type, price, image, description, rating, countInStock
             })
             if(createProduct){
                 resolve({

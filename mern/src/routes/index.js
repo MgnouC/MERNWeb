@@ -55,7 +55,7 @@ export const routes = [
     page: AdminPage,
     isShowHeader: true,
     isPrivate: true,
-    //isAdminRoute: true,
+    isAdminRoute: true,
   },
   
   {
