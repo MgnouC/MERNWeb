@@ -10,7 +10,8 @@ export const getAllProduct = async () => {
 export const createProduct = async (data) => {
   const res = await axios.post(
     `${process.env.REACT_APP_API_URL_BACKEND}/product/create-product`,
-    data
+    data,
+    { headers: { Accept: "application/json" } }
   );
   return res.data;
 };

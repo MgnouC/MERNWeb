@@ -6,13 +6,13 @@ import { useMutation } from "@tanstack/react-query";
 import { WrapperHeader } from "./style";
 import TableComponent from "../TableComponent/TableComponent";
 
-
 const AdminProduct = () => {
   const [stateProduct, setStateProduct] = useState([]); // State để lưu danh sách sản phẩm
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [imageBase64, setImageBase64] = useState(""); // State để lưu ảnh base64
   const [form] = Form.useForm(); // Sử dụng form instance để điều khiển form
   const [fileList, setFileList] = useState([]);
+  
   //ProductService.createProduct(newProduct),
   // Hàm mutation dùng để gửi dữ liệu sản phẩm đến backend
   const mutation = useMutation(
@@ -29,32 +29,36 @@ const AdminProduct = () => {
   );
   // Hàm xử lý khi người dùng submit form
   const onFinish = async (values) => {
-    // Gắn base64 của ảnh vào object values trước khi gửi
-    values.image = imageBase64;
-    console.log("Form values with image:", values);
-
-    // Gọi mutation để gửi dữ liệu đến backend
-    mutation.mutate(values);
-  };
-
+    const formData = new FormData();
+    formData.append('name', values.name);
+    formData.append('type', values.type);
+    formData.append('price', values.price);
+    formData.append('countInStock', values.countInStock);
+    formData.append('rating', values.rating);
+    formData.append('description', values.description);
+    formData.append('image', fileList[0].originFileObj);
+    mutation.mutate(formData);
+};
   // Hàm xử lý khi upload hình ảnh
   const getBase64 = (file) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = (error) => reject(error);
-    });
-  };
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file); // Đọc file dưới dạng URL base64
+    reader.onload = () => resolve(reader.result); // Khi file được đọc xong, trả về base64
+    reader.onerror = (error) => reject(error); // Xử lý lỗi nếu có
+  });
+};
+
 
   const handleOnChangeImage = async ({ fileList }) => {
-    const file = fileList[0].originFileObj; // Lấy file ảnh được chọn
-    const base64 = await getBase64(file); // Chuyển đổi file ảnh thành base64
-    setStateProduct({
-      ...stateProduct,
-      image: base64, // Lưu base64 của ảnh vào state
-    });
+    if (fileList.length > 0) {
+      const file = fileList[0].originFileObj; // Lấy file ảnh được chọn
+      const base64 = await getBase64(file); // Chuyển đổi file ảnh thành base64
+      setImageBase64(base64); // Lưu base64 vào state imageBase64
+    }
+    setFileList(fileList); // Cập nhật fileList để hiển thị ảnh đã chọn
   };
+  
 
   // Hàm đóng modal và reset form
   const handleCancel = () => {

@@ -1,38 +1,52 @@
 const ProductService = require("../services/ProductService");
+const fs = require('fs'); // Import fs module
 
 const createProduct = async (req, res) => {
-  try {
-    console.log("Received data:", req.body);
-    const { name, type, price, image, description, rating, countInStock } =
-      req.body;
-    if (
-      !name ||
-      !type ||
-      !countInStock ||
-      !price ||
-      !rating ||
-      !description ||
-      !image
-    ) {
-      return res.status(200).json({
-        status: "ERR",
-        message: "Loi roi",
-      });
+    try {
+        const { name, type, price, description, rating, countInStock } = req.body;
+        const file = req.file; // Lấy file
+
+        if (!file) {
+            return res.status(400).json({
+                status: "ERR",
+                message: "File không được cung cấp",
+            });
+        }
+
+        // Đọc file và chuyển đổi sang base64
+        
+        const base64 = fs.readFileSync(file.path).toString('base64'); // Đọc file từ đường dẫn
+
+        const filename = file.filename; // Sử dụng tên file đã lưu
+
+        // Kiểm tra thông tin
+        if (!name || !type || !countInStock || !price || !rating || !description) {
+            return res.status(400).json({
+                status: "ERR",
+                message: "Thiếu thông tin sản phẩm",
+            });
+        }
+
+        // Gửi đến service để lưu sản phẩm
+        const response = await ProductService.createProduct({
+            name,
+            type,
+            price,
+            description,
+            rating,
+            countInStock,
+            image: filename, // Lưu filename
+        });
+
+        return res.status(201).json(response);
+    } catch (e) {
+        console.error('Error creating product:', e);
+        return res.status(500).json({
+            message: e.message || "Có lỗi xảy ra khi tạo sản phẩm",
+        });
     }
-    // Tạo tên file ảnh
-    const filename = `${Date.now()}.png`; // Hoặc .jpg tùy định dạng
-
-    // Lưu ảnh từ base64 xuống file
-    saveImage(image, filename);
-    const response = await ProductService.createProduct(req.body);
-    return res.status(201).json(response);
-  } catch (e) {
-    return res.status(500).json({
-      message: e.message || "Có lỗi xảy ra khi tạo sản phẩm",
-    });
-  }
 };
-
+   
 const updateProduct = async (req, res) => {
   try {
     const productId = req.params.id;
