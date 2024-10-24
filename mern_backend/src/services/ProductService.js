@@ -1,31 +1,36 @@
 const Product = require("../models/ProductModel");
 
 const createProduct = (newProduct) => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            const { name, type, price, image, description, rating, countInStock } = newProduct;
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { name, type, price, image, description, rating, countInStock } =
+        newProduct;
 
-            // Kiểm tra nếu sản phẩm đã tồn tại
-            const checkProduct = await Product.findOne({ name });
-            if (checkProduct) {
-                reject({ message: "Product already exists", status: 400 });
-            }
-
-            // Tạo sản phẩm mới
-            const createdProduct = await Product.create({
-                name, type, price, image, description, rating, countInStock
-            });
-
-            resolve({
-                status: 'OK',
-                message: "SUCCESS",
-                data: createdProduct
-            });
-        } catch (e) {
-            reject(e);
-        }
-    });
-}
+      // Kiểm tra nếu sản phẩm đã tồn tại
+      const checkProduct = await Product.findOne({ name });
+      if (checkProduct) {
+        reject({ message: "Product already exists", status: 400 });
+      }
+      // Tạo sản phẩm mới
+      const createdProduct = await Product.create({
+        name,
+        type,
+        price,
+        image,
+        description,
+        rating,
+        countInStock,
+      });
+      resolve({
+        status: "OK",
+        message: "SUCCESS",
+        data: createdProduct,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
 
 const updateProduct = (id, data) => {
   return new Promise(async (resolve, reject) => {

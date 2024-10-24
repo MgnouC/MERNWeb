@@ -1,77 +1,50 @@
-import { Divider, Radio, Table } from "antd";
-import React, { useState } from "react";
+import React from "react";
+import { Button, Table } from "antd";
 
-const TableComponent = (props) => {
-  const {selectionType = "checkbox" } = props;
-  const columns = [
-    //style:({color: '#f95230'}),
-    {
-      title: "Name",
-      dataIndex: "name",
-      render: (text) => <a>{text}</a>,
-    },
-    {
-      title: "Age",
-      dataIndex: "age",
-    },
-    {
-      title: "Address",
-      dataIndex: "address",
-    },
-  ];
-  const data = [
-    {
-      key: "1",
-      name: "John Brown",
-      age: 32,
-      address: "New York No. 1 Lake Park",
-    },
-    {
-      key: "2",
-      name: "Jim Green",
-      age: 42,
-      address: "London No. 1 Lake Park",
-    },
-    {
-      key: "3",
-      name: "Joe Black",
-      age: 32,
-      address: "Sydney No. 1 Lake Park",
-    },
-    {
-      key: "4",
-      name: "Disabled User",
-      age: 99,
-      address: "Sydney No. 1 Lake Park",
-    },
-  ];
+// Thay đổi: Đảm bảo việc xử lý mảng dữ liệu từ props và map đúng các trường.
+const TableComponent = ({ products, handleEdit, handleDelete }) => {
+  // Sử dụng _id làm key cho mỗi sản phẩm
+  const data = Array.isArray(products)
+    ? products.map((product) => ({
+        key: product._id, // Sử dụng _id từ sản phẩm để làm key.
+        _id: product._id, // Giữ _id để tiện sử dụng khi delete.
+        name: product.name,
+        price: product.price,
+        type: product.type,
+        countInStock: product.countInStock,
+      }))
+    : [];
 
-  // rowSelection object indicates the need for row selection
-  const rowSelection = {
-    onChange: (selectedRowKeys, selectedRows) => {
-      console.log(
-        `selectedRowKeys: ${selectedRowKeys}`,
-        "selectedRows: ",
-        selectedRows
-      );
-    },
-    getCheckboxProps: (record) => ({
-      disabled: record.name === "Disabled User",
-      // Column configuration not to be checked
-      name: record.name,
-    }),
-  };
+    console.log("test", products);
+    
+    
+
+    const columns = [
+      { title: "Name", dataIndex: "name", key: "name" },
+      { title: "Price", dataIndex: "price", key: "price" },
+      { title: "Type", dataIndex: "type", key: "type" },
+      { title: "Count In Stock", dataIndex: "countInStock", key: "countInStock" },
+      {
+        title: "Action",
+        key: "action",
+        render: (_, record) => (
+          <>
+            <Button onClick={() => handleEdit(record)}>Edit</Button>
+            <Button onClick={() => handleDelete(record._id)}>Delete</Button> {/* Truyền product._id cho hàm handleDelete */}
+          </>
+        ),
+      },
+    ];
+
+  // Thay đổi: Chỉnh lại dataSource cho đúng.
   return (
-    <div>
-      <Table
-        rowSelection={{
-          type: selectionType,
-          ...rowSelection,
-        }}
-        columns={columns}
-        dataSource={data}
-      />
-    </div>
+    <Table
+      columns={columns}
+      dataSource={products.data}
+      rowKey="key" // Vẫn giữ key là _id (được ánh xạ từ key).
+      pagination={{ pageSize: 15 }}
+      locale={{ emptyText: "No data available" }}
+    />
   );
 };
 
