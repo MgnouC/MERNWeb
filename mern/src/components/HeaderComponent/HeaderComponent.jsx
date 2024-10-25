@@ -75,7 +75,7 @@ const HeaderComponent = () => {
           </WrapperTextHeader>
         </Col>
 
-        <Col span={13}>
+        <Col span={12}>
           <ButtonInputSearch
             size="large"
             textButton="Tìm kiếm"
@@ -84,7 +84,7 @@ const HeaderComponent = () => {
           />
         </Col>
 
-        <Col span={8} style={{ display: "flex", gap: "20px" }}>
+        <Col span={7} style={{ display: "flex", gap: "20px" }}>
           <WrapperHeaderAccount>
             <UserOutlined style={{ fontSize: "30px" }} />
             {user.access_token ? (

@@ -49,7 +49,7 @@ const createProduct = async (req, res) => {
    
 const updateProduct = async (req, res) => {
   try {
-    const productId = req.params.id;
+    const productId = req.params._id;
     const data = req.body;
     if (!productId) {
       return res.status(200).json({

@@ -5,6 +5,7 @@ import * as ProductService from "../../services/ProductServices";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import TableComponent from "../TableComponent/TableComponent";
 import * as message from "../../components/Message/Mesage";
+import { WrapperHeader } from "../AdminUser/style";
 
 const AdminProduct = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -16,20 +17,17 @@ const AdminProduct = () => {
 
   // Thay đổi: Đảm bảo gọi API lấy tất cả sản phẩm khi component load (useQuery).
   const { data: products, error } = useQuery(
-    ['products'], // Thay đổi: sử dụng mảng thay vì chuỗi
+    ["products"], // Thay đổi: sử dụng mảng thay vì chuỗi
     () => ProductService.getAllProduct(), // Thay đổi: đảm bảo truyền đúng queryFn
     {
       onSuccess: (data) => {
-        console.log("Fetched products:", data); // Log dữ liệu sản phẩm ra console
+        //console.log("Fetched products:", data); // Log dữ liệu sản phẩm ra console
       },
       onError: (error) => {
         message.error("Error fetching products: " + error.message);
       },
     }
   );
-  
-  
- 
 
   const createMutation = useMutation(
     (newProduct) => ProductService.createProduct(newProduct),
@@ -39,19 +37,21 @@ const AdminProduct = () => {
         queryClient.invalidateQueries("products"); // Thay đổi: Invalidate query để refetch sản phẩm sau khi tạo thành công.
         handleCancel();
       },
-      onError: (error) => message.error("Error creating product: " + error.message),
+      onError: (error) =>
+        message.error("Error creating product: " + error.message),
     }
   );
 
   const updateMutation = useMutation(
-    (updatedProduct) => ProductService.updateProduct(updatedProduct),
+    (updateProduct) => ProductService.updateProduct(updateProduct),
     {
       onSuccess: () => {
         message.success("Product updated successfully");
         queryClient.invalidateQueries("products"); // Thay đổi: Refetch dữ liệu sản phẩm sau khi update thành công.
         handleCancel();
       },
-      onError: (error) => message.error("Error updating product: " + error.message),
+      onError: (error) =>
+        message.error("Error updating product: " + error.message),
     }
   );
 
@@ -62,23 +62,24 @@ const AdminProduct = () => {
         message.success("Product deleted successfully");
         queryClient.invalidateQueries("products"); // Thay đổi: Refetch danh sách sản phẩm sau khi xóa thành công.
       },
-      onError: (error) => message.error("Error deleting product: " + error.message),
+      onError: (error) =>
+        message.error("Error deleting product: " + error.message),
     }
   );
 
   const onFinish = async (values) => {
     const formData = new FormData();
-    formData.append('name', values.name);
-    formData.append('type', values.type);
-    formData.append('price', values.price);
-    formData.append('countInStock', values.countInStock);
-    formData.append('rating', values.rating);
-    formData.append('description', values.description);
-    formData.append('image', fileList[0]?.originFileObj);
+    formData.append("name", values.name);
+    formData.append("type", values.type);
+    formData.append("price", values.price);
+    formData.append("countInStock", values.countInStock);
+    formData.append("rating", values.rating);
+    formData.append("description", values.description);
+    formData.append("image", fileList[0]?.originFileObj);
 
     if (editingProduct) {
       // Thay đổi: Truyền _id vào formData để cập nhật đúng sản phẩm.
-      formData.append('id', editingProduct._id); 
+      formData.append("id", editingProduct._id);
       updateMutation.mutate(formData);
     } else {
       createMutation.mutate(formData);
@@ -109,7 +110,9 @@ const AdminProduct = () => {
     setEditingProduct(product); // Thay đổi: Gán product hiện tại để chỉnh sửa.
     setIsModalOpen(true);
     form.setFieldsValue(product); // Điền dữ liệu vào form khi edit.
-    setFileList([{ uid: '-1', name: 'image.png', status: 'done', url: product.image }]);
+    setFileList([
+      { uid: "-1", name: "image.png", status: "done", url: product.image },
+    ]);
   };
 
   const handleDelete = (productId) => {
@@ -118,6 +121,8 @@ const AdminProduct = () => {
 
   return (
     <div>
+      <WrapperHeader>Quản Lí Sản Phẩm</WrapperHeader>
+
       <Button
         style={{ color: "white", backgroundColor: "#f95230" }}
         onClick={() => {
@@ -131,7 +136,11 @@ const AdminProduct = () => {
 
       <div style={{ marginTop: "20px" }}>
         {/* Thay đổi: Chuyển props 'products' vào TableComponent để hiển thị */}
-        <TableComponent products={products} handleEdit={handleEdit} handleDelete={handleDelete} />
+        <TableComponent
+          products={products}
+          handleEdit={handleEdit}
+          handleDelete={handleDelete}
+        />
       </div>
 
       <Modal
@@ -176,7 +185,9 @@ const AdminProduct = () => {
           <Form.Item
             label="Count In Stock"
             name="countInStock"
-            rules={[{ required: true, message: "Please input countInStock product!" }]}
+            rules={[
+              { required: true, message: "Please input countInStock product!" },
+            ]}
           >
             <Input />
           </Form.Item>
@@ -184,7 +195,9 @@ const AdminProduct = () => {
           <Form.Item
             label="Rating"
             name="rating"
-            rules={[{ required: true, message: "Please input rating product!" }]}
+            rules={[
+              { required: true, message: "Please input rating product!" },
+            ]}
           >
             <Input />
           </Form.Item>
@@ -192,7 +205,9 @@ const AdminProduct = () => {
           <Form.Item
             label="Description"
             name="description"
-            rules={[{ required: true, message: "Please input description product!" }]}
+            rules={[
+              { required: true, message: "Please input description product!" },
+            ]}
           >
             <Input />
           </Form.Item>

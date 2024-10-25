@@ -1,0 +1,21 @@
+
+.button-edit:hover {
+    border: 1px solid #f95230 !important;
+    color: #f95230  !important;
+}
+
+.ant-pagination-item a {
+    background: #f95230;
+    border-radius: 20px;
+    border: 1px solid #f95230 !important;
+    color: #ffff !important;
+}
+
+.ant-pagination-item:focus {
+    background-color: #f95230 !important;
+    border: 1px solid #f95230 !important;
+}
+
+.ant-pagination-item-active {
+    border: none !important;
+}

@@ -1,5 +1,6 @@
 import React from "react";
 import { Button, Table } from "antd";
+import "./style.css";
 
 // Thay đổi: Đảm bảo việc xử lý mảng dữ liệu từ props và map đúng các trường.
 const TableComponent = ({ products, handleEdit, handleDelete }) => {
@@ -15,13 +16,11 @@ const TableComponent = ({ products, handleEdit, handleDelete }) => {
       }))
     : [];
 
-    console.log("test", products);
-    
-    
-
+    //console.log("test", products);
+        
     const columns = [
       { title: "Name", dataIndex: "name", key: "name" },
-      { title: "Price", dataIndex: "price", key: "price" },
+      { title: "Price", dataIndex: "price", key: "price",},
       { title: "Type", dataIndex: "type", key: "type" },
       { title: "Count In Stock", dataIndex: "countInStock", key: "countInStock" },
       {
@@ -29,8 +28,8 @@ const TableComponent = ({ products, handleEdit, handleDelete }) => {
         key: "action",
         render: (_, record) => (
           <>
-            <Button onClick={() => handleEdit(record)}>Edit</Button>
-            <Button onClick={() => handleDelete(record._id)}>Delete</Button> {/* Truyền product._id cho hàm handleDelete */}
+            <Button className="button-edit" style={{ marginRight: '10px'}} onClick={() => handleEdit(record._id)}>Edit</Button>
+            <Button className="button-edit" onClick={() => handleDelete(record._id)}>Delete</Button> {/* Truyền product._id cho hàm handleDelete */}
           </>
         ),
       },
@@ -40,9 +39,15 @@ const TableComponent = ({ products, handleEdit, handleDelete }) => {
   return (
     <Table
       columns={columns}
-      dataSource={products.data}
+      dataSource={products?.data}
       rowKey="key" // Vẫn giữ key là _id (được ánh xạ từ key).
-      pagination={{ pageSize: 15 }}
+      pagination={{ 
+        style: {
+        color: "#f95230" ,
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }, pageSize: 7}}
       locale={{ emptyText: "No data available" }}
     />
   );

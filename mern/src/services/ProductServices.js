@@ -16,18 +16,18 @@ export const createProduct = async (data) => {
   return res.data;
 };
 
-export const updateProduct = async (data) => {
+export const updateProduct = async (id, data) => {
   const res = await axios.put(
-    `${process.env.REACT_APP_API_URL_BACKEND}/product/update-product/:id`,
+    `${process.env.REACT_APP_API_URL_BACKEND}/product/update-product/${id}`,
     data,
     { headers: { Accept: "application/json" } }
   );
   return res.data;
 };
 
-export const deleteProduct = async (data) => {
+export const deleteProduct = async (id,data) => {
   const res = await axios.delete(
-    `${process.env.REACT_APP_API_URL_BACKEND}/product/delete-product/:id`,
+    `${process.env.REACT_APP_API_URL_BACKEND}/product/delete-product/${id}`,
     data,
     { headers: { Accept: "application/json" } }
   );

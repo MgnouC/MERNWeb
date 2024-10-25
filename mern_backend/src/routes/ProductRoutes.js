@@ -19,7 +19,7 @@ const upload = multer({ storage: storage });
 
 
 routes.post('/create-product', upload.single('image') , productController.createProduct);
-routes.put('/update-product/:id',authMiddleware ,productController.updateProduct) 
+routes.put('/update-product/:id' ,productController.updateProduct) 
 routes.get('/get-details-product/:id' ,productController.getDetailsProduct) 
 routes.delete('/delete-product/:id' ,productController.deleteProduct) 
 routes.get('/get-all',productController.getAllProduct) 
