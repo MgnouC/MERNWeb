@@ -36,20 +36,15 @@ const updateProduct = (id, data) => {
   return new Promise(async (resolve, reject) => {
     try {
       const checkProduct = await Product.findOne({ _id: id });
-      if (checkProduct === null) {
-        reject({ message: "Product not found", status: 400 });
-      }
-
+      //console.log("Before Update:", checkProduct);
       await Product.updateOne({ _id: id }, { $set: data });
-
       const updatedProduct = await Product.findOne({ _id: id });
-
       resolve({
-        status: "OK",
-        message: "SUCCESS",
-        data: updatedProduct,
+          status: "OK",
+          message: "SUCCESS",
+          data: updatedProduct,
       });
-    } catch (e) {
+          } catch (e) {
       reject(e);
     }
   });

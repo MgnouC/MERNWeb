@@ -1,25 +1,26 @@
 import React from "react";
 import { Table, Button } from "antd";
+import "./style.css";
 
-const TableComponentUser = ({ user , handleEdit, handleDelete}) => {
-    const data = Array.isArray(user)
-    ? user.map((user) => ({
+const TableComponentUser = ({ users, handleEdit, handleDelete }) => {
+  const data = Array.isArray(users)
+    ? users.map((user) => ({
         key: user._id, // Sử dụng _id từ sản phẩm để làm key.
         _id: user._id, // Giữ _id để tiện sử dụng khi delete.
         name: user.name,
         email: user.email,
         phone: user.phone,
         address: user.address,
-
+        isAdmin: user.isAdmin,
       }))
     : [];
   // Cột của bảng
   const columns = [
-    {
-      title: "ID",
-      dataIndex: "_id", // Tương ứng với trường _id trong dữ liệu người dùng
-      key: "_id",
-    },
+    // {
+    //   title: "ID",
+    //   dataIndex: "_id", // Tương ứng với trường _id trong dữ liệu người dùng
+    //   key: "_id",
+    // },
     {
       title: "Tên",
       dataIndex: "name",
@@ -41,37 +42,59 @@ const TableComponentUser = ({ user , handleEdit, handleDelete}) => {
       key: "address",
     },
     {
+      title: "Admin",
+      dataIndex: "isAdmin",
+      key: "isAdmin",
+      render: (isAdmin) => (isAdmin ? "Admin" : " "),
+    },
+    {
       title: "Thao tác",
       key: "action",
-      render: (text, record) => (
+      render: (_, record) => (
         <span>
-          <Button type="link" onClick={() => handleEdit(record)}>
-            Chỉnh sửa
+          <Button
+            className="button-edit"
+            style={{ marginRight: "10px" }}
+            onClick={() => handleEdit(record)}
+          >
+            Edit
           </Button>
-          <Button type="link" danger onClick={() => handleDelete(record._id)}>
-            Xóa
+          <Button
+            className="button-edit"
+            onClick={() => handleDelete(record._id)}
+          >
+            Delete
           </Button>
         </span>
       ),
     },
   ];
 
-//   const handleEdit = (record) => {
-//     // Thêm logic chỉnh sửa người dùng tại đây
-//     console.log("Chỉnh sửa người dùng:", record);
-//   };
+  //   const handleEdit = (record) => {
+  //     // Thêm logic chỉnh sửa người dùng tại đây
+  //     console.log("Chỉnh sửa người dùng:", record);
+  //   };
 
-//   const handleDelete = (id) => {
-//     // Thêm logic xóa người dùng tại đây
-//     console.log("Xóa người dùng có ID:", id);
-//   };
+  //   const handleDelete = (id) => {
+  //     // Thêm logic xóa người dùng tại đây
+  //     console.log("Xóa người dùng có ID:", id);
+  //   };
 
   return (
     <Table
-      dataSource={user?.data} // Dữ liệu người dùng sẽ được truyền từ AdminUser
+      dataSource={users?.data} // Dữ liệu người dùng sẽ được truyền từ AdminUser
       columns={columns}
       rowKey="key" // Khóa chính của bảng
-      pagination={{ pageSize: 10 }} // Chia trang, có thể điều chỉnh theo nhu cầu
+      pagination={{
+        style: {
+          color: "#f95230",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        },
+        pageSize: 7,
+      }}
+      locale={{ emptyText: "No data available" }}
     />
   );
 };

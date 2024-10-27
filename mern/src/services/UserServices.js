@@ -25,10 +25,27 @@ export const signupUser = async (data) => {
   return res.data;
 };
 
-export const updateUser = async (id, data) => {
+export const updateUser = async ({ id, data }) => {
   const res = await axios.put(
-    `${process.env.REACT_APP_API_URL_BACKEND}/user/update-user/${id}`,
-    data
+      `${process.env.REACT_APP_API_URL_BACKEND}/user/update-user/${id}`,
+      data,
+      {
+          headers: {
+              Accept: "application/json",
+              "Content-Type": data instanceof FormData ? "multipart/form-data" : "application/json",
+          },
+      }
+  );
+
+  return res.data;
+};
+
+
+export const deleteUser = async (id, data) => {
+  const res = await axios.put(
+    `${process.env.REACT_APP_API_URL_BACKEND}/user/delete-user/${id}`,
+    data,
+    { headers: { Accept: "application/json" } }
   );
   return res.data;
 };

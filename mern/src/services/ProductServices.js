@@ -16,16 +16,34 @@ export const createProduct = async (data) => {
   return res.data;
 };
 
-export const updateProduct = async (id, data) => {
+export const updateProduct = async ({ id, data }) => {
+  // Chấp nhận đối tượng
   const res = await axios.put(
-    `${process.env.REACT_APP_API_URL_BACKEND}/product/update-product/${id}`,
+    `${process.env.REACT_APP_API_URL_BACKEND}/product/update-product/${id}`, // Sử dụng ID trong URL
     data,
-    { headers: { Accept: "application/json" } }
+    {
+      headers: {
+        Accept: "application/json",
+      },
+    }
   );
   return res.data;
 };
 
-export const deleteProduct = async (id,data) => {
+// export const updateProduct = async (id, data) => {
+//   const res = await axios.put(
+//     `${process.env.REACT_APP_API_URL_BACKEND}/product/update-product/${id}`,
+//     data,
+//     {
+//       headers: {
+//         Accept: "application/json",
+//       },
+//     }
+//   );
+//   return res.data;
+// };
+
+export const deleteProduct = async (id, data) => {
   const res = await axios.delete(
     `${process.env.REACT_APP_API_URL_BACKEND}/product/delete-product/${id}`,
     data,

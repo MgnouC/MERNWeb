@@ -1,6 +1,6 @@
 import { Form, Input, Button, Modal, Upload } from "antd";
 import { PlusOutlined, UploadOutlined } from "@ant-design/icons";
-import { useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import * as ProductService from "../../services/ProductServices";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import TableComponent from "../TableComponent/TableComponent";
@@ -15,14 +15,10 @@ const AdminProduct = () => {
   const [editingProduct, setEditingProduct] = useState(null);
   const queryClient = useQueryClient();
 
-  // Thay đổi: Đảm bảo gọi API lấy tất cả sản phẩm khi component load (useQuery).
-  const { data: products, error } = useQuery(
-    ["products"], // Thay đổi: sử dụng mảng thay vì chuỗi
-    () => ProductService.getAllProduct(), // Thay đổi: đảm bảo truyền đúng queryFn
+  const { data: products, refetch } = useQuery(
+    ["products"],
+    ProductService.getAllProduct,
     {
-      onSuccess: (data) => {
-        //console.log("Fetched products:", data); // Log dữ liệu sản phẩm ra console
-      },
       onError: (error) => {
         message.error("Error fetching products: " + error.message);
       },
@@ -34,7 +30,7 @@ const AdminProduct = () => {
     {
       onSuccess: () => {
         message.success("Product created successfully");
-        queryClient.invalidateQueries("products"); // Thay đổi: Invalidate query để refetch sản phẩm sau khi tạo thành công.
+        queryClient.invalidateQueries("products"); // Làm mới danh sách sau khi thêm sản phẩm.
         handleCancel();
       },
       onError: (error) =>
@@ -47,7 +43,7 @@ const AdminProduct = () => {
     {
       onSuccess: () => {
         message.success("Product updated successfully");
-        queryClient.invalidateQueries("products"); // Thay đổi: Refetch dữ liệu sản phẩm sau khi update thành công.
+        queryClient.invalidateQueries(["products"]); // Làm mới danh sách sau khi cập nhật sản phẩm.
         handleCancel();
       },
       onError: (error) =>
@@ -60,13 +56,12 @@ const AdminProduct = () => {
     {
       onSuccess: () => {
         message.success("Product deleted successfully");
-        queryClient.invalidateQueries("products"); // Thay đổi: Refetch danh sách sản phẩm sau khi xóa thành công.
+        queryClient.invalidateQueries("products"); // Làm mới danh sách sau khi xóa sản phẩm.
       },
       onError: (error) =>
         message.error("Error deleting product: " + error.message),
     }
   );
-
   const onFinish = async (values) => {
     const formData = new FormData();
     formData.append("name", values.name);
@@ -75,16 +70,46 @@ const AdminProduct = () => {
     formData.append("countInStock", values.countInStock);
     formData.append("rating", values.rating);
     formData.append("description", values.description);
-    formData.append("image", fileList[0]?.originFileObj);
+
+    if (fileList && fileList.length > 0) {
+        formData.append("image", fileList[0]?.originFileObj);
+    }
+
+    // Log ra để kiểm tra payload
+    console.log("Payload to send:", [...formData]);
 
     if (editingProduct) {
-      // Thay đổi: Truyền _id vào formData để cập nhật đúng sản phẩm.
-      formData.append("id", editingProduct._id);
-      updateMutation.mutate(formData);
+      console.log("Editing Product ID:", editingProduct);
+      updateMutation.mutate({ id: editingProduct, data: formData }); // Gọi với ID và data
+       // updateMutation.mutate(formData);
     } else {
-      createMutation.mutate(formData);
+        createMutation.mutate(formData);
     }
-  };
+};
+
+//   const onFinish = async (values) => {
+//     const formData = new FormData();
+//     formData.append("name", values.name);
+//     formData.append("type", values.type);
+//     formData.append("price", values.price);
+//     formData.append("countInStock", values.countInStock);
+//     formData.append("rating", values.rating);
+//     formData.append("description", values.description);
+//     // Check if a file has been selected before appending
+//     if (fileList && fileList.length > 0) {
+//         formData.append("image", fileList[0]?.originFileObj);
+//     } else {
+//         console.warn("No file selected");
+//     }
+//     console.log([...formData]); 
+//     if (editingProduct) {
+//       // Nếu đang chỉnh sửa sản phẩm, gọi hàm updateMutation với formData
+//       updateMutation.mutate({ id: editingProduct, data: formData }); // Gọi với ID và data
+//   } else {
+//       createMutation.mutate(formData);
+//   }
+// };
+
 
   const handleOnChangeImage = ({ fileList }) => {
     setFileList(fileList);
@@ -100,23 +125,24 @@ const AdminProduct = () => {
 
   const handleCancel = () => {
     setIsModalOpen(false);
-    form.resetFields(); // Thay đổi: Reset form fields khi modal đóng.
+    form.resetFields();
     setImageBase64("");
     setEditingProduct(null);
     setFileList([]);
   };
 
   const handleEdit = (product) => {
-    setEditingProduct(product); // Thay đổi: Gán product hiện tại để chỉnh sửa.
+    //console.log(product);
+    setEditingProduct(product._id);
     setIsModalOpen(true);
-    form.setFieldsValue(product); // Điền dữ liệu vào form khi edit.
+    form.setFieldsValue(product);
     setFileList([
       { uid: "-1", name: "image.png", status: "done", url: product.image },
     ]);
   };
 
   const handleDelete = (productId) => {
-    deleteMutation.mutate(productId); // Truyền productId vào mutation để xóa sản phẩm.
+    deleteMutation.mutate(productId);
   };
 
   return (
@@ -137,7 +163,7 @@ const AdminProduct = () => {
       <div style={{ marginTop: "20px" }}>
         {/* Thay đổi: Chuyển props 'products' vào TableComponent để hiển thị */}
         <TableComponent
-          products={products}
+          products={products || []}
           handleEdit={handleEdit}
           handleDelete={handleDelete}
         />
