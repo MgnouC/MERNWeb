@@ -85,7 +85,9 @@ const logoutUser = async (req, res) => {
 const updateUser = async (req, res) => {
   try {
     const userId = req?.params?.id;
-    const data = req.body;
+    const data = req?.body;
+    console.log('userId', userId);
+    console.log('req.body',req.body)
     console.log("Received data:", data);
 
     if (!userId) {
@@ -96,7 +98,7 @@ const updateUser = async (req, res) => {
     }
 
     const response = await UserService.updateUser(userId, data);
-    console.log("Update response:", response);
+    //console.log("Update response:", response);
     return res.status(200).json(response);
   } catch (e) {
     return res.status(404).json({

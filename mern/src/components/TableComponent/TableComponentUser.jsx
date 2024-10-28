@@ -1,6 +1,7 @@
 import React from "react";
 import { Table, Button } from "antd";
 import "./style.css";
+import * as XLSX from "xlsx";
 
 const TableComponentUser = ({ users, handleEdit, handleDelete }) => {
   const data = Array.isArray(users)
@@ -70,18 +71,28 @@ const TableComponentUser = ({ users, handleEdit, handleDelete }) => {
     },
   ];
 
-  //   const handleEdit = (record) => {
-  //     // Thêm logic chỉnh sửa người dùng tại đây
-  //     console.log("Chỉnh sửa người dùng:", record);
-  //   };
+  const exportToExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(users?.data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Products");
 
-  //   const handleDelete = (id) => {
-  //     // Thêm logic xóa người dùng tại đây
-  //     console.log("Xóa người dùng có ID:", id);
-  //   };
+    // Ghi file và tải về
+    XLSX.writeFile(workbook, "products_data.xlsx");
+  };
 
   return (
-    <Table
+    <div>
+
+   
+    <Button
+          type="primary"
+          onClick={exportToExcel}
+          style={{ color: "white", backgroundColor: "#f95230" , marginBottom: '5px'}}
+        >
+          Export to Excel
+        </Button>
+
+    <Table  
       dataSource={users?.data} // Dữ liệu người dùng sẽ được truyền từ AdminUser
       columns={columns}
       rowKey="key" // Khóa chính của bảng
@@ -95,8 +106,8 @@ const TableComponentUser = ({ users, handleEdit, handleDelete }) => {
         pageSize: 7,
       }}
       locale={{ emptyText: "No data available" }}
-    />
-  );
+    /></div>
+  ); 
 };
 
 export default TableComponentUser;

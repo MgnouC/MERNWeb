@@ -48,7 +48,7 @@ const createProduct = async (req, res) => {
 };
 
 const updateProduct = async (req, res) => {
-  //console.log(req.params); 
+  console.log(req.params); 
   try {
     const productId = req?.params?.id;  // Sửa từ _id thành id
     const data = req.body;

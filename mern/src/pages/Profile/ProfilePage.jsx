@@ -24,7 +24,7 @@ const ProfilePage = () => {
   const [avatar, setAvatar] = useState("");
   const mutation = useMutationHooks((data) => {
     const { id, ...rests } = data;
-    UserService.updateUser(id, data);
+    UserService.updateUser(user, data);
   });
   const { data, isError, isSuccess } = mutation;
 
@@ -48,7 +48,7 @@ const ProfilePage = () => {
   //   setAvatar(file.preview);
   // };
   const handleUpdate = () => {
-    mutation.mutate({ id: user?.id, name, email, phone, address /*avatar*/ });
+    mutation.mutate({ id: user?._id, name, email, phone, address /*avatar*/ });
     if (isSuccess) {
       message.success("Update User successfully");
     } else if (isError) {

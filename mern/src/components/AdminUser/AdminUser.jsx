@@ -49,7 +49,7 @@ const AdminUser = () => {
   );
 
   const deleteMutation = useMutation(
-    (userId) => UserService.deleteUser(userId),
+    (deleteUser) => UserService.deleteUser(deleteUser),
     {
       onSuccess: () => {
         message.success("User deleted successfully");
@@ -78,22 +78,16 @@ const AdminUser = () => {
     formData.append("email", values.email);
     formData.append("phone", values.phone);
     formData.append("address", values.address);
-    formData.append("password", values.password || "");  // Cẩn thận với các giá trị undefined
+    //formData.append("password", values.password || "");  // Cẩn thận với các giá trị undefined
     formData.append("isAdmin", values.isAdmin || false);
 
-    // Kiểm tra nội dung formData
-    // for (let pair of formData.entries()) {
-    //     console.log(pair[0] + ': ' + pair[1]);
-    // }
-
     if (editingUser) {
-      console.log("Editing User ID:", editingUser);
+      //console.log("Editing Product ID:", editingUser);
       updateMutation.mutate({ id: editingUser, data: formData });
     } else {
       console.error("No editing user found!");
     }
-};
-
+  }
   
 
   return (

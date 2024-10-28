@@ -70,6 +70,7 @@ const updateUser = (id, data) => {
   return new Promise(async (resolve, reject) => {
     try {
       const checkUser = await User.findOne({ _id: id });
+      console.log('checkuser',checkUser)
       if (checkUser === null) {
         reject({ message: "User not found", status: 400 });
       }
@@ -77,7 +78,8 @@ const updateUser = (id, data) => {
       await User.updateOne({ _id: id }, { $set: data });
 
       const updatedUser = await User.findOne({ _id: id });
-
+      
+      console.log('updatedUser', updatedUser);
       resolve({
         status: "OK",
         message: "SUCCESS",

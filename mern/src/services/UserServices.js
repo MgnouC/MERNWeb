@@ -27,22 +27,22 @@ export const signupUser = async (data) => {
 
 export const updateUser = async ({ id, data }) => {
   const res = await axios.put(
-      `${process.env.REACT_APP_API_URL_BACKEND}/user/update-user/${id}`,
-      data,
-      {
-          headers: {
-              Accept: "application/json",
-              "Content-Type": data instanceof FormData ? "multipart/form-data" : "application/json",
-          },
-      }
+    `${process.env.REACT_APP_API_URL_BACKEND}/user/update-user/${id}`,
+    data,
+    {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        //token: `Bearer ${access_token}`,
+      },
+    }
   );
 
   return res.data;
 };
 
-
 export const deleteUser = async (id, data) => {
-  const res = await axios.put(
+  const res = await axios.delete(
     `${process.env.REACT_APP_API_URL_BACKEND}/user/delete-user/${id}`,
     data,
     { headers: { Accept: "application/json" } }

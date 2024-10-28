@@ -87,29 +87,6 @@ const AdminProduct = () => {
     }
 };
 
-//   const onFinish = async (values) => {
-//     const formData = new FormData();
-//     formData.append("name", values.name);
-//     formData.append("type", values.type);
-//     formData.append("price", values.price);
-//     formData.append("countInStock", values.countInStock);
-//     formData.append("rating", values.rating);
-//     formData.append("description", values.description);
-//     // Check if a file has been selected before appending
-//     if (fileList && fileList.length > 0) {
-//         formData.append("image", fileList[0]?.originFileObj);
-//     } else {
-//         console.warn("No file selected");
-//     }
-//     console.log([...formData]); 
-//     if (editingProduct) {
-//       // Nếu đang chỉnh sửa sản phẩm, gọi hàm updateMutation với formData
-//       updateMutation.mutate({ id: editingProduct, data: formData }); // Gọi với ID và data
-//   } else {
-//       createMutation.mutate(formData);
-//   }
-// };
-
 
   const handleOnChangeImage = ({ fileList }) => {
     setFileList(fileList);
@@ -155,10 +132,12 @@ const AdminProduct = () => {
           setIsModalOpen(true);
           setEditingProduct(null); // Khi nhấn Thêm mới, đảm bảo form được làm mới.
         }}
-        type="primary"
+        type="primary" Add Product
       >
-        <PlusOutlined />
+        <PlusOutlined /> Add Product
       </Button>
+      
+      
 
       <div style={{ marginTop: "20px" }}>
         {/* Thay đổi: Chuyển props 'products' vào TableComponent để hiển thị */}

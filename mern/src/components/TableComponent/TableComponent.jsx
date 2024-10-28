@@ -1,11 +1,12 @@
 import React from "react";
 import { Button, Table } from "antd";
+import * as XLSX from "xlsx";
 import "./style.css";
 
 const TableComponent = ({ products, handleEdit, handleDelete }) => {
   const data = Array.isArray(products)
     ? products.map((product) => ({
-        key: product._id, 
+        key: product._id,
         _id: product._id,
         name: product.name,
         price: product.price,
@@ -32,7 +33,7 @@ const TableComponent = ({ products, handleEdit, handleDelete }) => {
             Edit
           </Button>
           <Button
-            className="button-delete"
+            className="button-edit"
             onClick={() => handleDelete(record._id)}
           >
             Delete
@@ -42,22 +43,44 @@ const TableComponent = ({ products, handleEdit, handleDelete }) => {
     },
   ];
 
+  // Hàm xuất dữ liệu ra Excel
+  const exportToExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(products?.data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Products");
+
+    // Ghi file và tải về
+    XLSX.writeFile(workbook, "products_data.xlsx");
+  };
+
   return (
-    <Table
-      columns={columns}
-      dataSource={products?.data}
-      rowKey="key" // Khóa chính của bảng  
-      pagination={{
-        style: {
-          color: "#f95230",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        },
-        pageSize: 7,
-      }}
-      locale={{ emptyText: "No data available" }}
-    />
+    <div>
+      <div >
+        <Button
+          type="primary"
+          onClick={exportToExcel}
+          style={{ color: "white", backgroundColor: "#f95230" , marginBottom: '5px'}}
+        >
+          Export to Excel
+        </Button>
+      </div>
+
+      <Table
+        columns={columns}
+        dataSource={products?.data}
+        rowKey="key" // Khóa chính của bảng
+        pagination={{
+          style: {
+            color: "#f95230",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          },
+          pageSize: 7,
+        }}
+        locale={{ emptyText: "No data available" }}
+      />
+    </div>
   );
 };
 
