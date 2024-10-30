@@ -14,7 +14,7 @@ const AdminProduct = () => {
   const [fileList, setFileList] = useState([]);
   const [editingProduct, setEditingProduct] = useState(null);
   const queryClient = useQueryClient();
-
+  
   const { data: products, refetch } = useQuery(
     ["products"],
     ProductService.getAllProduct,

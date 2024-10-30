@@ -1,11 +1,20 @@
 import axios from "axios";
 
-export const getAllProduct = async () => {
-  const res = await axios.get(
-    `${process.env.REACT_APP_API_URL_BACKEND}/product/get-all`
-  );
-  return res.data;
+export const getAllProduct = async (search) => {
+  // Update the URL based on the backend structure
+  const url = search
+    ? `${process.env.REACT_APP_API_URL_BACKEND}/product/get-all?search=${search}`
+    : `${process.env.REACT_APP_API_URL_BACKEND}/product/get-all`;
+
+  try {
+    const response = await axios.get(url);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    
+  }
 };
+
 
 export const createProduct = async (data) => {
   const res = await axios.post(

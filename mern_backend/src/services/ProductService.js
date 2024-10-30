@@ -93,19 +93,19 @@ const getAllProduct = (limit, page, sort, filter) => {
     try {
       const totalProduct = await Product.countDocuments();
       if (filter) {
-        const label = filter[0];
         const allObjectFilter = await Product.find({
-          [label]: { $regex: filter[1] },
+          name: { $regex: filter, $options: 'i' }, // Tìm kiếm không phân biệt hoa thường
         });
         resolve({
           status: "OK",
           message: "Success",
           data: allObjectFilter,
-          total: totalProduct, // Total count from earlier
+          total: totalProduct,
           pageCurrent: Number(page + 1),
-          totalPage: Math.ceil(allObjectFilter / limit),
+          totalPage: Math.ceil(totalProduct / limit),
         });
       }
+      
 
       if (sort) {
         const productsSoft = {};

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Badge, Button, Col, Popover } from "antd";
 import {
   WrapperContentPopup,
@@ -19,15 +19,23 @@ import { useSelector } from "react-redux";
 import * as UserService from "../../services/UserServices";
 import { useDispatch } from "react-redux";
 import { resetUser } from "../../redux/slides/userSlice";
-
+import { searchProduct } from "../../redux/slides/productSlice";
 const HeaderComponent = () => {
   const navigate = useNavigate();
   const handleNavigateLogin = () => {
     navigate("/sign-in");
   };
-
+  const [search, setSearch] = useState("");
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
+  
+  const handleInputChange = (e) => {
+    setSearch(e.target.value);
+  };
+
+  const handleSearchClick = () => {
+    dispatch(searchProduct(search)); // Dispatch search term when button clicked
+  };
   const handleLogout = async () => {
     try {
       await UserService.logoutUser(); // Gọi API đăng xuất
@@ -55,6 +63,11 @@ const HeaderComponent = () => {
     </div>
   );
 
+  const onSearch = (e) => {
+    setSearch(e.target.value); // Update local search state
+    dispatch(searchProduct(e.target.value)); // Dispatch search term with each input change
+  };
+
   return (
     <div
       style={{
@@ -81,6 +94,8 @@ const HeaderComponent = () => {
             textButton="Tìm kiếm"
             variant={false}
             placeholder="Nhập sản phẩm cần tìm"
+            onChange={onSearch} // Truyền hàm để cập nhật giá trị tìm kiếm
+            onClick={handleSearchClick} // Hàm xử lý khi nhấn nút tìm kiếm
           />
         </Col>
 
