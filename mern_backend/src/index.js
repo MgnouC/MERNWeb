@@ -16,7 +16,7 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 //app.use('/uploads', express.static('uploads'));
 //app.put('/api/products/:_id', ProductControllerBackend.updateProduct);
 
-
+app.use('/uploads', express.static('uploads'));
 
 app.use(bodyParser.json());
 app.use(cors());

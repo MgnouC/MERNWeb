@@ -71,7 +71,7 @@ const AdminProduct = () => {
     formData.append("rating", values.rating);
     formData.append("description", values.description);
 
-    if (fileList && fileList.length > 0) {
+    if (fileList && fileList?.length > 0) {
         formData.append("image", fileList[0]?.originFileObj);
     }
 
@@ -114,7 +114,7 @@ const AdminProduct = () => {
     setIsModalOpen(true);
     form.setFieldsValue(product);
     setFileList([
-      { uid: "-1", name: "image.png", status: "done", url: product.image },
+      { uid: "-1", name: "image.png", status: "done", url: product?.image },
     ]);
   };
 

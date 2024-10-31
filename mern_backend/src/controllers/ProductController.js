@@ -48,26 +48,42 @@ const createProduct = async (req, res) => {
 };
 
 const updateProduct = async (req, res) => {
-  console.log(req.params); 
   try {
-    const productId = req?.params?.id;  // Sửa từ _id thành id
-    const data = req.body;
-    console.log("Received data:", data);
+    const productId = req.params.id; // Lấy ID từ params
+    const data = req.body; // Dữ liệu cập nhật sản phẩm
+    const file = req.file; // Lấy file ảnh (nếu có)
+
+    // Kiểm tra ID sản phẩm
     if (!productId) {
-      return res.status(200).json({
+      return res.status(400).json({
         status: "ERR",
         message: "The ProductID is required",
       });
     }
 
+    // Nếu có ảnh mới, cập nhật ảnh vào dữ liệu sản phẩm
+    if (file) {
+      const filename = file.filename; // Lấy tên file ảnh
+      data.image = filename; // Cập nhật tên file ảnh vào data
+    }
+
+    // Gọi service để cập nhật sản phẩm
     const response = await ProductService.updateProduct(productId, data);
-    return res.status(200).json(response);
+
+    return res.status(200).json({
+      status: "OK",
+      message: "Product updated successfully",
+      data: response,
+    });
   } catch (e) {
-    return res.status(404).json({
-      message: e,
+    console.error("Error updating product:", e);
+    return res.status(500).json({
+      status: "ERR",
+      message: e.message || "Có lỗi xảy ra khi cập nhật sản phẩm",
     });
   }
 };
+
 
 const getDetailsProduct = async (req, res) => {
   try {
