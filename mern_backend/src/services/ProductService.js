@@ -50,23 +50,25 @@ const updateProduct = (id, data) => {
   });
 };
 
-const getDetailsProduct = (id) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const checkProduct = await Product.findOne({ _id: id });
-      if (checkProduct === null) {
-        reject({ message: "Product not found", status: 400 });
-      }
-      resolve({
-        status: "OK",
-        message: "SUCCESS",
-        data: checkProduct,
-      });
-    } catch (e) {
-      reject(e);
+const getProductById = async (id) => {
+  try {
+    const checkProduct = await Product.findOne({ _id: id });
+    // Log thông tin sản phẩm
+    console.log("Product found:", checkProduct);
+    if (!checkProduct) {
+      throw { message: "Product not found", status: 400 };
     }
-  });
+    return {
+      status: "OK",
+      message: "SUCCESS",
+      data: checkProduct,
+    };
+  } catch (e) {
+    throw { message: e.message || "An error occurred", status: 500 };
+  }
 };
+
+
 
 const deleteProduct = (id) => {
   return new Promise(async (resolve, reject) => {
@@ -145,7 +147,7 @@ const getAllProduct = (limit, page, sort, filter) => {
 module.exports = {
   createProduct,
   updateProduct,
-  getDetailsProduct,
+  getProductById,
   deleteProduct,
   getAllProduct,
 };

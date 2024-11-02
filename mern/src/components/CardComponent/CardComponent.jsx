@@ -11,9 +11,27 @@ import {
 } from "./style";
 import { StarFilled } from "@ant-design/icons";
 import logo from "../../assets/images/logo.png";
+import { useNavigate } from 'react-router-dom';
+
 const CardComponent = (props) => {
-  const { countInStock, description, image, name, price, sell, discount, rating } =
-    props;
+  const navigate = useNavigate();
+  const handleDetailProduct = (id) => {
+    // Thay đổi URL và chuyển hướng đến trang chi tiết sản phẩm
+    navigate(`/product-details/${id}`);
+  };
+
+  const {
+    countInStock,
+    description,
+    image,
+    name,
+    price,
+    sell,
+    discount,
+    rating,
+    id,
+  } = props;
+  
   return (
     <WrapperCardStyle
       hoverable
@@ -21,11 +39,13 @@ const CardComponent = (props) => {
       style={{ width: 240 }}
       stylebody={{ padding: "10px" }}
       cover={
-        <img style={{ height: "220px", width: "100%"}}
+        <img
+          style={{ height: "220px", width: "100%" }}
           //alt="example"
           src={`http://localhost:3000/uploads/${image}`}
         />
       }
+      onClick={() => handleDetailProduct(id)}
     >
       <StyleNameProduct>{name}</StyleNameProduct>
       <WrapperReportText>
@@ -38,13 +58,13 @@ const CardComponent = (props) => {
             }}
           />{" "}
           <span>{rating}</span>
-          <WrapperStyleTextSell> | Đã bán {sell ||100}+</WrapperStyleTextSell>
+          <WrapperStyleTextSell> | Đã bán {sell || 100}+</WrapperStyleTextSell>
         </span>
       </WrapperReportText>
       <WrapperPriceText style={{ boxSizing: "border-box" }}>
-        <span style={{ marginRight: "5px" }}>{price} </span>
+        <span style={{ marginRight: "5px" }}>{price}</span>
         <div style={{ display: "flex", gap: "4px", height: "18px" }}>
-          <WrapperDiscountText>- {discount || 5}%</WrapperDiscountText>
+          <WrapperDiscountText> {discount || 5}%</WrapperDiscountText>
         </div>
       </WrapperPriceText>
     </WrapperCardStyle>

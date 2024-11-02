@@ -23,10 +23,11 @@ const ProfilePage = () => {
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [avatar, setAvatar] = useState("");
-  const dispatch = useDispatch("")
+  const dispatch = useDispatch("");
   const mutation = useMutationHooks((data) => {
     const { id, ...rests } = data;
-    UserService.updateUser(user, data);
+    console.log(data)
+    UserService.updateUser(user, data); 
   });
   const { data, isError, isSuccess } = mutation;
 
@@ -51,18 +52,17 @@ const ProfilePage = () => {
   // };
   const handleUpdate = () => {
     mutation.mutate(
-      { id: user?.id, name, email, phone, address },
+      { id: user.id, name, email, phone, address },
       {
         onSuccess: (data) => {
           dispatch(updateUser(data)); // Cập nhật store khi thành công
         },
         onError: (error) => {
           console.error("Update failed:", error.message);
-        }
+        },
       }
     );
   };
-  
 
   useEffect(() => {
     if (isSuccess) {
@@ -71,7 +71,7 @@ const ProfilePage = () => {
       message.error("Update User failed");
     }
   }, [isSuccess, isError]);
-  
+
   useEffect(() => {
     console.log("Current user:", user);
     //dispatch(updateUser(user))
@@ -80,8 +80,6 @@ const ProfilePage = () => {
     setPhone(user?.phone);
     setAddress(user?.address);
   }, [user]);
-  
-  
 
   return (
     <div

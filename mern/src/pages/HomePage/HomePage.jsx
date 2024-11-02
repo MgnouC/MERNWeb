@@ -71,6 +71,7 @@ const HomePage = () => {
             {stateProduct.slice(0, visibleProducts).map((product) => (
               <CardComponent
                 key={product._id}
+                id={product._id}
                 countInStock={product.countInStock}
                 description={product.description}
                 name={product.name}

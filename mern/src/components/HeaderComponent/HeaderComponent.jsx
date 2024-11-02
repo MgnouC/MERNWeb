@@ -28,7 +28,7 @@ const HeaderComponent = () => {
   const [search, setSearch] = useState("");
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
-  
+
   const handleInputChange = (e) => {
     setSearch(e.target.value);
   };
@@ -105,7 +105,7 @@ const HeaderComponent = () => {
             {user.access_token ? (
               <>
                 <Popover content={content} trigger="click">
-                  <div style={{ cursor: "pointer" }}>
+                  <div style={{ cursor: "pointer" , border: "none"}}>
                     {user?.name || user?.email}
                   </div>
                 </Popover>

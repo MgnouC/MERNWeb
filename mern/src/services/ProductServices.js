@@ -11,10 +11,17 @@ export const getAllProduct = async (search) => {
     return response.data;
   } catch (error) {
     console.error("Error fetching products:", error);
-    
   }
 };
 
+// Update the URL based on the backend structure
+export const getDetailsProduct = (id) => {
+  return axios.get(`${process.env.REACT_APP_API_URL_BACKEND}/product/get-details-product/${id}`)
+    .then(response => response.data)
+    .catch(error => {
+      throw error.response?.data || { message: 'Unknown error' };
+    });
+};
 
 export const createProduct = async (data) => {
   const res = await axios.post(

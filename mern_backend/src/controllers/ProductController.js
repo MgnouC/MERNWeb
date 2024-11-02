@@ -1,5 +1,7 @@
-const ProductService = require("../services/ProductService");
+const ProductServiceCustomer = require('../services/ProductService');
+
 const fs = require("fs"); // Import fs module
+// const { getProductById } = require("../services/ProductService");
 
 const createProduct = async (req, res) => {
   try {
@@ -28,7 +30,7 @@ const createProduct = async (req, res) => {
     }
 
     // Gửi đến service để lưu sản phẩm
-    const response = await ProductService.createProduct({
+    const response = await ProductServiceCustomer.createProduct({
       name,
       type,
       price,
@@ -68,7 +70,7 @@ const updateProduct = async (req, res) => {
     }
 
     // Gọi service để cập nhật sản phẩm
-    const response = await ProductService.updateProduct(productId, data);
+    const response = await ProductServiceCustomer.updateProduct(productId, data);
 
     return res.status(200).json({
       status: "OK",
@@ -87,19 +89,22 @@ const updateProduct = async (req, res) => {
 
 const getDetailsProduct = async (req, res) => {
   try {
-    const ProductId = req.params.id;
-    if (!ProductId) {
-      return res.status(200).json({
+    const productId = req.params.id;
+    console.log("Received Product ID:", productId); 
+    if (!productId) {
+      return res.status(400).json({
         status: "ERR",
         message: "The ProductId is required",
       });
     }
 
-    const response = await ProductService.getDetailsProduct(ProductId);
+    const response = await ProductServiceCustomer.getProductById(productId);
+    console.log("Product details fetched:", response); // Log kết quả trả về từ hàm
     return res.status(200).json(response);
   } catch (e) {
+    console.error("Error in getDetailsProduct:", e);
     return res.status(404).json({
-      message: e,
+      message: e.message || "An error occurred",
     });
   }
 };
@@ -114,7 +119,7 @@ const deleteProduct = async (req, res) => {
       });
     }
 
-    const response = await ProductService.deleteProduct(productId);
+    const response = await ProductServiceCustomer.deleteProduct(productId);
     return res.status(200).json(response);
   } catch (e) {
     return res.status(404).json({
@@ -126,7 +131,7 @@ const deleteProduct = async (req, res) => {
 const getAllProduct = async (req, res) => {
   try {
     const { limit, page, sort, filter, search } = req.query;
-    const response = await ProductService.getAllProduct(
+    const response = await ProductServiceCustomer.getAllProduct(
       Number(page) || 0,
       sort,
       filter,

@@ -30,6 +30,7 @@ routes.put(
   upload.single("image"),
   productController.updateProduct
 );
+
 routes.get("/get-details-product/:id", productController.getDetailsProduct);
 routes.delete("/delete-product/:id", productController.deleteProduct);
 routes.get("/get-all", productController.getAllProduct);

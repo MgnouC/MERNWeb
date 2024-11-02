@@ -2,54 +2,94 @@ import { Card } from "antd";
 import styled from "styled-components";
 
 export const WrapperCardStyle = styled(Card)`
-    width: 100%
+    width: 100%;
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    }
+
     & img { 
         width: 100%;
-        height: 100%;
-        opacity: 1;
+        height: 200px;
+        object-fit: cover;
+        transition: opacity 0.3s ease;
     }
-    position: 'relative'
+`;
 
-`
 export const StyleNameProduct = styled.div`
-    font-weight: 400px;
-    font-size: 14px;
-    line-height: 150%;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 1.5;
     color: #333333;
-    font-family: Helvatica;
-`
+    font-family: Helvetica, Arial, sans-serif;
+    margin: 12px 0 4px 0;
+`;
+
 export const WrapperReportText = styled.div`
-    padding: 8px;
-    font-size: 11px;
-    color: rgb(128,128,137);
+    padding: 8px 0;
+    font-size: 12px;
+    color: #808089;
     display: flex;
     align-items: center;
-`
+    gap: 4px;
+
+    /* Optional: Add an icon or indicator */
+    &::before {
+        content: "•";
+        color: #808089;
+        margin-right: 4px;
+    }
+`;
+
 export const WrapperPriceText = styled.div`
     text-align: left;
-    font-size: 16px;
-    line-height: 150%;
+    font-size: 18px;
+    line-height: 1.5;
     font-weight: 600;
-    color: rgb(255, 66, 78);
-    margin: 0px;
+    color: #FF424E;
+    margin: 8px 0;
     display: flex;
     align-items: center;
-`
+
+    /* Optional: Add currency symbol styling */
+    &::before {
+        content: "$";
+        font-size: 14px;
+        margin-right: 2px;
+    }
+`;
+
 export const WrapperDiscountText = styled.div`
-    display: flex;
-    padding: 0px 4px;
-    align-items: flex-start;
+    display: inline-flex;
+    padding: 4px 8px;
+    align-items: center;
     border-radius: 8px;
-    background: var(--Alias-Theme-Variant, #f5f5fa);
-    color: var(--Alias-Primary---On-Theme, #27272a);
-    font-family: Inter;
+    background: #f5f5fa;
+    color: #27272a;
+    font-family: 'Inter', sans-serif;
     font-size: 12px;
-    font-style: normal;
     font-weight: 500;
-    line-height: 150%;
-`
+    line-height: 1.5;
+    margin-top: 4px;
+
+    /* Optional: Add discount icon */
+    &::before {
+        content: "-";
+        margin-right: 4px;
+        color: #ee4d2d;
+    }
+`;
+
 export const WrapperStyleTextSell = styled.span`
     font-size: 14px;
     line-height: 24px;
-    color: rgb(120, 120, 120);  
-`
+    color: #787878;
+    display: block;
+    margin-top: 4px;
+`;
