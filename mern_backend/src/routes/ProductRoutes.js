@@ -34,5 +34,6 @@ routes.put(
 routes.get("/get-details-product/:id", productController.getDetailsProduct);
 routes.delete("/delete-product/:id", productController.deleteProduct);
 routes.get("/get-all", productController.getAllProduct);
+routes.get("/get-all-type", productController.getAllType);
 
 module.exports = routes;

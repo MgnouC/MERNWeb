@@ -19,7 +19,7 @@ import ButtonComponent from "../ButtonComponent/ButtonComponent";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import * as message from "../../components/Message/Mesage";
 import * as ProductService from "../../services/ProductServices";
-import { useSelector } from 'react-redux';
+import { useSelector } from "react-redux";
 const ProductDetailsComponent = ({ idProduct }) => {
   //console.log("idProduct", idProduct);
   const onChange = () => {};
@@ -40,8 +40,8 @@ const ProductDetailsComponent = ({ idProduct }) => {
       },
     }
   );
- const user = useSelector ((state) => state.user)
- console.log(user)
+  const user = useSelector((state) => state.user);
+  console.log(user);
   const handleInputChange = (value) => {
     if (value >= 1 && value <= product.countInStock) {
       setQuantity(value);
@@ -131,21 +131,24 @@ const ProductDetailsComponent = ({ idProduct }) => {
       <Col span={14} style={{ padding: "20px 0 35px 20px" }}>
         <WrapperStyleNameProduct>{product.name}</WrapperStyleNameProduct>
         <div>
-          {/* Hiển thị số sao dựa trên rating */}
-          {[...Array(5)].map((_, i) => (
-            <StarFilled
-              key={i}
-              style={{
-                fontSize: "10px",
-                color: i < product.rating ? "#fac700" : "#ddd",
-              }}
-            />
-          ))}
           <WrapperStyleTextSell>
+            {/* Hiển thị số sao dựa trên rating */}
+            {[...Array(5)].map((_, i) => (
+              <StarFilled
+                key={i}
+                style={{
+                  fontSize: "10px",
+                  color: i < product.rating ? "#fac700" : "#ddd",
+                }}
+              />
+            ))}
             | Đã bán {product.sell || "100+"}+
           </WrapperStyleTextSell>
         </div>
+        <span> Mô tả sản phẩm: {product.description}</span>
+
         <WrapperPriceProduct>
+          <span>Giá: </span>
           <WrapperPriceTextProduct>
             {product.price ? product.price.toLocaleString() : "N/A"}
           </WrapperPriceTextProduct>

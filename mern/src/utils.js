@@ -16,7 +16,31 @@ export const getBase64 = (file) => {
   });
 };
 
+export const renderOptions = (arr) => {
+  if (!Array.isArray(arr)) {
+    console.error("Input is not an array:", arr);
+    return [];
+  }
+
+  const result = arr.map((opt) => {
+    return {
+      value: opt,  // Dùng giá trị trực tiếp từ mảng
+      label: opt,  // Dùng giá trị trực tiếp từ mảng làm nhãn
+    };
+  });
+
+  // Thêm tùy chọn mặc định "--- Chọn ---"
+  result.unshift({
+    value: "",
+    label: "--- Chọn ---",
+  });
+
+  //console.log("Render Options Result:", result);
+  return result;
+};
 
 
 
-  
+
+
+

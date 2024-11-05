@@ -19,7 +19,31 @@ const HomePage = () => {
   const [stateProduct, setStateProduct] = useState([]);
   const [visibleProducts, setVisibleProducts] = useState(4); // Số sản phẩm hiển thị ban đầu
   const searchDebounce = useDebounce(searchProduct, 1000);
-  const arr = ["TV", "Laptop", "Phone", "Tablet", "Headphone"];
+  const [typeProducts, setTypeProducts] = useState([]); // Danh sách loại sản phẩm
+  //const arr = ["TV", "Laptop", "Phone", "Tablet", "Headphone"];
+
+  const fetchAllTypeProduct = async () => {
+    try {
+      const response = await ProductService.getAllType(); // Fetch all type product
+      //console.log("All type product:", response);
+      setTypeProducts(response?.data);
+      if (!response) {
+        throw { message: "All type product not found", status: 400 };
+      }
+      return {
+        status: "OK",
+        message: "SUCCESS",
+        data: response,
+      };
+    } catch (error) {
+      console.error("Error fetching all type product:", error.message);
+      return { status: "ERR", message: "Error fetching all type product" };
+    }
+  };
+
+  useEffect(() => {
+    fetchAllTypeProduct();
+  }, []);
 
   useEffect(() => {
     const fetcProduct = async () => {
@@ -51,7 +75,7 @@ const HomePage = () => {
   return (
     <div style={{ width: "1270px", margin: "0 auto" }}>
       <WrapperTypeProduct>
-        {arr.map((item) => (
+        {typeProducts.map((item) => (
           <TypeProduct name={item} key={item} />
         ))}
       </WrapperTypeProduct>
@@ -121,6 +145,5 @@ const HomePage = () => {
     </div>
   );
 };
-
 
 export default HomePage;

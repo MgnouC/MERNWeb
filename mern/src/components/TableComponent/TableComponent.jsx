@@ -18,12 +18,19 @@ const TableComponent = ({ products, handleEdit, handleDelete }) => {
 
   // Column search function
   const getColumnSearchProps = (dataIndex) => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+    }) => (
       <div style={{ padding: 8 }}>
         <Input
           placeholder={`Search ${dataIndex}`}
           value={selectedKeys[0]}
-          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onChange={(e) =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
           onPressEnter={() => confirm()}
           style={{ marginBottom: 8, display: "block" }}
         />
@@ -41,8 +48,11 @@ const TableComponent = ({ products, handleEdit, handleDelete }) => {
         </Button>
       </div>
     ),
-    filterIcon: (filtered) => <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />,
-    onFilter: (value, record) => record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+    filterIcon: (filtered) => (
+      <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
+    ),
+    onFilter: (value, record) =>
+      record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
   });
 
   const columns = [
@@ -57,19 +67,33 @@ const TableComponent = ({ products, handleEdit, handleDelete }) => {
       dataIndex: "price",
       key: "price",
       sorter: (a, b) => a.price - b.price, // Adds sorting to Price
-      render: (price) => `$${price.toFixed(2)}`, 
+      render: (price) => `$${price.toFixed(2)}`,
     },
     {
       title: "Type",
       dataIndex: "type",
       key: "type",
-      filters: [
-        { text: "Electronics", value: "Electronics" },
-        { text: "Furniture", value: "Furniture" },
-        { text: "Clothing", value: "Clothing" },
-      ], // Adds filtering options for Type
-      onFilter: (value, record) => record.type.includes(value),
-    },
+      render: (type) => type || "N/A",
+      filters: products && products.length > 0
+        ? Array.from(new Set(products.map((product) => product.type.label))).map((label) => ({
+            text: label,
+            value: label,
+          }))
+        : [],
+      onFilter: (value, record) => record.type && record.type.label === value,
+    },    
+    // {
+    //   title: "Type",
+    //   dataIndex: "type",
+    //   key: "type",
+    //   //render: (type) => (type ? type.label : "N/A"),
+    //   filters: [
+    //     { text: "Electronics", value: "Electronics" },
+    //     { text: "Furniture", value: "Furniture" },
+    //     { text: "Clothing", value: "Clothing" },
+    //   ], // Adds filtering options for Type
+    //   onFilter: (value, record) => record.type.includes(value),
+    // },
     {
       title: "Count In Stock",
       dataIndex: "countInStock",
@@ -115,7 +139,11 @@ const TableComponent = ({ products, handleEdit, handleDelete }) => {
         <Button
           type="primary"
           onClick={exportToExcel}
-          style={{ color: "white", backgroundColor: "#f95230", marginBottom: '5px' }}
+          style={{
+            color: "white",
+            backgroundColor: "#f95230",
+            marginBottom: "5px",
+          }}
         >
           Export to Excel
         </Button>

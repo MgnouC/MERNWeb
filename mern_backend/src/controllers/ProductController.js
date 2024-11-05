@@ -86,7 +86,6 @@ const updateProduct = async (req, res) => {
   }
 };
 
-
 const getDetailsProduct = async (req, res) => {
   try {
     const productId = req.params.id;
@@ -146,10 +145,29 @@ const getAllProduct = async (req, res) => {
   }
 };
 
+const getAllType = async (req, res) => {
+  try {
+    const { limit, page, sort, filter, search } = req.query;
+    const response = await ProductServiceCustomer.getAllType(
+      Number(page) || 0,
+      sort,
+      filter,
+      search
+    );
+
+    return res.status(200).json(response);
+  } catch (e) {
+    return res.status(404).json({
+      message: e,
+    });
+  }
+};
+
 module.exports = {
   createProduct,
   updateProduct,
   getDetailsProduct,
   deleteProduct,
   getAllProduct,
+  getAllType
 };

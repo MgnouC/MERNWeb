@@ -23,6 +23,15 @@ export const getDetailsProduct = (id) => {
     });
 };
 
+//routes.get("/get-all-type", productController.getAllType);
+export const getAllType = () => {
+  return axios.get(`${process.env.REACT_APP_API_URL_BACKEND}/product/get-all-type`)
+    .then(response => response.data)
+    .catch(error => {
+      throw error.response?.data || { message: 'Unknown error' };
+    });
+};
+
 export const createProduct = async (data) => {
   const res = await axios.post(
     `${process.env.REACT_APP_API_URL_BACKEND}/product/create-product`,

@@ -54,7 +54,7 @@ const getProductById = async (id) => {
   try {
     const checkProduct = await Product.findOne({ _id: id });
     // Log thông tin sản phẩm
-    console.log("Product found:", checkProduct);
+    //console.log("Product found:", checkProduct);
     if (!checkProduct) {
       throw { message: "Product not found", status: 400 };
     }
@@ -67,8 +67,6 @@ const getProductById = async (id) => {
     throw { message: e.message || "An error occurred", status: 500 };
   }
 };
-
-
 
 const deleteProduct = (id) => {
   return new Promise(async (resolve, reject) => {
@@ -144,10 +142,27 @@ const getAllProduct = (limit, page, sort, filter) => {
   });
 };
 
+const getAllType = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+        const allType = await Product.distinct('type')/*.find*/
+       
+      resolve({
+        status: "OK",
+        message: "SUCCESS",
+        data: allType,
+     
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
 module.exports = {
   createProduct,
   updateProduct,
   getProductById,
   deleteProduct,
   getAllProduct,
+  getAllType, 
 };

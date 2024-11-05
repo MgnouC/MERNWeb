@@ -11,7 +11,7 @@ import {
 } from "./style";
 import { StarFilled } from "@ant-design/icons";
 import logo from "../../assets/images/logo.png";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 const CardComponent = (props) => {
   const navigate = useNavigate();
@@ -31,7 +31,7 @@ const CardComponent = (props) => {
     rating,
     id,
   } = props;
-  
+
   return (
     <WrapperCardStyle
       hoverable
@@ -50,15 +50,17 @@ const CardComponent = (props) => {
       <StyleNameProduct>{name}</StyleNameProduct>
       <WrapperReportText>
         <span>
-          <StarFilled
-            style={{
-              fontSize: "10px",
-              color: "rgb(251, 195, 0)",
-              paddingRight: "2px",
-            }}
-          />{" "}
-          <span>{rating}</span>
-          <WrapperStyleTextSell> | Đã bán {sell || 100}+</WrapperStyleTextSell>
+          
+          <WrapperStyleTextSell>
+            <StarFilled
+              style={{
+                fontSize: "10px",
+                color: "rgb(251, 195, 0)",
+                paddingRight: "2px",
+              }}
+            />{" "}
+            <span>{rating} </span>| Đã bán {sell || 100}+
+          </WrapperStyleTextSell>
         </span>
       </WrapperReportText>
       <WrapperPriceText style={{ boxSizing: "border-box" }}>
