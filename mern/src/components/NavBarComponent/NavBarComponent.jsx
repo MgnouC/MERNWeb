@@ -8,16 +8,21 @@ import {
 
 const NavBarComponent = () => {
   const onChange = () => {};
+
   const renderContent = (type, options) => {
     switch (type) {
       case "text":
-        return options.map((option) => {
-          return <WrapperTextValue>{option}</WrapperTextValue>;
+        return options.map((option, index) => {
+          return (
+            <WrapperTextValue key={index}>
+              {option}
+            </WrapperTextValue>
+          );
         });
       case "checkbox":
         return (
           <Checkbox.Group
-            style={{
+            style={{    
               width: "100%",
               display: "flex",
               flexDirection: "column",
@@ -25,29 +30,28 @@ const NavBarComponent = () => {
             }}
             onChange={onChange}
           >
-            {options.map((option) => {
-              return <Checkbox value={option.value}>{option.lable}</Checkbox>;
+            {options.map((option, index) => {
+              return (
+                <Checkbox key={index} value={option.value}>
+                  {option.label}
+                </Checkbox>
+              );
             })}
-            <Checkbox value="B">B</Checkbox>
           </Checkbox.Group>
         );
       case "star":
-        return options.map((option) => {
+        return options.map((option, index) => {
           return (
-            <div style={{ display: "flex" }}>
-              <Rate
-                style={{ fontSize: "12px" }}
-                disabled
-                defaultValue={option}
-              />
+            <div key={index} style={{ display: "flex", alignItems: "center" }}>
+              <Rate style={{ fontSize: "12px" }} disabled defaultValue={option} />
               <span style={{ paddingLeft: "5px" }}> Từ {option} sao</span>
             </div>
           );
         });
       case "price":
-        return options.map((option) => {
+        return options.map((option, index) => {
           return (
-            <div style={{ display: "flex" }}>
+            <div key={index} style={{ display: "flex" }}>
               <span
                 style={{
                   padding: "5px",
@@ -56,21 +60,19 @@ const NavBarComponent = () => {
                   width: "fit-content",
                 }}
               >
-                {" "}
-                {option}{" "}
+                {option}
               </span>
             </div>
           );
         });
-
       default:
-        return {};
+        return null;
     }
   };
 
   return (
     <div>
-      <WrapperLableText>Label</WrapperLableText>
+      <WrapperLableText>Danh mục sản phẩm</WrapperLableText>
       <WrapperTextContent>
         {renderContent("text", [
           "TV",
@@ -80,19 +82,23 @@ const NavBarComponent = () => {
           "Headphone",
         ])}
       </WrapperTextContent>
+
+      <WrapperLableText>Chọn theo tính năng</WrapperLableText>
       <WrapperTextContent>
         {renderContent("checkbox", [
-          { value: "a", lable: "A" },
-          { value: "b", lable: "B" },
+          { value: "a", label: "Tính năng A" },
+          { value: "b", label: "Tính năng B" },
         ])}
       </WrapperTextContent>
 
+      <WrapperLableText>Đánh giá sao</WrapperLableText>
       <WrapperTextContent>
         {renderContent("star", [3, 4, 5])}
       </WrapperTextContent>
 
+      <WrapperLableText>Mức giá</WrapperLableText>
       <WrapperTextContent>
-        {renderContent("price", ["<50000", ">50000"])}
+        {renderContent("price", ["<50,000 VND", ">50,000 VND"])}
       </WrapperTextContent>
     </div>
   );

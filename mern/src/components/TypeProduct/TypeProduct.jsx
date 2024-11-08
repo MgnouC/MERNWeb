@@ -13,7 +13,11 @@ const TypeProduct = ({ name }) => {
 
     // Tạo URL thân thiện
     const encodedType = encodeURIComponent(
-      type.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/_/g, " ")    );
+      type
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/_/g, " ")
+    );
     navigate(`/products/${encodedType}`);
   };
 

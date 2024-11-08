@@ -30,6 +30,7 @@ const CardComponent = (props) => {
     discount,
     rating,
     id,
+    onClick
   } = props;
 
   return (
@@ -41,11 +42,15 @@ const CardComponent = (props) => {
       cover={
         <img
           style={{ height: "220px", width: "100%" }}
-          //alt="example"
+          alt={name}
           src={`http://localhost:3000/uploads/${image}`}
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src = "/path/to/placeholder-image.png"; // Thêm hình ảnh thay thế
+          }}
         />
       }
-      onClick={() => handleDetailProduct(id)}
+      onClick={onClick} // Sử dụng prop onClick
     >
       <StyleNameProduct>{name}</StyleNameProduct>
       <WrapperReportText>

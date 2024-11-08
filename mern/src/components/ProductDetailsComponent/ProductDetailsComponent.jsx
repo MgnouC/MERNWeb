@@ -1,6 +1,11 @@
 import { Col, Image, Row } from "antd";
 import React, { useState } from "react";
-import { MinusOutlined, PlusOutlined, StarFilled, StarTwoTone } from "@ant-design/icons";
+import {
+  MinusOutlined,
+  PlusOutlined,
+  StarFilled,
+  StarTwoTone,
+} from "@ant-design/icons";
 import ButtonComponent from "../ButtonComponent/ButtonComponent";
 import { useQuery } from "@tanstack/react-query";
 import * as message from "../../components/Message/Mesage";
@@ -39,6 +44,16 @@ const ProductDetailsComponent = ({ idProduct }) => {
   );
 
   const user = useSelector((state) => state.user);
+  const handleAddOrderProduct = () => {
+    // Check if user is logged in
+    if (!user?.id) {
+      message.info("Please log in to add products to cart.");
+      return;
+    }
+    // Add order to cart
+    // This is a placeholder. You should update the cartItems state accordingly.
+    console.log(`Product ID: ${idProduct}, Quantity: ${quantity}`);
+  };
 
   const handleInputChange = (value) => {
     if (value >= 1 && value <= product.countInStock) {
@@ -98,39 +113,39 @@ const ProductDetailsComponent = ({ idProduct }) => {
       <Col span={14} style={{ padding: "20px 0 35px 20px" }}>
         <WrapperStyleNameProduct>{product.name}</WrapperStyleNameProduct>
         <div>
-  <WrapperStyleTextSell>
-    {[...Array(5)].map((_, i) => {
-      // Kiểm tra để xác định loại sao cần hiển thị
-      if (i + 1 <= Math.floor(product.rating)) {
-        // Sao đầy đủ
-        return (
-          <StarFilled
-            key={i}
-            style={{ fontSize: "16px", color: "#fac700" }}
-          />
-        );
-      } else if (i < product.rating) {
-        // Sao nửa
-        return (
-          <StarTwoTone
-            key={i}
-            twoToneColor="#fac700"
-            style={{ fontSize: "16px" }}
-          />
-        );
-      } else {
-        // Sao trống
-        return (
-          <StarFilled
-            key={i}
-            style={{ fontSize: "16px", color: "#ddd" }}
-          />
-        );
-      }
-    })}
-    | Đã bán {product.sell || "100+"}+
-  </WrapperStyleTextSell>
-</div>
+          <WrapperStyleTextSell>
+            {[...Array(5)].map((_, i) => {
+              // Kiểm tra để xác định loại sao cần hiển thị
+              if (i + 1 <= Math.floor(product.rating)) {
+                // Sao đầy đủ
+                return (
+                  <StarFilled
+                    key={i}
+                    style={{ fontSize: "16px", color: "#fac700" }}
+                  />
+                );
+              } else if (i < product.rating) {
+                // Sao nửa
+                return (
+                  <StarTwoTone
+                    key={i}
+                    twoToneColor="#fac700"
+                    style={{ fontSize: "16px" }}
+                  />
+                );
+              } else {
+                // Sao trống
+                return (
+                  <StarFilled
+                    key={i}
+                    style={{ fontSize: "16px", color: "#ddd" }}
+                  />
+                );
+              }
+            })}
+            | Đã bán {product.sell || "100+"}+
+          </WrapperStyleTextSell>
+        </div>
         <WrapperPriceProduct>
           <span style={{ fontSize: "16px", fontWeight: "500" }}>
             Mua ngay với giá
@@ -206,6 +221,7 @@ const ProductDetailsComponent = ({ idProduct }) => {
               borderRadius: "2px",
               boxShadow: "0 1px 1px 0 rgba(0, 0, 0, .09)",
             }}
+            onClick = {handleAddOrderProduct}
             textButton={"Mua Ngay Đi"}
             styleTextButton={{ color: "#fff", fontSize: "14px" }}
           />
