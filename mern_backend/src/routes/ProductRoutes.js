@@ -2,8 +2,9 @@ const express = require("express");
 const routes = express.Router();
 const productController = require("../controllers/ProductController");
 const { authMiddleware } = require("../middleware/authMiddleware");
-// Cấu hình multer đã tạo ở bước trước
 const multer = require("multer");
+
+// Cấu hình Multer
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "uploads/");
@@ -16,24 +17,41 @@ const storage = multer.diskStorage({
     );
   },
 });
-const upload = multer({ storage: storage });
+
+const fileFilter = (req, file, cb) => {
+  // Chỉ cho phép các file hình ảnh
+  if (file.mimetype.startsWith("image/")) {
+    cb(null, true);
+  } else {
+    cb(new Error("File không hợp lệ, chỉ cho phép file hình ảnh"), false);
+  }
+};
+
+const upload = multer({
+  storage: storage,
+  fileFilter: fileFilter,
+});
 
 // Route để tạo sản phẩm với ảnh
-
 routes.post(
   "/create-product",
+  //authMiddleware,
   upload.single("image"),
   productController.createProduct
 );
+
 routes.put(
   "/update-product/:id",
+  //authMiddleware,
   upload.single("image"),
   productController.updateProduct
 );
 
+// Các route khác
 routes.get("/get-details-product/:id", productController.getDetailsProduct);
-routes.delete("/delete-product/:id", productController.deleteProduct);
+routes.delete("/delete-product/:id", authMiddleware, productController.deleteProduct);
 routes.get("/get-all", productController.getAllProduct);
 routes.get("/get-all-type", productController.getAllType);
+routes.get("/get-products-by-type", productController.getProductsByType);
 
 module.exports = routes;

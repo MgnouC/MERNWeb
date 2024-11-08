@@ -35,9 +35,10 @@ export const WrapperStyleColImage = styled(Col)`
 
 /* Product Name */
 export const WrapperStyleNameProduct = styled.h1`
+   
     margin: 0;
     color: #27272a;
-    font-size: 20px;
+    font-size: 36px;
     font-weight: 500;
     line-height: 1.5;
     word-break: break-word;
@@ -258,4 +259,40 @@ export const StyledInputNumber = styled(InputNumber)`
     width: 50px;
     font-size: 12px;
   }
+`;
+
+export const WrapperTextLight = styled.span`
+    color: #ee4d2d;
+    font-size: 14px;
+    cursor: pointer;
+    display: inline-block;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    text-decoration: underline;
+    transition: color 0.3s ease, text-decoration 0.3s ease;
+
+    &:hover {
+        color: #f95230;
+        text-decoration: none;
+    }
+
+    @media (max-width: 1200px) {
+        font-size: 13px;
+    }
+
+    @media (max-width: 992px) {
+        font-size: 12px;
+    }
+
+    @media (max-width: 768px) {
+        font-size: 11px;
+    }
+
+    @media (max-width: 576px) {
+        font-size: 10px;
+    }
+
+    @media (max-width: 480px) {
+        font-size: 9px;
+    }
 `;

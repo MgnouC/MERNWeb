@@ -104,7 +104,7 @@ function App() {
                 <Page  />
               </Layout>
             ) : (
-              <Navigate to="/home" />  // Nếu không, điều hướng tới /login
+              <Navigate to="/" />  // Nếu không, điều hướng tới /login
             )
           }
         />

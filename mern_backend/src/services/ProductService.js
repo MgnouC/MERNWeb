@@ -40,11 +40,11 @@ const updateProduct = (id, data) => {
       await Product.updateOne({ _id: id }, { $set: data });
       const updatedProduct = await Product.findOne({ _id: id });
       resolve({
-          status: "OK",
-          message: "SUCCESS",
-          data: updatedProduct,
+        status: "OK",
+        message: "SUCCESS",
+        data: updatedProduct,
       });
-          } catch (e) {
+    } catch (e) {
       reject(e);
     }
   });
@@ -52,7 +52,7 @@ const updateProduct = (id, data) => {
 
 const getProductById = async (id) => {
   try {
-    const checkProduct = await Product.findOne({ _id: id });
+    const checkProduct = await Product.find({ _id: id });
     // Log thông tin sản phẩm
     //console.log("Product found:", checkProduct);
     if (!checkProduct) {
@@ -94,7 +94,7 @@ const getAllProduct = (limit, page, sort, filter) => {
       const totalProduct = await Product.countDocuments();
       if (filter) {
         const allObjectFilter = await Product.find({
-          name: { $regex: filter, $options: 'i' }, // Tìm kiếm không phân biệt hoa thường
+          name: { $regex: filter, $options: "i" }, // Tìm kiếm không phân biệt hoa thường
         });
         resolve({
           status: "OK",
@@ -105,8 +105,6 @@ const getAllProduct = (limit, page, sort, filter) => {
           totalPage: Math.ceil(totalProduct / limit),
         });
       }
-      
-
       if (sort) {
         const productsSoft = {};
         productsSoft[sort[1]] = sort[0];
@@ -142,27 +140,41 @@ const getAllProduct = (limit, page, sort, filter) => {
   });
 };
 
-const getAllType = () => {
-  return new Promise(async (resolve, reject) => {
-    try {
-        const allType = await Product.distinct('type')/*.find*/
-       
-      resolve({
-        status: "OK",
-        message: "SUCCESS",
-        data: allType,
-     
-      });
-    } catch (e) {
-      reject(e);
-    }
-  });
+const getAllType = async () => {
+  try {
+    const allType = await Product.distinct("type");
+    return {
+      status: "OK",
+      message: "SUCCESS",
+      data: allType,
+    };
+  } catch (e) {
+    throw { message: e.message || "An error occurred", status: 500 };
+  }
 };
+
+const getProductType = async (type) => {
+  try {
+    const products = await Product.find({ type: new RegExp('^' + type.trim() + '$', 'i') });
+    if (!products.length) {
+      throw { message: "No products found for this type", status: 404 };
+    }
+    return {
+      status: "OK",
+      message: "SUCCESS",
+      data: products,
+    };
+  } catch (e) {
+    throw { message: e.message || "An error occurred", status: 500 };
+  }
+};
+
 module.exports = {
   createProduct,
   updateProduct,
   getProductById,
   deleteProduct,
   getAllProduct,
-  getAllType, 
+  getAllType,
+  getProductType,
 };

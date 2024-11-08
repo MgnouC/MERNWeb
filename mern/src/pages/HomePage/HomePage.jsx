@@ -89,7 +89,9 @@ const HomePage = () => {
             margin: "0 auto",
           }}
         >
-          <SliderComponent arrImages={[Slide1, Slide2, Slide3]} />
+          <SliderComponent
+            arrImages={[Slide1, Slide2, Slide3]}
+          />
           <WrapperProducts>
             {/* Hiển thị số sản phẩm dựa trên visibleProducts */}
             {stateProduct.slice(0, visibleProducts).map((product) => (

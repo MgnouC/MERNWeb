@@ -93,28 +93,26 @@ const AdminProduct = () => {
 
   const handleAddType = () => {
     if (newType.trim()) {
-      if (typeProduct?.data && Array.isArray(typeProduct?.data)) {
-        const exists = typeProduct.data.some(
-          (type) =>
-            type.value && type.value.toLowerCase() === newType.trim().toLowerCase()
+      if (Array.isArray(typeProducts)) {
+        // Kiểm tra sự tồn tại bất kể viết hoa hay viết thường
+        const exists = typeProducts.some(
+          (type) => type.value && type.value.toLowerCase() === newType.trim().toLowerCase()
         );
         if (exists) {
           message.warning("Loại sản phẩm đã tồn tại!");
         } else {
           const newTypeObj = { value: newType.trim(), label: newType.trim() };
-  
-          // Cập nhật cache của react-query
-          queryClient.setQueryData(["type"], (oldData = []) => {
-            return [...oldData, newTypeObj];
-          });
-  
+
+          // Cập nhật mảng các loại sản phẩm
+          setTypeProducts((prevTypes) => [...prevTypes, newTypeObj]);
+
           // Đóng chế độ thêm và reset giá trị
           setAdding(false);
           setNewType("");
-  
+
           // Tự động chọn loại mới vừa thêm
           form.setFieldsValue({ type: newTypeObj.value });
-  
+
           message.success("Thêm loại sản phẩm mới thành công!");
         }
       } else {
@@ -126,6 +124,8 @@ const AdminProduct = () => {
   };
   
   
+  console.log("typeProduct Data:", typeProduct.data);
+
 
   const onFinish = async (values) => {
     const formData = new FormData();
@@ -287,12 +287,13 @@ const AdminProduct = () => {
             <Select
               //showSearch
               placeholder="--- Chọn ---"
-              //optionFilterProp="children"
+              //  optionFilterProp="children"
               filterOption={(input, option) =>
                 option.toLowerCase().includes(option.toLowerCase())
               }
+              
               dropdownRender={dropdownRender}
-              options={renderOptions(typeProduct.data)}
+              options={renderOptions(typeProduct.data || [])}
               // Không sử dụng defaultValue, để form quản lý giá trị
             />
           </Form.Item>

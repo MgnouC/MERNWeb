@@ -1,12 +1,10 @@
 const ProductServiceCustomer = require('../services/ProductService');
-
-const fs = require("fs"); // Import fs module
-// const { getProductById } = require("../services/ProductService");
+const fs = require("fs");
 
 const createProduct = async (req, res) => {
   try {
     const { name, type, price, description, rating, countInStock } = req.body;
-    const file = req.file; // Lấy file
+    const file = req.file;
 
     if (!file) {
       return res.status(400).json({
@@ -15,13 +13,7 @@ const createProduct = async (req, res) => {
       });
     }
 
-    // Đọc file và chuyển đổi sang base64
-
-    const base64 = fs.readFileSync(file.path).toString("base64"); // Đọc file từ đường dẫn
-
-    const filename = file.filename; // Sử dụng tên file đã lưu
-
-    // Kiểm tra thông tin
+    // Lưu thông tin sản phẩm
     if (!name || !type || !countInStock || !price || !rating || !description) {
       return res.status(400).json({
         status: "ERR",
@@ -29,7 +21,6 @@ const createProduct = async (req, res) => {
       });
     }
 
-    // Gửi đến service để lưu sản phẩm
     const response = await ProductServiceCustomer.createProduct({
       name,
       type,
@@ -37,7 +28,7 @@ const createProduct = async (req, res) => {
       description,
       rating,
       countInStock,
-      image: filename, // Lưu filename
+      image: file.filename, // Chỉ cần lưu filename
     });
 
     return res.status(201).json(response);
@@ -51,11 +42,10 @@ const createProduct = async (req, res) => {
 
 const updateProduct = async (req, res) => {
   try {
-    const productId = req.params.id; // Lấy ID từ params
-    const data = req.body; // Dữ liệu cập nhật sản phẩm
-    const file = req.file; // Lấy file ảnh (nếu có)
+    const productId = req.params.id;
+    const data = req.body;
+    const file = req.file;
 
-    // Kiểm tra ID sản phẩm
     if (!productId) {
       return res.status(400).json({
         status: "ERR",
@@ -63,13 +53,10 @@ const updateProduct = async (req, res) => {
       });
     }
 
-    // Nếu có ảnh mới, cập nhật ảnh vào dữ liệu sản phẩm
     if (file) {
-      const filename = file.filename; // Lấy tên file ảnh
-      data.image = filename; // Cập nhật tên file ảnh vào data
+      data.image = file.filename; // Cập nhật tên file ảnh vào data
     }
 
-    // Gọi service để cập nhật sản phẩm
     const response = await ProductServiceCustomer.updateProduct(productId, data);
 
     return res.status(200).json({
@@ -89,7 +76,6 @@ const updateProduct = async (req, res) => {
 const getDetailsProduct = async (req, res) => {
   try {
     const productId = req.params.id;
-    console.log("Received Product ID:", productId); 
     if (!productId) {
       return res.status(400).json({
         status: "ERR",
@@ -98,7 +84,6 @@ const getDetailsProduct = async (req, res) => {
     }
 
     const response = await ProductServiceCustomer.getProductById(productId);
-    console.log("Product details fetched:", response); // Log kết quả trả về từ hàm
     return res.status(200).json(response);
   } catch (e) {
     console.error("Error in getDetailsProduct:", e);
@@ -112,7 +97,7 @@ const deleteProduct = async (req, res) => {
   try {
     const productId = req.params.id;
     if (!productId) {
-      return res.status(200).json({
+      return res.status(400).json({
         status: "ERR",
         message: "The ProductId is required",
       });
@@ -121,8 +106,10 @@ const deleteProduct = async (req, res) => {
     const response = await ProductServiceCustomer.deleteProduct(productId);
     return res.status(200).json(response);
   } catch (e) {
-    return res.status(404).json({
-      message: e,
+    console.error("Error deleting product:", e);
+    return res.status(500).json({
+      status: "ERR",
+      message: e.message || "An error occurred while deleting the product",
     });
   }
 };
@@ -139,26 +126,43 @@ const getAllProduct = async (req, res) => {
 
     return res.status(200).json(response);
   } catch (e) {
-    return res.status(404).json({
-      message: e,
+    console.error("Error in getAllProduct:", e);
+    return res.status(500).json({
+      message: e.message || "An error occurred",
     });
   }
 };
 
 const getAllType = async (req, res) => {
   try {
-    const { limit, page, sort, filter, search } = req.query;
-    const response = await ProductServiceCustomer.getAllType(
-      Number(page) || 0,
-      sort,
-      filter,
-      search
-    );
-
+    const response = await ProductServiceCustomer.getAllType();
     return res.status(200).json(response);
   } catch (e) {
-    return res.status(404).json({
-      message: e,
+    console.error("Error in getAllType:", e);
+    return res.status(500).json({
+      message: e.message || "An error occurred",
+    });
+  }
+};
+
+const getProductsByType = async (req, res) => {
+  try {
+    const { type } = req.query;
+
+    if (!type) {
+      return res.status(400).json({
+        status: "FAIL",
+        message: "Product type is required",
+      });
+    }
+
+    const response = await ProductServiceCustomer.getProductType(type);
+    return res.status(200).json(response);
+  } catch (e) {
+    console.error("Error while fetching products by type:", e);
+    return res.status(500).json({
+      status: "ERROR",
+      message: e.message || "An error occurred",
     });
   }
 };
@@ -169,5 +173,6 @@ module.exports = {
   getDetailsProduct,
   deleteProduct,
   getAllProduct,
-  getAllType
+  getAllType,
+  getProductsByType,
 };

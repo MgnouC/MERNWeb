@@ -81,8 +81,7 @@ const TableComponent = ({ products, handleEdit, handleDelete }) => {
           }))
         : [],
       onFilter: (value, record) => record.type && record.type.label === value,
-    },    
-    // {
+    },     // {
     //   title: "Type",
     //   dataIndex: "type",
     //   key: "type",

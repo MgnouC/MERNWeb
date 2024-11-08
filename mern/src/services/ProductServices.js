@@ -1,78 +1,83 @@
 import axios from "axios";
 
+// Cấu hình axios mặc định
+const axiosInstance = axios.create({
+  baseURL: process.env.REACT_APP_API_URL_BACKEND,
+  headers: {
+    Accept: "application/json",
+  },
+});
+
 export const getAllProduct = async (search) => {
-  // Update the URL based on the backend structure
-  const url = search
-    ? `${process.env.REACT_APP_API_URL_BACKEND}/product/get-all?search=${search}`
-    : `${process.env.REACT_APP_API_URL_BACKEND}/product/get-all`;
+  const url = search ? `/product/get-all?search=${search}` : `/product/get-all`;
 
   try {
-    const response = await axios.get(url);
+    const response = await axiosInstance.get(url);
     return response.data;
   } catch (error) {
     console.error("Error fetching products:", error);
+    throw new Error("Unable to fetch products. Please try again later.");
   }
 };
 
-// Update the URL based on the backend structure
-export const getDetailsProduct = (id) => {
-  return axios.get(`${process.env.REACT_APP_API_URL_BACKEND}/product/get-details-product/${id}`)
-    .then(response => response.data)
-    .catch(error => {
-      throw error.response?.data || { message: 'Unknown error' };
-    });
+export const getProductType = async (type) => {
+  const url = `/product/get-products-by-type?type=${encodeURIComponent(type)}`;
+
+  try {
+    const response = await axiosInstance.get(url);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching products by type:", error);
+    throw new Error("Unable to fetch products by type. Please try again later.");
+  }
 };
 
-//routes.get("/get-all-type", productController.getAllType);
-export const getAllType = () => {
-  return axios.get(`${process.env.REACT_APP_API_URL_BACKEND}/product/get-all-type`)
-    .then(response => response.data)
-    .catch(error => {
-      throw error.response?.data || { message: 'Unknown error' };
-    });
+export const getDetailsProduct = async (id) => {
+  try {
+    const response = await axiosInstance.get(`/product/get-details-product/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching product details:", error);
+    throw error.response?.data || { message: "Unknown error" };
+  }
+};
+
+export const getAllType = async () => {
+  try {
+    const response = await axiosInstance.get(`/product/get-all-type`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching product types:", error);
+    throw error.response?.data || { message: "Unknown error" };
+  }
 };
 
 export const createProduct = async (data) => {
-  const res = await axios.post(
-    `${process.env.REACT_APP_API_URL_BACKEND}/product/create-product`,
-    data,
-    { headers: { Accept: "application/json" } }
-  );
-  return res.data;
+  try {
+    const response = await axiosInstance.post(`/product/create-product`, data);
+    return response.data;
+  } catch (error) {
+    console.error("Error creating product:", error);
+    throw new Error("Unable to create product. Please try again later.");
+  }
 };
 
 export const updateProduct = async ({ id, data }) => {
-  // Chấp nhận đối tượng
-  const res = await axios.put(
-    `${process.env.REACT_APP_API_URL_BACKEND}/product/update-product/${id}`, // Sử dụng ID trong URL
-    data,
-    {
-      headers: {
-        Accept: "application/json",
-      },
-    }
-  );
-  return res.data;
+  try {
+    const response = await axiosInstance.put(`/product/update-product/${id}`, data);
+    return response.data;
+  } catch (error) {
+    console.error("Error updating product:", error);
+    throw new Error("Unable to update product. Please try again later.");
+  }
 };
 
-// export const updateProduct = async (id, data) => {
-//   const res = await axios.put(
-//     `${process.env.REACT_APP_API_URL_BACKEND}/product/update-product/${id}`,
-//     data,
-//     {
-//       headers: {
-//         Accept: "application/json",
-//       },
-//     }
-//   );
-//   return res.data;
-// };
-
-export const deleteProduct = async (id, data) => {
-  const res = await axios.delete(
-    `${process.env.REACT_APP_API_URL_BACKEND}/product/delete-product/${id}`,
-    data,
-    { headers: { Accept: "application/json" } }
-  );
-  return res.data;
+export const deleteProduct = async (id) => {
+  try {
+    const response = await axiosInstance.delete(`/product/delete-product/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting product:", error);
+    throw new Error("Unable to delete product. Please try again later.");
+  }
 };

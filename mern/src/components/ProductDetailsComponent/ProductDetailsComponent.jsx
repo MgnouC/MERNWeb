@@ -1,29 +1,26 @@
-import { Col, Grid, Image, InputNumber, Row } from "antd";
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import imageProduct from "../../assets/images/cafe.webp";
-import imageProductSmall from "../../assets/images/cafe2.webp";
+import { Col, Image, Row } from "antd";
+import React, { useState } from "react";
+import { MinusOutlined, PlusOutlined, StarFilled, StarTwoTone } from "@ant-design/icons";
+import ButtonComponent from "../ButtonComponent/ButtonComponent";
+import { useQuery } from "@tanstack/react-query";
+import * as message from "../../components/Message/Mesage";
+import * as ProductService from "../../services/ProductServices";
+import { useSelector } from "react-redux";
 import {
   StyledInputNumber,
   WrapperAddresstProduct,
-  WrapperBtnQualityProduct,
   WrapperPriceProduct,
   WrapperPriceTextProduct,
   WrapperQualityProduct,
   WrapperStyleImageSmall,
   WrapperStyleNameProduct,
   WrapperStyleTextSell,
+  WrapperTextLight,
 } from "./style";
-import { MinusOutlined, PlusOutlined, StarFilled } from "@ant-design/icons";
-import ButtonComponent from "../ButtonComponent/ButtonComponent";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import * as message from "../../components/Message/Mesage";
-import * as ProductService from "../../services/ProductServices";
-import { useSelector } from "react-redux";
+
 const ProductDetailsComponent = ({ idProduct }) => {
-  //console.log("idProduct", idProduct);
-  const onChange = () => {};
   const [quantity, setQuantity] = useState(1);
+
   const {
     data: productResponse,
     isLoading,
@@ -40,19 +37,13 @@ const ProductDetailsComponent = ({ idProduct }) => {
       },
     }
   );
+
   const user = useSelector((state) => state.user);
-  console.log(user);
+
   const handleInputChange = (value) => {
     if (value >= 1 && value <= product.countInStock) {
       setQuantity(value);
     }
-  };
-
-  // Log để kiểm tra dữ liệu trả về
-  //console.log("Product data:", productResponse);
-
-  const onQuantityChange = (value) => {
-    setQuantity(value);
   };
 
   if (isLoading) {
@@ -68,8 +59,12 @@ const ProductDetailsComponent = ({ idProduct }) => {
     );
   }
 
-  // Trích xuất dữ liệu sản phẩm từ response
-  const product = productResponse.data;
+  // Extract product data from the response
+  const product =
+    productResponse?.data && Array.isArray(productResponse.data)
+      ? productResponse.data[0]
+      : productResponse.data;
+
   return (
     <Row style={{ padding: "15px", background: "#fff" }}>
       <Col span={10}>
@@ -80,10 +75,8 @@ const ProductDetailsComponent = ({ idProduct }) => {
           style={{ width: "100%", height: "100%" }}
           onError={(e) => {
             e.target.onerror = null;
-            e.target.src = "path/to/placeholder-image.png";
           }}
         />
-
         <Row
           style={{
             display: "flex",
@@ -91,81 +84,81 @@ const ProductDetailsComponent = ({ idProduct }) => {
             justifyContent: "space-between",
           }}
         >
-          <Col span={4}>
-            <WrapperStyleImageSmall
-              src={`http://localhost:3000/uploads/${product.image}`}
-              alt="imageSmall"
-              preview="false"
-            />
-          </Col>
-          <Col span={4}>
-            <WrapperStyleImageSmall
-              src={`http://localhost:3000/uploads/${product.image}`}
-              alt="imageSmall"
-              preview="false"
-            />
-          </Col>
-          <Col span={4}>
-            <WrapperStyleImageSmall
-              src={`http://localhost:3000/uploads/${product.image}`}
-              alt="imageSmall"
-              preview="false"
-            />
-          </Col>
-          <Col span={4}>
-            <WrapperStyleImageSmall
-              src={`http://localhost:3000/uploads/${product.image}`}
-              alt="imageSmall"
-              preview="false"
-            />
-          </Col>
-          <Col span={4}>
-            <WrapperStyleImageSmall
-              src={`http://localhost:3000/uploads/${product.image}`}
-              alt="imageSmall"
-              preview="false"
-            />
-          </Col>
+          {[...Array(5)].map((_, i) => (
+            <Col span={4} key={i}>
+              <WrapperStyleImageSmall
+                src={`http://localhost:3000/uploads/${product.image}`}
+                alt="imageSmall"
+                preview={false}
+              />
+            </Col>
+          ))}
         </Row>
       </Col>
       <Col span={14} style={{ padding: "20px 0 35px 20px" }}>
         <WrapperStyleNameProduct>{product.name}</WrapperStyleNameProduct>
         <div>
-          <WrapperStyleTextSell>
-            {/* Hiển thị số sao dựa trên rating */}
-            {[...Array(5)].map((_, i) => (
-              <StarFilled
-                key={i}
-                style={{
-                  fontSize: "10px",
-                  color: i < product.rating ? "#fac700" : "#ddd",
-                }}
-              />
-            ))}
-            | Đã bán {product.sell || "100+"}+
-          </WrapperStyleTextSell>
-        </div>
-        <span> Mô tả sản phẩm: {product.description}</span>
-
+  <WrapperStyleTextSell>
+    {[...Array(5)].map((_, i) => {
+      // Kiểm tra để xác định loại sao cần hiển thị
+      if (i + 1 <= Math.floor(product.rating)) {
+        // Sao đầy đủ
+        return (
+          <StarFilled
+            key={i}
+            style={{ fontSize: "16px", color: "#fac700" }}
+          />
+        );
+      } else if (i < product.rating) {
+        // Sao nửa
+        return (
+          <StarTwoTone
+            key={i}
+            twoToneColor="#fac700"
+            style={{ fontSize: "16px" }}
+          />
+        );
+      } else {
+        // Sao trống
+        return (
+          <StarFilled
+            key={i}
+            style={{ fontSize: "16px", color: "#ddd" }}
+          />
+        );
+      }
+    })}
+    | Đã bán {product.sell || "100+"}+
+  </WrapperStyleTextSell>
+</div>
         <WrapperPriceProduct>
-          <span>Giá: </span>
+          <span style={{ fontSize: "16px", fontWeight: "500" }}>
+            Mua ngay với giá
+          </span>
           <WrapperPriceTextProduct>
-            {product.price ? product.price.toLocaleString() : "N/A"}
+            {product.price ? `${product.price.toLocaleString()} $` : "N/A"}
           </WrapperPriceTextProduct>
         </WrapperPriceProduct>
+
         <WrapperAddresstProduct>
           <span>Đem Hàng Đến </span>
           <span className="address">{user.address}</span>
           <span className="change-address">Đổi điểm hẹn</span>
         </WrapperAddresstProduct>
         <div style={{ margin: "10px 0 20px", gap: "8px", display: "grid" }}>
-          <div>Số Lượng: {product.countInStock} sản phẩm </div>
+          <div>
+            Số Lượng:{" "}
+            <span style={{ color: "#fa4f31", fontSize: "18px" }}>
+              {product.countInStock}
+            </span>{" "}
+            sản phẩm
+          </div>
           <WrapperQualityProduct>
-            <button style={{ border: "none", background: "transparent" }}>
-              <MinusOutlined
-                onClick={() => setQuantity(quantity - 1)}
-                style={{ color: "#fa4f31", fontSize: "20px" }}
-              />
+            <button
+              style={{ border: "none", background: "transparent" }}
+              onClick={() => setQuantity(quantity > 1 ? quantity - 1 : 1)}
+            >
+              <MinusOutlined style={{ color: "#fa4f31", fontSize: "20px" }} />
             </button>
             <StyledInputNumber
               min={1}
@@ -174,11 +167,15 @@ const ProductDetailsComponent = ({ idProduct }) => {
               onChange={handleInputChange}
               readOnly
             />
-            <button style={{ border: "none", background: "transparent" }}>
-              <PlusOutlined
-                onClick={() => setQuantity(quantity + 1)}
-                style={{ color: "#fa4f31", fontSize: "20px" }}
-              />
+            <button
+              style={{ border: "none", background: "transparent" }}
+              onClick={() =>
+                setQuantity(
+                  quantity < product.countInStock ? quantity + 1 : quantity
+                )
+              }
+            >
+              <PlusOutlined style={{ color: "#fa4f31", fontSize: "20px" }} />
             </button>
           </WrapperQualityProduct>
         </div>
@@ -212,6 +209,10 @@ const ProductDetailsComponent = ({ idProduct }) => {
             textButton={"Mua Ngay Đi"}
             styleTextButton={{ color: "#fff", fontSize: "14px" }}
           />
+        </div>
+        <div style={{ paddingTop: "20px" }}>
+          <WrapperTextLight>Mô Tả Sản Phẩm</WrapperTextLight>
+          <p>{product.description}</p>
         </div>
       </Col>
     </Row>

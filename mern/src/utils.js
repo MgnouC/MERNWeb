@@ -22,20 +22,17 @@ export const renderOptions = (arr) => {
     return [];
   }
 
-  const result = arr.map((opt) => {
-    return {
-      value: opt,  // Dùng giá trị trực tiếp từ mảng
-      label: opt,  // Dùng giá trị trực tiếp từ mảng làm nhãn
-    };
-  });
+  const result = arr.map((item, index) => ({
+    value: item, // Sử dụng trực tiếp giá trị từ mảng làm value
+    label: item, // Sử dụng trực tiếp giá trị từ mảng làm label
+  }));
 
-  // Thêm tùy chọn mặc định "--- Chọn ---"
+  // Thêm tùy chọn mặc định "--- Chọn ---" vào đầu mảng
   result.unshift({
     value: "",
     label: "--- Chọn ---",
   });
 
-  //console.log("Render Options Result:", result);
   return result;
 };
 
