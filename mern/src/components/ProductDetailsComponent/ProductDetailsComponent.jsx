@@ -10,7 +10,7 @@ import ButtonComponent from "../ButtonComponent/ButtonComponent";
 import { useQuery } from "@tanstack/react-query";
 import * as message from "../../components/Message/Mesage";
 import * as ProductService from "../../services/ProductServices";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   StyledInputNumber,
   WrapperAddresstProduct,
@@ -22,10 +22,11 @@ import {
   WrapperStyleTextSell,
   WrapperTextLight,
 } from "./style";
+import { addOrderProduct } from "../../redux/slides/orderSlice";
 
 const ProductDetailsComponent = ({ idProduct }) => {
   const [quantity, setQuantity] = useState(1);
-
+  const dispatch = useDispatch();
   const {
     data: productResponse,
     isLoading,
@@ -44,17 +45,31 @@ const ProductDetailsComponent = ({ idProduct }) => {
   );
 
   const user = useSelector((state) => state.user);
+  const cartItems = useSelector((state) => state.cartItems);
+
   const handleAddOrderProduct = () => {
-    // Check if user is logged in
+    // Kiểm tra xem người dùng đã đăng nhập chưa
     if (!user?.id) {
       message.info("Please log in to add products to cart.");
       return;
+    } else {
+      console.log('Product being added:', product);
+      console.log('Product ID:', product._id);
+  
+      dispatch(
+        addOrderProduct({
+          ...product,
+          id: product._id, // Thêm dòng này
+          quantity: quantity, // Sử dụng giá trị quantity từ state
+        })
+      );
+  
+      console.log(`Product ID: ${product._id}, Quantity: ${quantity}`);
     }
-    // Add order to cart
-    // This is a placeholder. You should update the cartItems state accordingly.
-    console.log(`Product ID: ${idProduct}, Quantity: ${quantity}`);
   };
-
+  
+  
+  
   const handleInputChange = (value) => {
     if (value >= 1 && value <= product.countInStock) {
       setQuantity(value);
@@ -221,7 +236,7 @@ const ProductDetailsComponent = ({ idProduct }) => {
               borderRadius: "2px",
               boxShadow: "0 1px 1px 0 rgba(0, 0, 0, .09)",
             }}
-            onClick = {handleAddOrderProduct}
+            onClick={handleAddOrderProduct}
             textButton={"Mua Ngay Đi"}
             styleTextButton={{ color: "#fff", fontSize: "14px" }}
           />

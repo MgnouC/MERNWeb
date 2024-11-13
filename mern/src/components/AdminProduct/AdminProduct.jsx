@@ -34,7 +34,9 @@ const AdminProduct = () => {
       console.log("API Response:", response);
       // Đảm bảo rằng response trả về theo cấu trúc mong đợi
       if (!response || !response.data || !Array.isArray(response.data)) {
-        throw new Error("All type product not found or data format is incorrect");
+        throw new Error(
+          "All type product not found or data format is incorrect"
+        );
       }
       return response.data;
     } catch (error) {
@@ -42,9 +44,6 @@ const AdminProduct = () => {
       throw error;
     }
   };
-  
-  
-  
 
   const typeProduct = useQuery({
     queryKey: ["type"],
@@ -96,7 +95,9 @@ const AdminProduct = () => {
       if (Array.isArray(typeProducts)) {
         // Kiểm tra sự tồn tại bất kể viết hoa hay viết thường
         const exists = typeProducts.some(
-          (type) => type.value && type.value.toLowerCase() === newType.trim().toLowerCase()
+          (type) =>
+            type.value &&
+            type.value.toLowerCase() === newType.trim().toLowerCase()
         );
         if (exists) {
           message.warning("Loại sản phẩm đã tồn tại!");
@@ -116,16 +117,16 @@ const AdminProduct = () => {
           message.success("Thêm loại sản phẩm mới thành công!");
         }
       } else {
-        message.error("Không thể thêm loại sản phẩm mới vì dữ liệu loại không hợp lệ!");
+        message.error(
+          "Không thể thêm loại sản phẩm mới vì dữ liệu loại không hợp lệ!"
+        );
       }
     } else {
       message.warning("Vui lòng nhập tên loại sản phẩm mới!");
     }
   };
-  
-  
-  console.log("typeProduct Data:", typeProduct.data);
 
+  //console.log("typeProduct Data:", typeProduct.data);
 
   const onFinish = async (values) => {
     const formData = new FormData();
@@ -135,18 +136,23 @@ const AdminProduct = () => {
     formData.append("countInStock", values.countInStock);
     formData.append("rating", values.rating);
     formData.append("description", values.description);
-
-    if (fileList && fileList?.length > 0) {
-      formData.append("image", fileList[0]?.originFileObj);
+  
+    if (fileList && fileList.length > 0) {
+      if (fileList[0].originFileObj) {
+        // Người dùng đã tải lên hình ảnh mới
+        formData.append("image", fileList[0].originFileObj);
+      } else if (values.imageUrl) {
+        // Sử dụng URL của hình ảnh hiện tại
+        formData.append("image", values.imageUrl);
+      }
+    } else if (values.imageUrl) {
+      // Không thay đổi hình ảnh, sử dụng URL hiện tại
+      formData.append("image", values.imageUrl);
     }
-
-    // Log ra để kiểm tra payload
-    console.log("Payload to send:", [...formData]);
-
+  
+    // Tiếp tục phần còn lại của hàm...
     if (editingProduct) {
-      console.log("Editing Product ID:", editingProduct);
-      updateMutation.mutate({ id: editingProduct, data: formData }); // Gọi với ID và data
-      // updateMutation.mutate(formData);
+      updateMutation.mutate({ id: editingProduct, data: formData });
     } else {
       createMutation.mutate(formData);
     }
@@ -176,9 +182,9 @@ const AdminProduct = () => {
     //console.log(product);
     setEditingProduct(product._id);
     setIsModalOpen(true);
-    form.setFieldsValue(product);
+    form.setFieldsValue({ ...product, imageUrl: product.image });
     setFileList([
-      { uid: "-1", name: "image.png", status: "done", url: product?.image },
+      { uid: "-1", name: product.image, status: "done", url: product?.image },
     ]);
   };
 
@@ -291,7 +297,6 @@ const AdminProduct = () => {
               filterOption={(input, option) =>
                 option.toLowerCase().includes(option.toLowerCase())
               }
-              
               dropdownRender={dropdownRender}
               options={renderOptions(typeProduct.data || [])}
               // Không sử dụng defaultValue, để form quản lý giá trị

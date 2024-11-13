@@ -28,11 +28,16 @@ const HeaderComponent = () => {
   const [search, setSearch] = useState("");
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
-
+  const order = useSelector((state) => state.order);
   const handleInputChange = (e) => {
     setSearch(e.target.value);
   };
+  const orderItems = useSelector((state) => state?.order.orderItems);
 
+  const totalQuantity = orderItems.reduce(
+    (total, item) => total + item.quantity,
+    0
+  );
   const handleSearchClick = () => {
     dispatch(searchProduct(search)); // Dispatch search term when button clicked
   };
@@ -105,7 +110,7 @@ const HeaderComponent = () => {
             {user.access_token ? (
               <>
                 <Popover content={content} trigger="click">
-                  <div style={{ cursor: "pointer" , border: "none"}}>
+                  <div style={{ cursor: "pointer", border: "none" }}>
                     {user?.name || user?.email}
                   </div>
                 </Popover>
@@ -122,8 +127,8 @@ const HeaderComponent = () => {
               </div>
             )}
           </WrapperHeaderAccount>
-          <div>
-            <Badge count={4} size="small" margin="2px">
+          <div onClick={() => navigate("/order")} style={{ cursor: "pointer" }}>
+            <Badge count={totalQuantity} size="small" margin="2px">
               <ShoppingCartOutlined
                 style={{
                   fontSize: "30px",

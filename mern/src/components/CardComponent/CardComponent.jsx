@@ -50,7 +50,10 @@ const CardComponent = (props) => {
           }}
         />
       }
-      onClick={onClick} // Sử dụng prop onClick
+      onClick={() => {
+        if (onClick) onClick();
+        handleDetailProduct(id);
+      }} // Sử dụng prop onClick
     >
       <StyleNameProduct>{name}</StyleNameProduct>
       <WrapperReportText>

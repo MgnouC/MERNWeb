@@ -1,6 +1,9 @@
-// OrderPage.jsx
+// Import cần thiết
 import React, { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
+import { Badge, Button, Input, Select } from "antd";
+import { ShoppingCartOutlined } from "@ant-design/icons";
+import { useSelector, useDispatch } from "react-redux";
 import {
   OrderContainer,
   OrderHeader,
@@ -22,84 +25,102 @@ import {
   SummaryItem,
   TotalPrice,
   PlaceOrderButton,
+  WrapperHeader,
+  ItemActions,
+  ItemPriceText,
 } from "./style";
-import ButtonComponent from "../../components/ButtonComponent/ButtonComponent";
-import * as ProductService from "../../services/ProductServices";
 import * as message from "../../components/Message/Mesage";
-import { Select } from "antd";
-import * as UserService from "../../services/UserServices";
-import { WrapperHeader } from "./style";
+import { updateOrderProductQuantity } from "../../redux/slides/orderSlice";
+import { DeleteOutlined } from "@ant-design/icons";
+import { removeOrderProduct } from "../../redux/slides/orderSlice";
 
 const { Option } = Select;
 
 const OrderPage = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState("credit_card");
+  const [users, setUser] = useState([]);
 
-  // Dummy data for cart items
-  const cartItems = [
-    {
-      id: 1,
-      name: "Product 1",
-      price: 150000,
-      quantity: 2,
-      image: "path/to/product1.jpg",
-      countInStock: 5,
-    },
-    {
-      id: 2,
-      name: "Product 2",
-      price: 200000,
-      quantity: 1,
-      image: "path/to/product2.jpg",
-      countInStock: 3,
-    },
-  ];
+  const user = useSelector((state) => state.user);
+  // Lấy orderItems từ Redux store
+  const orderItems = useSelector((state) => state.order.orderItems);
 
-  // Fetch user addresses (dummy implementation)
-  // const { data: addresses, isLoading: loadingAddresses } = useQuery(
-  //   ["addresses"],
-  //   () => UserService.getDetailsUser(),
-  //   {
-  //     onError: (error) => {
-  //       message.error(
-  //         "Error fetching addresses: " + (error.message || "Unknown error")
-  //       );
-  //     },
-  //   }
-  // );
+  // Tính tổng số lượng sản phẩm
+  const totalQuantity = orderItems.reduce(
+    (total, item) => total + item?.quantity,
+    0
+  );
 
   const handleQuantityChange = (id, value) => {
-    // Handle quantity change logic
-    // This is a placeholder. You should update the cartItems state accordingly.
-    console.log(`Product ID: ${id}, New Quantity: ${value}`);
+    dispatch(updateOrderProductQuantity({ id, quantity: value }));
   };
 
   const handlePlaceOrder = () => {
-    // Handle place order logic
-    message.success("Order placed successfully!");
+    const orderData = {
+      // Các thông tin đơn hàng khác
+      shippingAddress: user.address,
+      paymentMethod: paymentMethod,
+      // ...
+    };
+
+    // Gửi orderData đến server hoặc xử lý tiếp theo
+    // Ví dụ:
+    //dispatch(createOrder(orderData));
+    message.success("Đặt hàng thành công!", orderData);
   };
 
-  // if (loadingAddresses) {
-  //   return <div>Loading addresses...</div>;
-  // }
+  const handleRemoveProduct = (productId) => {
+    dispatch(removeOrderProduct(productId));
+  };
+
+  const handleAddressChange = (e) => {
+    const { name, value } = e.target;
+    setUser((prevUser) => ({
+      ...prevUser,
+      address: {
+        ...prevUser.address,
+        [name]: value,
+      },
+    }));
+  };
 
   return (
     <OrderContainer>
-      <WrapperHeader>Đặt Hàng</WrapperHeader>
+      <WrapperHeader>
+        <div>Đặt Hàng</div>
+      </WrapperHeader>
+
       <OrderContent gutter={[20, 20]}>
         <CartItemsCol xs={24} md={16}>
-          {cartItems.map((item) => (
+          {orderItems.map((item) => (
             <CartItem key={item.id}>
-              <ItemImage src={item.image} alt={item.name} />
+              <ItemImage
+                src={`http://localhost:3000/uploads/${item.image}`}
+                alt={item.name}
+              />
               <ItemDetails>
                 <ItemName>{item.name}</ItemName>
-                <ItemPrice>{item.price.toLocaleString()} VND</ItemPrice>
-                <QuantityInput
-                  min={1}
-                  max={item.countInStock}
-                  defaultValue={item.quantity}
-                  onChange={(value) => handleQuantityChange(item.id, value)}
+                <ItemActions>
+                  <ItemPrice>
+                    <ItemPriceText>{item.price}</ItemPriceText>
+                  </ItemPrice>
+                  <QuantityInput
+                    min={1}
+                    max={item?.countInStock}
+                    value={item.quantity} // Sử dụng giá trị từ Redux store
+                    onChange={(value) => handleQuantityChange(item.id, value)} // Gọi hàm cập nhật số lượng
+                  />
+                </ItemActions>{" "}
+                <DeleteOutlined
+                  style={{
+                    color: "red",
+                    fontSize: "18px",
+                    cursor: "pointer",
+                    marginLeft: "10px",
+                  }}
+                  onClick={() => handleRemoveProduct(item.id)}
                 />
               </ItemDetails>
             </CartItem>
@@ -108,37 +129,44 @@ const OrderPage = () => {
         <SummaryCol xs={24} md={8}>
           <SummaryCard>
             <SummaryItem>
+              <span>Tổng số lượng</span>
+              <span>{totalQuantity} sản phẩm</span>
+            </SummaryItem>
+            <SummaryItem>
               <span>Tổng tiền hàng</span>
               <span>
-                {cartItems
-                  .reduce((acc, item) => acc + item.price * item.quantity, 0)
+                {orderItems
+                  .reduce((acc, item) => acc + item?.price * item?.quantity, 0)
                   .toLocaleString()}{" "}
-                VND
+                $
               </span>
             </SummaryItem>
             <SummaryItem>
               <span>Phí vận chuyển</span>
-              <span>30,000 VND</span>
+              <span>30 $</span>
             </SummaryItem>
             <SummaryItem>
               <span>Khuyến mãi</span>
-              <span>-20,000 VND</span>
+              <span>-5 $</span>
             </SummaryItem>
             <TotalPrice>
               <span>Tổng cộng</span>
               <span>
                 {(
-                  cartItems.reduce(
+                  orderItems.reduce(
                     (acc, item) => acc + item.price * item.quantity,
                     0
                   ) +
-                  30000 -
-                  20000
+                  30 -
+                  5
                 ).toLocaleString()}{" "}
-                VND
+                $
               </span>
             </TotalPrice>
-            <PlaceOrderButton onClick={handlePlaceOrder}>
+            <PlaceOrderButton
+              icon={<ShoppingCartOutlined />}
+              onClick={handlePlaceOrder}
+            >
               Đặt Hàng Ngay
             </PlaceOrderButton>
           </SummaryCard>
@@ -146,27 +174,30 @@ const OrderPage = () => {
       </OrderContent>
 
       <AddressSection>
-        <AddressHeader>Địa chỉ giao hàng</AddressHeader>
         <AddressForm>
-          <Select
-            placeholder="Chọn địa chỉ giao hàng"
-            style={{ width: "100%" }}
-            onChange={(value) => setSelectedAddress(value)}
-          >
-            {/* {addresses &&
-              addresses.map((address) => (
-                <Option key={address.id} value={address.id}>
-                  {address.street}, {address.city}, {address.country}
-                </Option>
-              ))} */}
-          </Select>
-          {/* <ButtonComponent
-            textButton="Thêm địa chỉ mới"
-            // onClick={() => {
-            //   // Handle add new address
-            //   message.info("Thêm địa chỉ mới");
-            // }}
-          /> */}
+          <AddressSection>
+            <AddressHeader>Địa chỉ giao hàng</AddressHeader>
+            <AddressForm>
+              <Input
+                placeholder="Họ và tên"
+                name="fullName"
+                value={user.name}
+                onChange={handleAddressChange}
+              />
+              <Input
+                placeholder="Địa chỉ"
+                name="addressLine"
+                value={user.address}
+                onChange={handleAddressChange}
+              />
+              <Input
+                placeholder="Số điện thoại"
+                name="phone"
+                value={user.phone}
+                onChange={handleAddressChange}
+              />
+            </AddressForm>
+          </AddressSection>
         </AddressForm>
       </AddressSection>
 

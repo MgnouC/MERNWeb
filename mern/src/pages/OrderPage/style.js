@@ -18,13 +18,20 @@ export const WrapperHeader = styled.h1`
   text-align: center;
   color: #f95230;
   margin-bottom: 30px;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 32px;
+  line-height: 1.2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
 
   @media (max-width: 768px) {
     font-size: 24px;
+    line-height: 1.3; // Tăng line-height cho màn hình nhỏ hơn
   }
 `;
+
 
 // Content Section
 export const OrderContent = styled(Row)`
@@ -32,15 +39,17 @@ export const OrderContent = styled(Row)`
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  
+
   @media (max-width: 768px) {
     flex-direction: column;
-    padding: 15px;
+    padding: 10px; // Giảm padding để phù hợp với màn hình nhỏ hơn
   }
 `;
 
+
 // Columns
 export const CartItemsCol = styled(Col)`
+  flex: 1 1 60%;
   @media (max-width: 768px) {
     width: 100%;
   }
@@ -48,7 +57,7 @@ export const CartItemsCol = styled(Col)`
 
 export const SummaryCol = styled(Col)`
   padding-left: 20px;
-
+  flex: 1 1 35%;
   @media (max-width: 768px) {
     padding-left: 0;
     margin-top: 20px;
@@ -64,13 +73,18 @@ export const CartItem = styled(Card)`
     display: flex;
     align-items: center;
     padding: 10px;
+    justify-content: space-between; // Đảm bảo tất cả các thành phần được căn chỉnh đều
+    flex-wrap: wrap;
   }
 
   @media (max-width: 768px) {
     flex-direction: column;
     align-items: flex-start;
+    margin-bottom: 15px;
   }
 `;
+
+
 
 // Product Image
 export const ItemImage = styled.img`
@@ -91,21 +105,38 @@ export const ItemImage = styled.img`
 // Item Details
 export const ItemDetails = styled.div`
   flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 `;
 
-// Item Name
+// Item Name - Để đảm bảo tên không chiếm quá nhiều chỗ
 export const ItemName = styled.h3`
   font-size: 16px;
   margin-bottom: 5px;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
   @media (max-width: 768px) {
     font-size: 14px;
   }
 `;
 
+// Container cho giá tiền và các hành động
+export const ItemActions = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 20px; // Đảm bảo khoảng cách giữa các nút và giá trị số lượng
+`;
+
 // Item Price
-export const ItemPrice = styled.p`
+export const ItemPrice = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px; // Khoảng cách giữa giá và đơn vị tiền tệ
   color: #f95230;
   font-weight: bold;
   margin: 0;
@@ -115,6 +146,12 @@ export const ItemPrice = styled.p`
   }
 `;
 
+export const ItemPriceText = styled.span`
+  font-size: 16px;
+  &::after {
+    content: " $"; // Đảm bảo đơn vị tiền tệ chỉ hiện một lần
+  }
+`;
 // Quantity Input
 export const QuantityInput = styled(InputNumber)`
   width: 60px;
@@ -134,7 +171,7 @@ export const AddressHeader = styled.h2`
   font-size: 18px;
   color: #27272a;
   margin-bottom: 15px;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 
   @media (max-width: 768px) {
     font-size: 16px;
@@ -158,7 +195,7 @@ export const PaymentHeader = styled.h2`
   font-size: 18px;
   color: #27272a;
   margin-bottom: 15px;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 
   @media (max-width: 768px) {
     font-size: 16px;
@@ -181,10 +218,22 @@ export const SummaryItem = styled.div`
   justify-content: space-between;
   margin-bottom: 15px;
   font-size: 16px;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 
   @media (max-width: 768px) {
     font-size: 14px;
+  }
+`;
+
+export const TotalSectionWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 20px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: stretch;
   }
 `;
 
@@ -196,6 +245,7 @@ export const TotalPrice = styled(SummaryItem)`
 
   @media (max-width: 768px) {
     font-size: 16px;
+    margin-bottom: 15px; // Đảm bảo khoảng cách giữa tổng tiền và nút đặt hàng
   }
 `;
 
@@ -205,7 +255,7 @@ export const PlaceOrderButton = styled(Button)`
   background-color: #f95230;
   color: #ffffff;
   font-size: 16px;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   border: none;
 
   &:hover,
