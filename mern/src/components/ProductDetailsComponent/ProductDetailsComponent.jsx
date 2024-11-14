@@ -53,8 +53,8 @@ const ProductDetailsComponent = ({ idProduct }) => {
       message.info("Please log in to add products to cart.");
       return;
     } else {
-      console.log('Product being added:', product);
-      console.log('Product ID:', product._id);
+      // console.log('Product being added:', product);
+      // console.log('Product ID:', product._id);
   
       dispatch(
         addOrderProduct({
@@ -64,7 +64,7 @@ const ProductDetailsComponent = ({ idProduct }) => {
         })
       );
   
-      console.log(`Product ID: ${product._id}, Quantity: ${quantity}`);
+      //console.log(`Product ID: ${product._id}, Quantity: ${quantity}`);
     }
   };
   

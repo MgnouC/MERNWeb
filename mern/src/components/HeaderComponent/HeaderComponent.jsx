@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Badge, Button, Col, Popover } from "antd";
+import { Badge, Button, Col, message, Popover } from "antd";
 import {
   WrapperContentPopup,
   WrapperHeader,
@@ -20,6 +20,7 @@ import * as UserService from "../../services/UserServices";
 import { useDispatch } from "react-redux";
 import { resetUser } from "../../redux/slides/userSlice";
 import { searchProduct } from "../../redux/slides/productSlice";
+
 const HeaderComponent = () => {
   const navigate = useNavigate();
   const handleNavigateLogin = () => {
@@ -52,6 +53,17 @@ const HeaderComponent = () => {
     }
   };
 
+  const handlerProduct = () => {
+    // Kiểm tra xem người dùng đã đăng nhập chưa
+    if (!user?.id) {
+      message.info("Please log in to add products to cart.");
+      navigate("/sign-in");
+
+      return;
+    } else {
+      navigate("/order")
+    }
+  };
   const content = (
     <div>
       <WrapperContentPopup onClick={handleLogout}>
@@ -127,7 +139,8 @@ const HeaderComponent = () => {
               </div>
             )}
           </WrapperHeaderAccount>
-          <div onClick={() => navigate("/order")} style={{ cursor: "pointer" }}>
+          <div onClick={handlerProduct} style={{ cursor: "pointer" }}>
+            
             <Badge count={totalQuantity} size="small" margin="2px">
               <ShoppingCartOutlined
                 style={{

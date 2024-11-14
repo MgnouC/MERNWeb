@@ -1,12 +1,11 @@
-// Import cần thiết
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Badge, Button, Input, Select } from "antd";
 import { ShoppingCartOutlined } from "@ant-design/icons";
 import { useSelector, useDispatch } from "react-redux";
 import {
   OrderContainer,
-  OrderHeader,
+  WrapperHeader,
   OrderContent,
   CartItemsCol,
   SummaryCol,
@@ -16,74 +15,41 @@ import {
   ItemName,
   ItemPrice,
   QuantityInput,
-  AddressSection,
-  AddressHeader,
-  AddressForm,
-  PaymentSection,
-  PaymentHeader,
   SummaryCard,
   SummaryItem,
   TotalPrice,
   PlaceOrderButton,
-  WrapperHeader,
-  ItemActions,
-  ItemPriceText,
 } from "./style";
 import * as message from "../../components/Message/Mesage";
-import { updateOrderProductQuantity } from "../../redux/slides/orderSlice";
+import { updateOrderProductQuantity, removeOrderProduct } from "../../redux/slides/orderSlice";
 import { DeleteOutlined } from "@ant-design/icons";
-import { removeOrderProduct } from "../../redux/slides/orderSlice";
-
-const { Option } = Select;
 
 const OrderPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [selectedAddress, setSelectedAddress] = useState(null);
-  const [paymentMethod, setPaymentMethod] = useState("credit_card");
-  const [users, setUser] = useState([]);
-
-  const user = useSelector((state) => state.user);
-  // Lấy orderItems từ Redux store
   const orderItems = useSelector((state) => state.order.orderItems);
+  const user = useSelector((state) => state.user);
 
   // Tính tổng số lượng sản phẩm
   const totalQuantity = orderItems.reduce(
     (total, item) => total + item?.quantity,
     0
   );
+  const subtotal = orderItems.reduce(
+    (acc, item) => acc + item.price * item.quantity,
+    0
+  );
+  const totalAmount = orderItems.reduce(
+    (acc, item) => acc + item.price * item.quantity,
+    0
+  ) +25; // Tổng tiền + phí vận chuyển - khuyến mãi
 
   const handleQuantityChange = (id, value) => {
     dispatch(updateOrderProductQuantity({ id, quantity: value }));
   };
 
-  const handlePlaceOrder = () => {
-    const orderData = {
-      // Các thông tin đơn hàng khác
-      shippingAddress: user.address,
-      paymentMethod: paymentMethod,
-      // ...
-    };
-
-    // Gửi orderData đến server hoặc xử lý tiếp theo
-    // Ví dụ:
-    //dispatch(createOrder(orderData));
-    message.success("Đặt hàng thành công!", orderData);
-  };
-
   const handleRemoveProduct = (productId) => {
     dispatch(removeOrderProduct(productId));
-  };
-
-  const handleAddressChange = (e) => {
-    const { name, value } = e.target;
-    setUser((prevUser) => ({
-      ...prevUser,
-      address: {
-        ...prevUser.address,
-        [name]: value,
-      },
-    }));
   };
 
   return (
@@ -102,17 +68,15 @@ const OrderPage = () => {
               />
               <ItemDetails>
                 <ItemName>{item.name}</ItemName>
-                <ItemActions>
-                  <ItemPrice>
-                    <ItemPriceText>{item.price}</ItemPriceText>
-                  </ItemPrice>
-                  <QuantityInput
-                    min={1}
-                    max={item?.countInStock}
-                    value={item.quantity} // Sử dụng giá trị từ Redux store
-                    onChange={(value) => handleQuantityChange(item.id, value)} // Gọi hàm cập nhật số lượng
-                  />
-                </ItemActions>{" "}
+                <ItemPrice>
+                  <span>{item.price.toLocaleString()} $</span>
+                </ItemPrice>
+                <QuantityInput
+                  min={1}
+                  max={item?.countInStock}
+                  value={item.quantity}
+                  onChange={(value) => handleQuantityChange(item.id, value)}
+                />
                 <DeleteOutlined
                   style={{
                     color: "red",
@@ -126,6 +90,7 @@ const OrderPage = () => {
             </CartItem>
           ))}
         </CartItemsCol>
+
         <SummaryCol xs={24} md={8}>
           <SummaryCard>
             <SummaryItem>
@@ -134,12 +99,7 @@ const OrderPage = () => {
             </SummaryItem>
             <SummaryItem>
               <span>Tổng tiền hàng</span>
-              <span>
-                {orderItems
-                  .reduce((acc, item) => acc + item?.price * item?.quantity, 0)
-                  .toLocaleString()}{" "}
-                $
-              </span>
+              <span>{subtotal.toLocaleString()} $</span>
             </SummaryItem>
             <SummaryItem>
               <span>Phí vận chuyển</span>
@@ -151,70 +111,16 @@ const OrderPage = () => {
             </SummaryItem>
             <TotalPrice>
               <span>Tổng cộng</span>
-              <span>
-                {(
-                  orderItems.reduce(
-                    (acc, item) => acc + item.price * item.quantity,
-                    0
-                  ) +
-                  30 -
-                  5
-                ).toLocaleString()}{" "}
-                $
-              </span>
+              <span>{totalAmount.toLocaleString()} $</span>
             </TotalPrice>
             <PlaceOrderButton
               icon={<ShoppingCartOutlined />}
-              onClick={handlePlaceOrder}
-            >
+              onClick={() => navigate("/payment")}            >
               Đặt Hàng Ngay
             </PlaceOrderButton>
           </SummaryCard>
         </SummaryCol>
       </OrderContent>
-
-      <AddressSection>
-        <AddressForm>
-          <AddressSection>
-            <AddressHeader>Địa chỉ giao hàng</AddressHeader>
-            <AddressForm>
-              <Input
-                placeholder="Họ và tên"
-                name="fullName"
-                value={user.name}
-                onChange={handleAddressChange}
-              />
-              <Input
-                placeholder="Địa chỉ"
-                name="addressLine"
-                value={user.address}
-                onChange={handleAddressChange}
-              />
-              <Input
-                placeholder="Số điện thoại"
-                name="phone"
-                value={user.phone}
-                onChange={handleAddressChange}
-              />
-            </AddressForm>
-          </AddressSection>
-        </AddressForm>
-      </AddressSection>
-
-      <PaymentSection>
-        <PaymentHeader>Phương thức thanh toán</PaymentHeader>
-        <AddressForm>
-          <Select
-            defaultValue="credit_card"
-            style={{ width: "100%" }}
-            onChange={(value) => setPaymentMethod(value)}
-          >
-            <Option value="credit_card">Thẻ tín dụng</Option>
-            <Option value="bank_transfer">Chuyển khoản ngân hàng</Option>
-            <Option value="paypal">PayPal</Option>
-          </Select>
-        </AddressForm>
-      </PaymentSection>
     </OrderContainer>
   );
 };

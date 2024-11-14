@@ -1,68 +1,38 @@
-// src/pages/OrderPage/style.js
+// style.js
 import styled from "styled-components";
-import { Row, Col, Button, InputNumber, Card, Select } from "antd";
+import { Row, Col, Card, Input, Select, Button } from "antd";
 
-// Main Container
-export const OrderContainer = styled.div`
+export const PaymentContainer = styled.div`
   padding: 40px 20px;
   background-color: #f5f5f5;
   min-height: 100vh;
-
-  @media (max-width: 768px) {
-    padding: 20px 10px;
-  }
 `;
 
-// Header
 export const WrapperHeader = styled.h1`
   text-align: center;
   color: #f95230;
-  margin-bottom: 30px;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 32px;
-  line-height: 1.2;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  justify-content: center;
-
-  @media (max-width: 768px) {
-    font-size: 24px;
-    line-height: 1.3; // Tăng line-height cho màn hình nhỏ hơn
-  }
+  margin-bottom: 30px;
 `;
 
-// Content Section
-export const OrderContent = styled(Row)`
+export const PaymentContent = styled(Row)`
   background-color: #ffffff;
   padding: 20px;
   border-radius: 8px;
+  margin-Bottom: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-    padding: 10px; // Giảm padding để phù hợp với màn hình nhỏ hơn
-  }
 `;
 
-// Columns
 export const CartItemsCol = styled(Col)`
   flex: 1 1 60%;
-  @media (max-width: 768px) {
-    width: 100%;
-  }
+  padding-right: 20px;
 `;
 
 export const SummaryCol = styled(Col)`
-  padding-left: 20px;
   flex: 1 1 35%;
-  @media (max-width: 768px) {
-    padding-left: 0;
-    margin-top: 20px;
-  }
+  padding-left: 20px;
 `;
 
-// Cart Item Card
 export const CartItem = styled(Card)`
   margin-bottom: 20px;
   border: 1px solid #e8e8e8;
@@ -81,8 +51,6 @@ export const CartItem = styled(Card)`
     margin-bottom: 15px;
   }
 `;
-
-// Product Image
 export const ItemImage = styled.img`
   width: 80px;
   height: 80px;
@@ -98,7 +66,6 @@ export const ItemImage = styled.img`
   }
 `;
 
-// Item Details
 export const ItemDetails = styled.div`
   flex: 1;
   display: flex;
@@ -106,7 +73,6 @@ export const ItemDetails = styled.div`
   justify-content: space-between;
 `;
 
-// Item Name - Để đảm bảo tên không chiếm quá nhiều chỗ
 export const ItemName = styled.h3`
   font-size: 16px;
   margin-bottom: 5px;
@@ -120,18 +86,10 @@ export const ItemName = styled.h3`
     font-size: 14px;
   }
 `;
-
-// Container cho giá tiền và các hành động
-export const ItemActions = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 20px; // Đảm bảo khoảng cách giữa các nút và giá trị số lượng
-`;
-
-// Item Price
 export const ItemPrice = styled.div`
   display: flex;
   align-items: center;
+  justify-item: center;
   gap: 4px; // Khoảng cách giữa giá và đơn vị tiền tệ
   color: #f95230;
   font-weight: bold;
@@ -142,30 +100,28 @@ export const ItemPrice = styled.div`
   }
 `;
 
-export const ItemPriceText = styled.span`
-  font-size: 16px;
-  &::after {
-    content: " $"; // Đảm bảo đơn vị tiền tệ chỉ hiện một lần
-  }
+export const QuantityText = styled.p`
+  font-size: 14px;
 `;
-// Quantity Input
-export const QuantityInput = styled(InputNumber)`
-  width: 60px;
+
+export const OrderContent = styled(Row)`
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 
   @media (max-width: 768px) {
-    width: 50px;
+    flex-direction: column;
+    padding: 10px; // Giảm padding để phù hợp với màn hình nhỏ hơn
   }
 `;
-
-// Address Section
 export const AddressSection = styled.div`
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 `;
 
-// Address Header
 export const AddressHeader = styled.h2`
   font-size: 18px;
-  color: #27272a;
+  color: "#fa4f31";
   margin-bottom: 15px;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 
@@ -174,78 +130,52 @@ export const AddressHeader = styled.h2`
   }
 `;
 
-// Address Form
+
 export const AddressForm = styled.div`
   display: flex;
-  flex-direction: column;
-  gap: 15px;
+  flex-direction: row; /* Sắp xếp các phần tử theo hàng ngang */
+  align-items: center; /* Căn giữa theo chiều dọc */
+  gap: 20px; /* Khoảng cách giữa các phần tử */
+  width: 100%;
 `;
 
-// Payment Section
+
+
 export const PaymentSection = styled.div`
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 `;
 
-// Payment Header
 export const PaymentHeader = styled.h2`
   font-size: 18px;
-  color: #27272a;
-  margin-bottom: 15px;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-
-  @media (max-width: 768px) {
-    font-size: 16px;
-  }
+  color: #333;
+  margin-bottom: 10px;
 `;
 
-// Summary Card
-export const SummaryCard = styled(Card)`
-  border: none;
-  box-shadow: none;
+export const PaymentMethodSelect = styled(Select)`
+  width: 100%;
+`;
 
+export const SummaryCard = styled(Card)`
+  margin-top: 20px;
+  margin-bottom: 20px;
   .ant-card-body {
     padding: 0;
   }
 `;
 
-// Summary Item
 export const SummaryItem = styled.div`
   display: flex;
   justify-content: space-between;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
   font-size: 16px;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-
-  @media (max-width: 768px) {
-    font-size: 14px;
-  }
 `;
 
-export const TotalSectionWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 20px;
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-    align-items: stretch;
-  }
-`;
-
-// Total Price
 export const TotalPrice = styled(SummaryItem)`
   font-weight: bold;
   font-size: 18px;
   color: #f95230;
-
-  @media (max-width: 768px) {
-    font-size: 16px;
-    margin-bottom: 15px; // Đảm bảo khoảng cách giữa tổng tiền và nút đặt hàng
-  }
 `;
 
-// Place Order Button
 export const PlaceOrderButton = styled(Button)`
   width: 100%;
   background-color: #f95230;

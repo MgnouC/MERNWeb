@@ -48,7 +48,7 @@ const TypeProductPage = () => {
   }, [type]);
 
   const handleShowDetails = (id) => {
-    console.log("Clicked product ID:", id); // Log để kiểm tra
+    //console.log("Clicked product ID:", id); // Log để kiểm tra
     navigate(`/product-details/${id}`); // Chuyển hướng tới trang chi tiết sản phẩm
   };
 
@@ -78,7 +78,7 @@ const TypeProductPage = () => {
                     image={product.image}
                     price={product.price}
                     type={product.type}
-                    onClick={() => handleShowDetails(product._id)}                  />
+                    onClick={() => handleShowDetails(product?._id)}                  />
                 ))
               ) : (
                 <p>

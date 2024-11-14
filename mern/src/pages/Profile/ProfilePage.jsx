@@ -52,7 +52,7 @@ const ProfilePage = () => {
   // };
   const handleUpdate = () => {
     mutation.mutate(
-      { id: user.id, name, email, phone, address },
+      { id: user?._id, name, email, phone, address },
       {
         onSuccess: (data) => {
           dispatch(updateUser(data)); // Cập nhật store khi thành công
@@ -75,9 +75,9 @@ const ProfilePage = () => {
   useEffect(() => {
     console.log("Current user:", user);
     //dispatch(updateUser(user))
-    setName(user?.name);
-    setEmail(user?.email);
-    setPhone(user?.phone);
+    setName(user.name);
+    setEmail(user.email);
+    setPhone(user.phone);
     setAddress(user?.address);
   }, [user]);
 

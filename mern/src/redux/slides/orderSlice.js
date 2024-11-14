@@ -62,13 +62,13 @@ export const getOrderDetails = createAsyncThunk(
 // Order slice
 const orderSlice = createSlice({
   name: "order",
-  initialState,
+  initialState: { shippingAddress: {},   orderItems: [] },
   reducers: {
     // Trong orderSlice.js
     addOrderProduct: (state, action) => {
       const item = action.payload;
       const existItem = state.orderItems.find((x) => x._id === item._id);
-    
+
       if (existItem) {
         // Nếu sản phẩm đã tồn tại, cập nhật số lượng
         existItem.quantity += item.quantity;
@@ -77,8 +77,7 @@ const orderSlice = createSlice({
         state.orderItems.push(item);
       }
     },
-    
-    
+
     // Trong orderSlice.js
     updateOrderProductQuantity: (state, action) => {
       const { id, quantity } = action.payload;
@@ -93,6 +92,13 @@ const orderSlice = createSlice({
       state.orderItems = state.orderItems.filter(
         (item) => item.id !== productId
       );
+    },
+    // Thêm vào reducers trong orderSlice
+    setShippingAddress(state, action) {
+      state.shippingAddress = {
+        ...state.shippingAddress,
+        ...action.payload,
+      }
     },
     resetOrderState: () => initialState,
   },
@@ -124,8 +130,17 @@ const orderSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       });
+      builder.addCase(setShippingAddress, (state, action) => {
+        state.shippingAddress = action.payload;
+      });
   },
 });
 
-export const { addOrderProduct, resetOrderState, updateOrderProductQuantity, removeOrderProduct } = orderSlice.actions;
+export const {
+  addOrderProduct,
+  resetOrderState,
+  updateOrderProductQuantity,
+  removeOrderProduct,
+  setShippingAddress,
+} = orderSlice.actions;
 export default orderSlice.reducer;
