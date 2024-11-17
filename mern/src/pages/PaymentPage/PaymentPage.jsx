@@ -24,13 +24,10 @@ import {
   TotalPrice,
   PlaceOrderButton,
 } from "./style";
-import {
-  updateShippingAddress,
-  createOrder,
-} from "../../redux/slides/orderSlice";
 import { message, Input, Select, Button, Modal, Form } from "antd";
 import { ShoppingCartOutlined } from "@ant-design/icons";
-
+import * as OrderService from "../../services/OrderService";
+import { resetOrderState } from "../../redux/slides/orderSlice";
 const { Option } = Select;
 
 const PaymentPage = () => {
@@ -62,35 +59,39 @@ const PaymentPage = () => {
   // Tính tổng tiền đơn hàng
   const totalAmount = subtotal + shippingFee - discount;
 
+  //Fimport { useNavigate } from "react-router-dom";
+
   const handlePlaceOrder = () => {
     const fullShippingAddress = {
       name: localShippingAddress?.name || user?.name,
       address: localShippingAddress?.address || user.address,
       phone: localShippingAddress?.phone || user.phone,
     };
-    console.log(fullShippingAddress);
+
     const orderData = {
-      userId: user.id,
-      shippingAddress: fullShippingAddress,
       orderItems: orderItems.map((item) => ({
-        productId: item.id,
+        product: item.id,
         name: item.name,
         price: item.price,
         quantity: item.quantity,
       })),
-      totalQuantity: totalQuantity,
-      totalAmount: totalAmount,
-      paymentMethod: paymentMethod,
-      orderDate: new Date().toISOString(),
+      shippingAddress: fullShippingAddress,
+      paymentMethod,
+      itemPrice: subtotal,
+      shippingPrice: shippingFee,
+      taxPrice: discount,
+      totalPrice: totalAmount,
+      user: user._id,
     };
 
-    dispatch(createOrder(orderData))
-      .unwrap()
+    OrderService.createOrder(orderData)
       .then(() => {
         message.success("Đặt hàng thành công!");
-        navigate("/order-confirmation");
+        dispatch(resetOrderState());
+        navigate("/orderSuccess/", { state: { orderData } }); // Truyền orderData qua state
       })
-      .catch(() => {
+      .catch((error) => {
+        console.error("Order failed:", error);
         message.error("Đặt hàng thất bại. Vui lòng thử lại!");
       });
   };
@@ -110,7 +111,16 @@ const PaymentPage = () => {
     message.success("Cập nhật địa chỉ giao hàng thành công!");
     setIsModalOpen(false);
   };
-
+  if (orderItems.length === 0) {
+    return (
+      <PaymentContainer>
+        <WrapperHeader>Giỏ hàng của bạn trống!</WrapperHeader>
+        <Button type="primary" onClick={() => navigate("/")}>
+          Quay lại mua sắm
+        </Button>
+      </PaymentContainer>
+    );
+  }
   return (
     <PaymentContainer>
       <WrapperHeader>Thanh Toán</WrapperHeader>
@@ -132,7 +142,8 @@ const PaymentPage = () => {
               }}
             >
               <span style={{ fontSize: 16, fontWeight: 700 }}>
-                {localShippingAddress.name || user.name} (+84) {localShippingAddress.phone || user.phone}
+                {localShippingAddress.name || user.name} (+84){" "}
+                {localShippingAddress.phone || user.phone}
               </span>
               <span style={{ fontSize: 16, fontWeight: 700 }}>
                 {localShippingAddress?.address || user.address}
@@ -158,7 +169,7 @@ const PaymentPage = () => {
       {/* Danh sách sản phẩm */}
       <PaymentContent>
         <CartItemsCol xs={24} md={16}>
-          <h3 style={{ marginLeft: "28px", color: "#fa4f31"}}>Sản Phẩm</h3>
+          <h3 style={{ marginLeft: "28px", color: "#fa4f31" }}>Sản Phẩm</h3>
           {orderItems.map((item) => (
             <CartItem key={item.id}>
               <ItemImage
@@ -235,14 +246,14 @@ const PaymentPage = () => {
           <Form.Item
             label="Họ và Tên"
             name="name"
-            rules={[{ required: true, message: "Vui lòng nhập họ và tên!" }]}
+            rules={[{ required: false, message: "Vui lòng nhập họ và tên!" }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
             label="Địa chỉ"
             name="address"
-            rules={[{ required: true, message: "Vui lòng nhập địa chỉ!" }]}
+            rules={[{ required: false, message: "Vui lòng nhập địa chỉ!" }]}
           >
             <Input />
           </Form.Item>
@@ -250,7 +261,7 @@ const PaymentPage = () => {
             label="Số điện thoại"
             name="phone"
             rules={[
-              { required: true, message: "Vui lòng nhập số điện thoại!" },
+              { required: false, message: "Vui lòng nhập số điện thoại!" },
             ]}
           >
             <Input />

@@ -69,7 +69,7 @@ const HeaderComponent = () => {
       <WrapperContentPopup onClick={handleLogout}>
         Đăng Xuất
       </WrapperContentPopup>
-      <WrapperContentPopup onClick={() => navigate("/profile-user")}>
+      <WrapperContentPopup onClick={() => navigate(`/profile-user/${user.id}`)}>
         Thông tin tài khoản
       </WrapperContentPopup>
       {user?.isAdmin && (

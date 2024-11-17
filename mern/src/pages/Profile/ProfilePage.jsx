@@ -9,12 +9,9 @@ import InputForm from "../../components/InputForm/InputForm";
 import ButtonComponent from "../../components/ButtonComponent/ButtonComponent";
 import { useDispatch, useSelector } from "react-redux";
 import * as UserService from "../../services/UserServices";
-import { useMutationHooks } from "../../hooks/useMutationHook";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import * as message from "../../components/Message/Mesage";
 import { updateUser } from "../../redux/slides/userSlice";
-// import { UploadOutlined } from "@ant-design/icons";
-// import { Button, Upload } from "antd";
-// import { getBase64 } from "../../utils";
 
 const ProfilePage = () => {
   const user = useSelector((state) => state.user);
@@ -22,15 +19,29 @@ const ProfilePage = () => {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
-  const [avatar, setAvatar] = useState("");
-  const dispatch = useDispatch("");
-  const mutation = useMutationHooks((data) => {
-    const { id, ...rests } = data;
-    console.log(data)
-    UserService.updateUser(user, data); 
-  });
-  const { data, isError, isSuccess } = mutation;
+  const queryClient = useQueryClient();
+  const dispatch = useDispatch();
 
+  // Sử dụng useMutation để cập nhật user
+  const mutation = useMutation(
+    ({ id, data }) => UserService.updateUser({ id, data }),
+    {
+      onSuccess: (response) => {
+        console.log("Update successful:", response);
+        if (response.data) {
+          dispatch(updateUser(response.data)); // Cập nhật thông tin người dùng từ response
+          message.success("Cập nhật thông tin thành công");
+        }
+        queryClient.invalidateQueries(["user"]); // Làm mới dữ liệu người dùng
+      },
+      onError: (error) => {
+        console.error("Update failed:", error);
+        message.error("Cập nhật thất bại. Vui lòng thử lại!");
+      },
+    }
+  );
+
+  // Hàm thay đổi giá trị của từng trường
   const handleOnChangeName = (value) => {
     setName(value);
   };
@@ -43,42 +54,36 @@ const ProfilePage = () => {
   const handleOnChangeAddress = (value) => {
     setAddress(value);
   };
-  // const handleOnUploadAvatar = async ({ fileList }) => {
-  //   const file = fileList[0];
-  //   if (!file.url && !file.preview) {
-  //     file.preview = await getBase64(file.originFileObj);
-  //   }
-  //   setAvatar(file.preview);
-  // };
+
+  // Hàm xử lý khi người dùng nhấn nút "Lưu"
   const handleUpdate = () => {
-    mutation.mutate(
-      { id: user?._id, name, email, phone, address },
-      {
-        onSuccess: (data) => {
-          dispatch(updateUser(data)); // Cập nhật store khi thành công
-        },
-        onError: (error) => {
-          console.error("Update failed:", error.message);
-        },
-      }
-    );
+    if (!name.trim() || !email.trim() || !phone || !address.trim()) {
+      message.error("Vui lòng điền đầy đủ thông tin.");
+      return;
+    }
+
+    // Tạo đối tượng data với thông tin cần cập nhật
+    const data = {
+      name,
+      email,
+      phone,
+      address,
+    };
+
+    console.log("Sending update data:", { id: user.id, data });
+
+    // Gọi mutation để cập nhật thông tin
+    mutation.mutate({ id: user.id, data });
   };
 
+  // Đồng bộ giá trị từ user vào các state khi user thay đổi
   useEffect(() => {
-    if (isSuccess) {
-      message.success("Update User successfully");
-    } else if (isError) {
-      message.error("Update User failed");
+    if (user && user.id) {
+      setName(user.name || "");
+      setEmail(user.email || "");
+      setPhone(user.phone || "");
+      setAddress(user.address || "");
     }
-  }, [isSuccess, isError]);
-
-  useEffect(() => {
-    console.log("Current user:", user);
-    //dispatch(updateUser(user))
-    setName(user.name);
-    setEmail(user.email);
-    setPhone(user.phone);
-    setAddress(user?.address);
   }, [user]);
 
   return (
@@ -120,7 +125,6 @@ const ProfilePage = () => {
             }}
             textButton={"Lưu"}
             styleTextButton={{
-              //background: "#fa4f31",
               fontSize: "15px",
               fontWeight: "700",
             }}
@@ -136,142 +140,51 @@ const ProfilePage = () => {
             value={email}
             handleonchange={handleOnChangeEmail}
           />
-          <ButtonComponent
-            onClick={handleUpdate}
-            border={false}
-            size={40}
-            styleButton={{
-              background: "#fa4f31",
-              color: "#fff",
-              fontSize: "15px",
-              fontWeight: "500",
-              padding: "12px 24px",
-              height: "30px",
-              width: "40px",
-              border: "1px solid #fa4f31",
-              borderRadius: "4px",
-              padding: "12px",
-            }}
-            textButton={"Lưu"}
-            styleTextButton={{
-              //background: "#fa4f31",
-              fontSize: "15px",
-              fontWeight: "700",
-            }}
-          ></ButtonComponent>
         </WrapperInput>
         <WrapperInput>
           <WrapperLabel htmlFor="phone">Số điện thoại</WrapperLabel>
-
           <InputForm
             id="phone"
-            type="string"
+            type="text"
             placeholder="Nhập số điện thoại của bạn"
             style={{ width: "300px" }}
             value={phone}
             handleonchange={handleOnChangePhone}
           />
-          <ButtonComponent
-            onClick={handleUpdate}
-            border={false}
-            size={40}
-            styleButton={{
-              background: "#fa4f31",
-              color: "#fff",
-              fontSize: "15px",
-              fontWeight: "500",
-              padding: "12px 24px",
-              height: "30px",
-              width: "40px",
-              border: "1px solid #fa4f31",
-              borderRadius: "4px",
-              padding: "12px",
-            }}
-            textButton={"Lưu"}
-            styleTextButton={{
-              //background: "#fa4f31",
-              fontSize: "15px",
-              fontWeight: "700",
-            }}
-          ></ButtonComponent>
         </WrapperInput>
         <WrapperInput>
           <WrapperLabel htmlFor="address">Địa chỉ</WrapperLabel>
-
           <InputForm
             id="address"
-            type="string"
+            type="text"
             placeholder="Nhập địa chỉ của bạn"
             style={{ width: "300px" }}
             value={address}
             handleonchange={handleOnChangeAddress}
           />
-          <ButtonComponent
-            onClick={handleUpdate}
-            border={false}
-            size={40}
-            styleButton={{
-              background: "#fa4f31",
-              color: "#fff",
-              fontSize: "15px",
-              fontWeight: "500",
-              padding: "12px 24px",
-              height: "30px",
-              width: "40px",
-              border: "1px solid #fa4f31",
-              borderRadius: "4px",
-              padding: "12px",
-            }}
-            textButton={"Lưu"}
-            styleTextButton={{
-              //background: "#fa4f31",
-              fontSize: "15px",
-              fontWeight: "700",
-            }}
-          ></ButtonComponent>
         </WrapperInput>
-        {/* <WrapperInput>
-          <WrapperLabel htmlFor="avatar">Avatar</WrapperLabel>
-          <Upload handleonchange={handleOnUploadAvatar}>
-            <Button icon={<UploadOutlined />}>Click to Upload</Button>
-          </Upload>
-          {avatar && (
-            <img
-              src={avatar}
-              alt="avatar"
-              style={{
-                width: "40px",
-                height: "30px",
-                objectFit: "cover",
-              }}
-              alt="avatar"
-            />
-          )}
-
-          <ButtonComponent
-            onClick={handleUpdate}
-            border={false}
-            size={40}
-            styleButton={{
-              background: "#fa4f31",
-              color: "#fff",
-              fontSize: "15px",
-              fontWeight: "500",
-              padding: "12px 24px",
-              height: "30px",
-              width: "40px",
-              border: "1px solid #fa4f31",
-              borderRadius: "4px",
-              padding: "12px",
-            }}
-            textButton={"Lưu"}
-            styleTextButton={{
-              //background: "#fa4f31",
-              fontSize: "15px",
-              fontWeight: "700",
-            }}
-          ></ButtonComponent>
-        </WrapperInput> */}
+        <ButtonComponent
+          onClick={handleUpdate}
+          border={false}
+          size={40}
+          styleButton={{
+            background: "#fa4f31",
+            color: "#fff",
+            fontSize: "15px",
+            fontWeight: "500",
+            padding: "12px 24px",
+            height: "30px",
+            width: "100px",
+            border: "1px solid #fa4f31",
+            borderRadius: "4px",
+            marginTop: "20px",
+          }}
+          textButton={"Lưu tất cả"}
+          styleTextButton={{
+            fontSize: "15px",
+            fontWeight: "700",
+          }}
+        />
       </WrapperContentProfile>
     </div>
   );

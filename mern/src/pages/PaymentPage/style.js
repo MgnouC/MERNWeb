@@ -159,6 +159,7 @@ export const SummaryCard = styled(Card)`
   margin-top: 20px;
   margin-bottom: 20px;
   .ant-card-body {
+    background-color:#fff !important;
     padding: 0;
   }
 `;

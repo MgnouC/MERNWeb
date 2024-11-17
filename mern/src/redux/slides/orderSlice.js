@@ -1,14 +1,11 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import { createSlice } from "@reduxjs/toolkit";
 
 // Initial state based on the OrderProductModel schema
 const initialState = {
   orderItems: [],
   shippingAddress: {
-    fullName: "",
+    name: "",
     address: "",
-    city: "",
-    country: "",
     phone: "",
   },
   paymentMethod: "",
@@ -25,60 +22,26 @@ const initialState = {
   error: null,
 };
 
-// Async thunk for creating an order
-export const createOrder = createAsyncThunk(
-  "order/createOrder",
-  async (orderData, { rejectWithValue }) => {
-    try {
-      const response = await axios.post("/api/orders", orderData);
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message
-      );
-    }
-  }
-);
-
-// Async thunk for fetching order details
-export const getOrderDetails = createAsyncThunk(
-  "order/getOrderDetails",
-  async (orderId, { rejectWithValue }) => {
-    try {
-      const response = await axios.get(`/api/orders/${orderId}`);
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message
-      );
-    }
-  }
-);
-
-// Order slice
+// Order slice without createAsyncThunk
 const orderSlice = createSlice({
   name: "order",
-  initialState: { shippingAddress: {},   orderItems: [] },
+  initialState,
   reducers: {
-    // Trong orderSlice.js
+    // Add a product to the order
     addOrderProduct: (state, action) => {
       const item = action.payload;
       const existItem = state.orderItems.find((x) => x._id === item._id);
 
       if (existItem) {
-        // Nếu sản phẩm đã tồn tại, cập nhật số lượng
+        // If the product already exists, update the quantity
         existItem.quantity += item.quantity;
       } else {
-        // Nếu sản phẩm chưa tồn tại, thêm vào mảng
+        // If the product doesn't exist, add it to the array
         state.orderItems.push(item);
       }
     },
 
-    // Trong orderSlice.js
+    // Update product quantity in the order
     updateOrderProductQuantity: (state, action) => {
       const { id, quantity } = action.payload;
       const item = state.orderItems.find((item) => item.id === id);
@@ -87,60 +50,46 @@ const orderSlice = createSlice({
       }
     },
 
+    // Remove a product from the order
     removeOrderProduct: (state, action) => {
       const productId = action.payload;
-      state.orderItems = state.orderItems.filter(
-        (item) => item.id !== productId
-      );
+      state.orderItems = state.orderItems.filter((item) => item.id !== productId);
     },
-    // Thêm vào reducers trong orderSlice
-    setShippingAddress(state, action) {
+
+    // Set the shipping address for the order
+    setShippingAddress: (state, action) => {
       state.shippingAddress = {
         ...state.shippingAddress,
         ...action.payload,
-      }
+      };
     },
+
+    // Set the payment method for the order
+    setPaymentMethod: (state, action) => {
+      state.paymentMethod = action.payload;
+    },
+
+    // Set the prices for the order
+    setPrices: (state, action) => {
+      const { itemPrice, shippingPrice, taxPrice, totalPrice } = action.payload;
+      state.itemPrice = itemPrice;
+      state.shippingPrice = shippingPrice;
+      state.taxPrice = taxPrice;
+      state.totalPrice = totalPrice;
+    },
+
+    // Reset the order state
     resetOrderState: () => initialState,
-  },
-  extraReducers: (builder) => {
-    builder
-      // Handle createOrder actions
-      .addCase(createOrder.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(createOrder.fulfilled, (state, action) => {
-        state.loading = false;
-        Object.assign(state, action.payload);
-      })
-      .addCase(createOrder.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
-      // Handle getOrderDetails actions
-      .addCase(getOrderDetails.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(getOrderDetails.fulfilled, (state, action) => {
-        state.loading = false;
-        Object.assign(state, action.payload);
-      })
-      .addCase(getOrderDetails.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      });
-      builder.addCase(setShippingAddress, (state, action) => {
-        state.shippingAddress = action.payload;
-      });
   },
 });
 
 export const {
   addOrderProduct,
-  resetOrderState,
   updateOrderProductQuantity,
   removeOrderProduct,
   setShippingAddress,
+  setPaymentMethod,
+  setPrices,
+  resetOrderState,
 } = orderSlice.actions;
 export default orderSlice.reducer;

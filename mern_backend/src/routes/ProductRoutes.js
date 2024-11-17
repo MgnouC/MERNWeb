@@ -49,7 +49,11 @@ routes.put(
 
 // Các route khác
 routes.get("/get-details-product/:id", productController.getDetailsProduct);
-routes.delete("/delete-product/:id", authMiddleware, productController.deleteProduct);
+routes.delete(
+  "/delete-product/:id",
+  authMiddleware,
+  productController.deleteProduct
+);
 routes.get("/get-all", productController.getAllProduct);
 routes.get("/get-all-type", productController.getAllType);
 routes.get("/get-products-by-type", productController.getProductsByType);

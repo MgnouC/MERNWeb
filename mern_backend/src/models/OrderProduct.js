@@ -5,8 +5,8 @@ const orderSchema = new mongoose.Schema({
     orderItems: [
         {
             name: { type: String, required: true},
-            amount: {type: Number, required: true},
-            image: {type: String, required: true},
+            amount: {type: Number},
+            image: {type: String},
             price:  {type: Number, required: true},
             product: {
                 type: mongoose.Schema.Types.ObjectId,
@@ -17,10 +17,10 @@ const orderSchema = new mongoose.Schema({
         },
     ],
     shippingAddress: {
-        fullName: { type: String, required: true},
+        fullName: { type: String},
         address: {type: String, required: true},
-        city: {type: String, required: true},
-        country: {type: String, required: true},
+        city: {type: String},
+        country: {type: String},
         phone: {type: Number, required: true},
     },
     paymentMethod: { type: String, required: true },
@@ -38,5 +38,5 @@ const orderSchema = new mongoose.Schema({
     {timestamps: true,}
 );
 
-const Order = mongoose.model("User", orderSchema);
+const Order = mongoose.model("Order", orderSchema);
 module.exports = Order;
