@@ -61,7 +61,7 @@ const HeaderComponent = () => {
 
       return;
     } else {
-      navigate("/order")
+      navigate("/order");
     }
   };
   const content = (
@@ -71,6 +71,9 @@ const HeaderComponent = () => {
       </WrapperContentPopup>
       <WrapperContentPopup onClick={() => navigate(`/profile-user/${user.id}`)}>
         Thông tin tài khoản
+      </WrapperContentPopup>
+      <WrapperContentPopup onClick={() => navigate(`/my-order/${user.id}`)}>
+        Đơn hàng của tôi
       </WrapperContentPopup>
       {user?.isAdmin && (
         <WrapperContentPopup onClick={() => navigate("/system/admin")}>
@@ -140,7 +143,6 @@ const HeaderComponent = () => {
             )}
           </WrapperHeaderAccount>
           <div onClick={handlerProduct} style={{ cursor: "pointer" }}>
-            
             <Badge count={totalQuantity} size="small" margin="2px">
               <ShoppingCartOutlined
                 style={{

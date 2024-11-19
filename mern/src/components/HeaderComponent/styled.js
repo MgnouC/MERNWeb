@@ -90,7 +90,7 @@ export const WrapperHeaderAccount = styled.div.attrs({
   }
 
   &:focus {
-    outline: 2px solid #ffffff;
+   
   }
 
   /* Responsive Adjustments */

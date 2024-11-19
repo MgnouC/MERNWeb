@@ -27,7 +27,12 @@ import {
 import { message, Input, Select, Button, Modal, Form } from "antd";
 import { ShoppingCartOutlined } from "@ant-design/icons";
 import * as OrderService from "../../services/OrderService";
-import { resetOrderState } from "../../redux/slides/orderSlice";
+import {
+  resetOrderState,
+  updateProductStock,
+} from "../../redux/slides/orderSlice";
+//import { updateProductStock } from "../../../../mern_backend/src/services/OrderService";
+
 const { Option } = Select;
 
 const PaymentPage = () => {
@@ -43,7 +48,6 @@ const PaymentPage = () => {
   const [paymentMethod, setPaymentMethod] = useState("paypal");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [form] = Form.useForm();
-
   // Tổng số lượng và tổng tiền
   const totalQuantity = orderItems.reduce(
     (total, item) => total + item.quantity,
@@ -70,7 +74,7 @@ const PaymentPage = () => {
 
     const orderData = {
       orderItems: orderItems.map((item) => ({
-        product: item.id,
+        product: item.id || item._id,
         name: item.name,
         price: item.price,
         quantity: item.quantity,
@@ -81,20 +85,35 @@ const PaymentPage = () => {
       shippingPrice: shippingFee,
       taxPrice: discount,
       totalPrice: totalAmount,
-      user: user._id,
+      user: user.id,
     };
+    let hasOutOfStock = false;
 
+    for (const item of orderItems) {
+      if (item.quantity > item.countInStock) {
+        message.error(
+          `Sản phẩm "${item.name}" chỉ còn lại ${item.countInStock} sản phẩm. Vui lòng điều chỉnh số lượng.`
+        );
+        hasOutOfStock = true;
+        break;
+      }
+    }
     OrderService.createOrder(orderData)
       .then(() => {
         message.success("Đặt hàng thành công!");
         dispatch(resetOrderState());
-        navigate("/orderSuccess/", { state: { orderData } }); // Truyền orderData qua state
+        navigate("/orderSuccess/", { state: { orderData } });
       })
       .catch((error) => {
         console.error("Order failed:", error);
-        message.error("Đặt hàng thất bại. Vui lòng thử lại!");
+        message.error(
+          error.response?.data?.message ||
+            "Đặt hàng thất bại. Vui lòng thử lại!"
+        );
       });
   };
+  console.log("Order Items:", orderItems);
+
 
   const handleEditAddress = () => {
     setIsModalOpen(true);
@@ -111,6 +130,7 @@ const PaymentPage = () => {
     message.success("Cập nhật địa chỉ giao hàng thành công!");
     setIsModalOpen(false);
   };
+
   if (orderItems.length === 0) {
     return (
       <PaymentContainer>

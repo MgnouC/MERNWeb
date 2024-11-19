@@ -1,3 +1,4 @@
+// orderSlice.js
 import { createSlice } from "@reduxjs/toolkit";
 
 // Initial state based on the OrderProductModel schema
@@ -20,6 +21,7 @@ const initialState = {
   deliveredAt: null,
   loading: false,
   error: null,
+  userOrders: [], // Thêm mảng lưu danh sách đơn hàng của người dùng
 };
 
 // Order slice without createAsyncThunk
@@ -27,21 +29,22 @@ const orderSlice = createSlice({
   name: "order",
   initialState,
   reducers: {
-    // Add a product to the order
+    // Các reducers hiện có
     addOrderProduct: (state, action) => {
       const item = action.payload;
-      const existItem = state.orderItems.find((x) => x._id === item._id);
-
+      const existItem = state.orderItems.find((x) => x.id === item.id);
+    
       if (existItem) {
-        // If the product already exists, update the quantity
-        existItem.quantity += item.quantity;
+        const newQuantity = existItem.quantity + item.quantity;
+        if (newQuantity > item.countInStock) {
+          existItem.quantity = item.countInStock;
+        } else {
+          existItem.quantity = newQuantity;
+        }
       } else {
-        // If the product doesn't exist, add it to the array
-        state.orderItems.push(item);
+        state.orderItems.push({ ...item, quantity: item.quantity });
       }
     },
-
-    // Update product quantity in the order
     updateOrderProductQuantity: (state, action) => {
       const { id, quantity } = action.payload;
       const item = state.orderItems.find((item) => item.id === id);
@@ -49,27 +52,19 @@ const orderSlice = createSlice({
         item.quantity = quantity;
       }
     },
-
-    // Remove a product from the order
     removeOrderProduct: (state, action) => {
       const productId = action.payload;
       state.orderItems = state.orderItems.filter((item) => item.id !== productId);
     },
-
-    // Set the shipping address for the order
     setShippingAddress: (state, action) => {
       state.shippingAddress = {
         ...state.shippingAddress,
         ...action.payload,
       };
     },
-
-    // Set the payment method for the order
     setPaymentMethod: (state, action) => {
       state.paymentMethod = action.payload;
     },
-
-    // Set the prices for the order
     setPrices: (state, action) => {
       const { itemPrice, shippingPrice, taxPrice, totalPrice } = action.payload;
       state.itemPrice = itemPrice;
@@ -77,9 +72,24 @@ const orderSlice = createSlice({
       state.taxPrice = taxPrice;
       state.totalPrice = totalPrice;
     },
-
-    // Reset the order state
     resetOrderState: () => initialState,
+
+    // Thêm các reducers mới
+    setLoading: (state, action) => {
+      state.loading = action.payload;
+    },
+    setError: (state, action) => {
+      state.error = action.payload;
+    },
+    setUserOrders: (state, action) => {
+      state.userOrders = action.payload;
+    },
+    
+    
+    cancelUserOrder: (state, action) => {
+      const orderId = action.payload;
+      state.userOrders = state.userOrders.filter((order) => order._id !== orderId);
+    },
   },
 });
 
@@ -91,5 +101,9 @@ export const {
   setPaymentMethod,
   setPrices,
   resetOrderState,
+  setLoading,
+  setError,
+  setUserOrders,
+  cancelUserOrder,
 } = orderSlice.actions;
 export default orderSlice.reducer;

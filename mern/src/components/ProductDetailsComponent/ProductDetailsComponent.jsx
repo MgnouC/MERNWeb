@@ -23,7 +23,7 @@ import {
   WrapperTextLight,
 } from "./style";
 import { addOrderProduct } from "../../redux/slides/orderSlice";
-
+import { useEffect } from "react";
 const ProductDetailsComponent = ({ idProduct }) => {
   const [quantity, setQuantity] = useState(1);
   const dispatch = useDispatch();
@@ -50,31 +50,37 @@ const ProductDetailsComponent = ({ idProduct }) => {
   const handleAddOrderProduct = () => {
     // Kiểm tra xem người dùng đã đăng nhập chưa
     if (!user?.id) {
-      message.info("Please log in to add products to cart.");
+      message.info("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng.");
       return;
-    } else {
-      // console.log('Product being added:', product);
-      // console.log('Product ID:', product._id);
-  
-      dispatch(
-        addOrderProduct({
-          ...product,
-          id: product._id, // Thêm dòng này
-          quantity: quantity, // Sử dụng giá trị quantity từ state
-        })
-      );
-  
-      //console.log(`Product ID: ${product._id}, Quantity: ${quantity}`);
     }
+
+    // Kiểm tra xem sản phẩm còn hàng không
+    if (product.countInStock === 0) {
+      message.error("Sản phẩm đã hết hàng!");
+      return;
+    }
+
+    dispatch(
+      addOrderProduct({
+        ...product,
+        id: product._id,
+        quantity: quantity,
+      })
+    );
+
+    message.success("Sản phẩm đã được thêm vào giỏ hàng!");
   };
-  
-  
-  
+
   const handleInputChange = (value) => {
     if (value >= 1 && value <= product.countInStock) {
       setQuantity(value);
+    } else if (product.countInStock > 0) {
+      setQuantity(1);
+    } else {
+      setQuantity(0);
     }
   };
+  
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -126,7 +132,11 @@ const ProductDetailsComponent = ({ idProduct }) => {
         </Row>
       </Col>
       <Col span={14} style={{ padding: "20px 0 35px 20px" }}>
+        {/* <WrapperStyleNameProduct>{product.name}</WrapperStyleNameProduct> */}
         <WrapperStyleNameProduct>{product.name}</WrapperStyleNameProduct>
+        {product.countInStock === 0 && (
+          <span style={{ color: "red", fontWeight: "bold" }}>Hết Hàng</span>
+        )}
         <div>
           <WrapperStyleTextSell>
             {[...Array(5)].map((_, i) => {
@@ -187,6 +197,7 @@ const ProductDetailsComponent = ({ idProduct }) => {
             <button
               style={{ border: "none", background: "transparent" }}
               onClick={() => setQuantity(quantity > 1 ? quantity - 1 : 1)}
+              disabled={product.countInStock === 0}
             >
               <MinusOutlined style={{ color: "#fa4f31", fontSize: "20px" }} />
             </button>
@@ -204,43 +215,68 @@ const ProductDetailsComponent = ({ idProduct }) => {
                   quantity < product.countInStock ? quantity + 1 : quantity
                 )
               }
+              disabled={
+                quantity >= product.countInStock || product.countInStock === 0
+              }
             >
               <PlusOutlined style={{ color: "#fa4f31", fontSize: "20px" }} />
             </button>
           </WrapperQualityProduct>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-          <ButtonComponent
-            size={40}
-            styleButton={{
-              padding: "0 20px",
-              background: "#ffeee7",
-              height: "48px",
-              width: "250px",
-              border: "1px solid #ee4d2d",
-              borderRadius: "2px",
-              boxShadow: "0 1px 1px 0 rgba(0, 0, 0, .09)",
-            }}
-            textButton={"Bỏ Vào Giỏ Hàng"}
-            styleTextButton={{ color: "#ee4d2d", fontSize: "14px" }}
-          />
-          <ButtonComponent
-            border={false}
-            size={40}
-            styleButton={{
-              padding: "0 20px",
-              background: "#ee4d2d",
-              height: "48px",
-              width: "250px",
-              border: "none",
-              borderRadius: "2px",
-              boxShadow: "0 1px 1px 0 rgba(0, 0, 0, .09)",
-            }}
-            onClick={handleAddOrderProduct}
-            textButton={"Mua Ngay Đi"}
-            styleTextButton={{ color: "#fff", fontSize: "14px" }}
-          />
+          {product.countInStock > 0 ? (
+            <>
+              <ButtonComponent
+                size={40}
+                styleButton={{
+                  padding: "0 20px",
+                  background: "#ffeee7",
+                  height: "48px",
+                  width: "250px",
+                  border: "1px solid #ee4d2d",
+                  borderRadius: "2px",
+                  boxShadow: "0 1px 1px 0 rgba(0, 0, 0, .09)",
+                }}
+                textButton={"Bỏ Vào Giỏ Hàng"}
+                styleTextButton={{ color: "#ee4d2d", fontSize: "14px" }}
+                // Thêm onClick nếu cần thiết
+              />
+              <ButtonComponent
+                border={false}
+                size={40}
+                styleButton={{
+                  padding: "0 20px",
+                  background: "#ee4d2d",
+                  height: "48px",
+                  width: "250px",
+                  border: "none",
+                  borderRadius: "2px",
+                  boxShadow: "0 1px 1px 0 rgba(0, 0, 0, .09)",
+                }}
+                onClick={handleAddOrderProduct}
+                textButton={"Mua Ngay Đi"}
+                styleTextButton={{ color: "#fff", fontSize: "14px" }}
+              />
+            </>
+          ) : (
+            <ButtonComponent
+              size={40}
+              disabled={true}
+              styleButton={{
+                padding: "0 20px",
+                background: "gray",
+                height: "48px",
+                width: "250px",
+                border: "none",
+                borderRadius: "2px",
+                boxShadow: "0 1px 1px 0 rgba(0, 0, 0, .09)",
+              }}
+              textButton={"Hết Hàng"}
+              styleTextButton={{ color: "#fff", fontSize: "14px" }}
+            />
+          )}
         </div>
+
         <div style={{ paddingTop: "20px" }}>
           <WrapperTextLight>Mô Tả Sản Phẩm</WrapperTextLight>
           <p>{product.description}</p>

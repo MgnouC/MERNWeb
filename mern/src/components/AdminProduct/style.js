@@ -2,7 +2,7 @@ import React from "react";
 import styled, { style } from "styled-components";
 
 export const WrapperHeader = styled.h1`
-  color: #f95230;
+  color: #f95230 !important;
   font-size: 32px;
   line-height: 40px;
   font-weight: 500;

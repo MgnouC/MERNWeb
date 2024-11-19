@@ -44,7 +44,7 @@ export const WrapperTextValue = styled.span`
     font-weight: 400;
     font-size: 14px;
     line-height: 1.5;
-    color: #27272a; /* Converted RGB to Hex for consistency */
+    color: #fa4f31; !important /* Converted RGB to Hex for consistency */
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 
     /* Responsive Font Sizes */

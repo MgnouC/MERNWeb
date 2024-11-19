@@ -31,13 +31,13 @@ const OrderSuccessPage = () => {
     ) +
     30 -
     5; // Tổng tiền hàng + phí vận chuyển - khuyến mãi
-  const orderId = "123456"; // Giả sử bạn có mã đơn hàng từ Redux hoặc server
-  const totalQuantity = orderItems.reduce(
+  const orderId = orderData.orderItems.id; // Giả sử bạn có mã đơn hàng từ Redux hoặc server
+  const totalQuantity = orderData.orderItems.reduce(
     (acc, item) => acc + item.quantity,
     0
   );
 
-  console.log(shippingAddress);
+  console.log(orderData);
   return (
     <SuccessContainer>
       <CheckCircleOutlined style={{ fontSize: "64px", color: "#52c41a" }} />
@@ -54,7 +54,7 @@ const OrderSuccessPage = () => {
           </p>
           <p>
             <strong>Phương thức thanh toán:</strong>{" "}
-            {paymentMethod === "paypal" ? "PayPal" : "Chuyển khoản Ngân hàng"}
+            {orderData.paymentMethod === "paypal" ? "PayPal" : "Chuyển khoản Ngân hàng"}
           </p>
         </OrderInfo>
 

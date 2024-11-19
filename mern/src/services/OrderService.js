@@ -18,4 +18,11 @@ export const createOrder = async (data) => {
 };
 
 
+export const getOrderDetails = async (id) => {
+  return axiosInstance.get(`/order/get-order-details/${id}`);
+};
+
+export const cancelOrder = (orderId) => {
+  return axiosInstance.delete(`/order/cancel/${orderId}`);
+};
 

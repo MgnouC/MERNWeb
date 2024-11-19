@@ -69,7 +69,7 @@ const HomePage = () => {
 
   // Hàm xử lý khi nhấn "Xem thêm"
   const handleLoadMore = () => {
-    setVisibleProducts((prevVisible) => prevVisible + 8); // Tăng số lượng sản phẩm hiển thị thêm 8
+    setVisibleProducts((prevVisible) => prevVisible + 4); // Tăng số lượng sản phẩm hiển thị thêm 8
   };
 
   return (

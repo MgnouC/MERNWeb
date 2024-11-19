@@ -21,7 +21,10 @@ import {
   PlaceOrderButton,
 } from "./style";
 import * as message from "../../components/Message/Mesage";
-import { updateOrderProductQuantity, removeOrderProduct } from "../../redux/slides/orderSlice";
+import {
+  updateOrderProductQuantity,
+  removeOrderProduct,
+} from "../../redux/slides/orderSlice";
 import { DeleteOutlined } from "@ant-design/icons";
 
 const OrderPage = () => {
@@ -39,12 +42,17 @@ const OrderPage = () => {
     (acc, item) => acc + item.price * item.quantity,
     0
   );
-  const totalAmount = orderItems.reduce(
-    (acc, item) => acc + item.price * item.quantity,
-    0
-  ) +25; // Tổng tiền + phí vận chuyển - khuyến mãi
+  const totalAmount =
+    orderItems.reduce((acc, item) => acc + item.price * item.quantity, 0) + 25; // Tổng tiền + phí vận chuyển - khuyến mãi
 
   const handleQuantityChange = (id, value) => {
+    const product = orderItems.find((item) => item.id === id);
+    if (value > product.countInStock) {
+      message.error(
+        `Số lượng tối đa cho sản phẩm này là ${product.countInStock}`
+      );
+      return;
+    }
     dispatch(updateOrderProductQuantity({ id, quantity: value }));
   };
 
@@ -73,10 +81,11 @@ const OrderPage = () => {
                 </ItemPrice>
                 <QuantityInput
                   min={1}
-                  max={item?.countInStock}
+                  max={item.countInStock}
                   value={item.quantity}
                   onChange={(value) => handleQuantityChange(item.id, value)}
                 />
+
                 <DeleteOutlined
                   style={{
                     color: "red",
@@ -115,7 +124,8 @@ const OrderPage = () => {
             </TotalPrice>
             <PlaceOrderButton
               icon={<ShoppingCartOutlined />}
-              onClick={() => navigate("/payment")}            >
+              onClick={() => navigate("/payment")}
+            >
               Đặt Hàng Ngay
             </PlaceOrderButton>
           </SummaryCard>

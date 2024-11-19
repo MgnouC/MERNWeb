@@ -30,7 +30,7 @@ const CardComponent = (props) => {
     discount,
     rating,
     id,
-    onClick
+    onClick,
   } = props;
 
   return (
@@ -58,7 +58,6 @@ const CardComponent = (props) => {
       <StyleNameProduct>{name}</StyleNameProduct>
       <WrapperReportText>
         <span>
-          
           <WrapperStyleTextSell>
             <StarFilled
               style={{
