@@ -26,3 +26,11 @@ export const cancelOrder = (orderId) => {
   return axiosInstance.delete(`/order/cancel/${orderId}`);
 };
 
+export const getAllOrder = () => {
+  return axiosInstance.get(`/order/get-all-order`);
+};
+
+
+export const updateOrderStatus = (orderId, isDelivered) => {
+  return axiosInstance.put("/order/update-order-status", { orderId, isDelivered });
+};

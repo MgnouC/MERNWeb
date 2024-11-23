@@ -82,32 +82,35 @@ const TableComponentUser = ({ users, handleEdit, handleDelete }) => {
 
   return (
     <div>
+      <Button
+        type="primary"
+        onClick={exportToExcel}
+        style={{
+          color: "white",
+          backgroundColor: "#f95230",
+          marginBottom: "5px",
+        }}
+      >
+        Export to Excel
+      </Button>
 
-   
-    <Button
-          type="primary"
-          onClick={exportToExcel}
-          style={{ color: "white", backgroundColor: "#f95230" , marginBottom: '5px'}}
-        >
-          Export to Excel
-        </Button>
-
-    <Table  
-      dataSource={users?.data} // Dữ liệu người dùng sẽ được truyền từ AdminUser
-      columns={columns}
-      rowKey="key" // Khóa chính của bảng
-      pagination={{
-        style: {
-          color: "#f95230",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        },
-        pageSize: 7,
-      }}
-      locale={{ emptyText: "No data available" }}
-    /></div>
-  ); 
+      <Table
+        dataSource={users?.data} // Dữ liệu người dùng sẽ được truyền từ AdminUser
+        columns={columns}
+        rowKey="key" // Khóa chính của bảng
+        pagination={{
+          style: {
+            color: "#f95230",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          },
+          pageSize: 7,
+        }}
+        locale={{ emptyText: "No data available" }}
+      />
+    </div>
+  );
 };
 
 export default TableComponentUser;

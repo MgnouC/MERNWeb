@@ -132,21 +132,41 @@ const MyOrderPage = () => {
       render: (text) => <span>{text}</span>,
     },
     {
-      title: "Tình trạng",
+      title: "Giao Hàng",
       dataIndex: "isDelivered",
       key: "isDelivered",
       render: (isDelivered) =>
         isDelivered ? (
           <StatusTag color="green">Đã giao</StatusTag>
         ) : (
-          <StatusTag color="volcano">Đang xử lý</StatusTag>
+          <StatusTag color="volcano">Chưa giao</StatusTag>
         ),
+    },
+    {
+      title: "Tình trạng",
+      key: "status",
+      render: (text, record) => {
+        let isPaid = record.isPaid;
+        // Nếu phương thức thanh toán là COD và đơn hàng đã giao, thì cập nhật isPaid thành true
+        if (record.paymentMethod === "COD" && record.isDelivered) {
+          isPaid = true;
+        }
+        else if (record.paymentMethod === "paypal") {
+          isPaid = true;
+        }
+        return isPaid ? (
+          <StatusTag color="green">Đã thanh toán</StatusTag>
+        ) : (
+          <StatusTag color="volcano">Chưa thanh toán</StatusTag>
+        );
+      },
     },
     {
       title: "Hành động",
       key: "action",
       render: (text, record) =>
-        !record.isDelivered && (
+        //let isDelivered = record.isDelivered;
+        !record.isDelivered &&  (
           <CancelOrderButton onClick={() => showCancelConfirm(record._id)}>
             Hủy đơn hàng
           </CancelOrderButton>

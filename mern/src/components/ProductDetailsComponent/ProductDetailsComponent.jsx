@@ -43,9 +43,25 @@ const ProductDetailsComponent = ({ idProduct }) => {
       },
     }
   );
-
   const user = useSelector((state) => state.user);
+
   const cartItems = useSelector((state) => state.cartItems);
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (isError || !productResponse || !productResponse.data) {
+    return (
+      <div>
+        Error loading product details:{" "}
+        {productResponse?.message || "Unknown error"}
+      </div>
+    );
+  }
+  const product =
+    productResponse?.data && Array.isArray(productResponse.data)
+      ? productResponse.data[0]
+      : productResponse.data;
 
   const handleAddOrderProduct = () => {
     // Kiểm tra xem người dùng đã đăng nhập chưa
@@ -80,7 +96,7 @@ const ProductDetailsComponent = ({ idProduct }) => {
       setQuantity(0);
     }
   };
-  
+  const pricebefore = product.price + (product.price * 5) / 100;
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -96,10 +112,6 @@ const ProductDetailsComponent = ({ idProduct }) => {
   }
 
   // Extract product data from the response
-  const product =
-    productResponse?.data && Array.isArray(productResponse.data)
-      ? productResponse.data[0]
-      : productResponse.data;
 
   return (
     <Row style={{ padding: "15px", background: "#fff" }}>
@@ -178,6 +190,18 @@ const ProductDetailsComponent = ({ idProduct }) => {
           <WrapperPriceTextProduct>
             {product.price ? `${product.price.toLocaleString()} $` : "N/A"}
           </WrapperPriceTextProduct>
+          <span style={{ fontSize: "16px", fontWeight: "500" }}>
+            tiết kiệm ngay so với{" "}
+            <span
+              style={{
+                color: "#ee8216",
+                fontSize: "24px",
+                textDecoration: "line-through",
+              }}
+            >
+              {pricebefore ? `${pricebefore.toLocaleString()} $` : "N/A"}{" "}
+            </span>
+          </span>
         </WrapperPriceProduct>
 
         <WrapperAddresstProduct>

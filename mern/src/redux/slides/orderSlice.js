@@ -1,7 +1,7 @@
 // orderSlice.js
+
 import { createSlice } from "@reduxjs/toolkit";
 
-// Initial state based on the OrderProductModel schema
 const initialState = {
   orderItems: [],
   shippingAddress: {
@@ -21,10 +21,9 @@ const initialState = {
   deliveredAt: null,
   loading: false,
   error: null,
-  userOrders: [], // Thêm mảng lưu danh sách đơn hàng của người dùng
+  userOrders: [], // Danh sách đơn hàng của admin
 };
 
-// Order slice without createAsyncThunk
 const orderSlice = createSlice({
   name: "order",
   initialState,
@@ -33,7 +32,7 @@ const orderSlice = createSlice({
     addOrderProduct: (state, action) => {
       const item = action.payload;
       const existItem = state.orderItems.find((x) => x.id === item.id);
-    
+
       if (existItem) {
         const newQuantity = existItem.quantity + item.quantity;
         if (newQuantity > item.countInStock) {
@@ -54,7 +53,9 @@ const orderSlice = createSlice({
     },
     removeOrderProduct: (state, action) => {
       const productId = action.payload;
-      state.orderItems = state.orderItems.filter((item) => item.id !== productId);
+      state.orderItems = state.orderItems.filter(
+        (item) => item.id !== productId
+      );
     },
     setShippingAddress: (state, action) => {
       state.shippingAddress = {
@@ -84,11 +85,39 @@ const orderSlice = createSlice({
     setUserOrders: (state, action) => {
       state.userOrders = action.payload;
     },
-    
-    
+
     cancelUserOrder: (state, action) => {
       const orderId = action.payload;
-      state.userOrders = state.userOrders.filter((order) => order._id !== orderId);
+      state.userOrders = state.userOrders.filter(
+        (order) => order._id !== orderId
+      );
+    },
+
+    setLoading: (state, action) => {
+      state.loading = action.payload;
+    },
+    setError: (state, action) => {
+      state.error = action.payload;
+    },
+    setUserOrders: (state, action) => {
+      state.userOrders = action.payload;
+    },
+    cancelUserOrder: (state, action) => {
+      const orderId = action.payload;
+      state.userOrders = state.userOrders.filter(
+        (order) => order._id !== orderId
+      );
+    },
+    updateOrderStatus: (state, action) => {
+      const { orderId, isDelivered, isPaid } = action.payload;
+
+      const orderIndex = state.userOrders.findIndex(
+        (order) => order._id === orderId
+      );
+      if (orderIndex !== -1) {
+        state.userOrders[orderIndex].isDelivered = isDelivered;
+        state.userOrders[orderIndex].isPaid = isPaid;
+      }
     },
   },
 });
@@ -105,5 +134,6 @@ export const {
   setError,
   setUserOrders,
   cancelUserOrder,
+  updateOrderStatus,
 } = orderSlice.actions;
 export default orderSlice.reducer;

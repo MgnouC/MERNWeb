@@ -14,6 +14,9 @@ const createOrder = (newOrder) => {
         taxPrice,
         totalPrice,
         user,
+        isPaid,
+        paidAt,
+        paymentResult,
       } = newOrder;
 
       // Kiểm tra số lượng sản phẩm
@@ -42,6 +45,9 @@ const createOrder = (newOrder) => {
         taxPrice,
         totalPrice,
         user,
+        isPaid,
+        paidAt,
+        paymentResult,
       });
 
       // Cập nhật số lượng sản phẩm trong kho
@@ -148,10 +154,53 @@ const cancelOrder = async (orderId) => {
     };
   }
 };
+const getAllOrder = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      //const checkUser = await User.findOne({ _id: id })
+      const allOrder = await Order.find().sort({ createdAt: -1 });
+      resolve({
+        status: "OK",
+        message: "SUCCESS",
+        data: allOrder,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+const updateOrderStatus = async (req, res) => {
+  try {
+    const { orderId, isDelivered } = req.body;
+
+    // Tìm đơn hàng theo ID
+    const order = await Order.findById(orderId);
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    // Cập nhật trạng thái giao hàng
+    order.isDelivered = isDelivered;
+    if (isDelivered && order.paymentMethod === "COD") {
+      order.isPaid = true; // Nếu là COD và đã giao hàng, cập nhật đã thanh toán
+    }
+
+    const updatedOrder = await order.save();
+
+    res.status(200).json({
+      message: "Order updated successfully",
+      data: updatedOrder,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
 module.exports = {
   createOrder,
   updateProductStock,
   getOrderDetails,
-  cancelOrder
+  cancelOrder,
+  getAllOrder,
+  updateOrderStatus
 };

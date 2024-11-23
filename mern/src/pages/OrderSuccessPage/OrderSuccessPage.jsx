@@ -1,5 +1,5 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
 import {
   SuccessContainer,
   SuccessHeader,
@@ -14,34 +14,35 @@ import {
   OrderInfo,
 } from "./style";
 import { CheckCircleOutlined } from "@ant-design/icons";
-import { useLocation } from "react-router-dom";
 
 const OrderSuccessPage = () => {
-  // Lấy thông tin từ Redux store
   const location = useLocation();
   const { orderData } = location.state || {};
-  const orderItems = useSelector((state) => state.order.orderItems);
-  const shippingAddress = useSelector((state) => state.order.shippingAddress);
-  const paymentMethod = useSelector((state) => state.order.paymentMethod);
-  const user = useSelector((state) => state.user);
-  const totalAmount =
-    orderData.orderItems.reduce(
-      (acc, item) => acc + item.price * item.quantity,
-      0
-    ) +
-    30 -
-    5; // Tổng tiền hàng + phí vận chuyển - khuyến mãi
-  const orderId = orderData.orderItems.id; // Giả sử bạn có mã đơn hàng từ Redux hoặc server
+
+  // Kiểm tra xem orderData có tồn tại không
+  if (!orderData) {
+    return (
+      <SuccessContainer>
+        <SuccessHeader>Không tìm thấy thông tin đơn hàng</SuccessHeader>
+      </SuccessContainer>
+    );
+  }
+
+  // Lấy orderId từ paymentResult.id hoặc _id
+  const orderId =
+    orderData.paymentResult?.id || orderData._id || "Không có mã đơn hàng";
+
   const totalQuantity = orderData.orderItems.reduce(
     (acc, item) => acc + item.quantity,
     0
   );
+  const totalAmount =
+    orderData.itemPrice + orderData.shippingPrice - orderData.taxPrice;
 
-  console.log(orderData);
   return (
     <SuccessContainer>
       <CheckCircleOutlined style={{ fontSize: "64px", color: "#52c41a" }} />
-      <SuccessHeader>Thanh Toán Thành Công</SuccessHeader>
+      <SuccessHeader>Đặt Hàng Thành Công</SuccessHeader>
 
       <SuccessContent>
         {/* Thông tin đơn hàng */}
@@ -54,7 +55,9 @@ const OrderSuccessPage = () => {
           </p>
           <p>
             <strong>Phương thức thanh toán:</strong>{" "}
-            {orderData.paymentMethod === "paypal" ? "PayPal" : "Chuyển khoản Ngân hàng"}
+            {orderData.paymentMethod === "paypal"
+              ? "PayPal"
+              : "Thanh Toán Khi Nhận Hàng"}
           </p>
         </OrderInfo>
 
@@ -66,8 +69,7 @@ const OrderSuccessPage = () => {
           </p>
           <p>
             <strong>Số điện thoại:</strong>{" "}
-            {orderData.shippingAddress.phone ||
-              "Số điện thoại chưa được cung cấp"}
+            {orderData.shippingAddress.phone || "Số điện thoại chưa được cung cấp"}
           </p>
           <p>
             <strong>Địa chỉ:</strong>{" "}
@@ -78,7 +80,7 @@ const OrderSuccessPage = () => {
         {/* Danh sách sản phẩm */}
         <SuccessDetails>
           {orderData.orderItems.map((item) => (
-            <ProductRow key={item.id}>
+            <ProductRow key={item.product}>
               <ProductDetails>
                 <span>{item.name}</span>
                 <span>x{item.quantity}</span>
@@ -94,20 +96,15 @@ const OrderSuccessPage = () => {
         <TotalSection>
           <TotalRow>
             <span>Tổng tiền hàng:</span>
-            <span>
-              {orderData.orderItems
-                .reduce((acc, item) => acc + item.price * item.quantity, 0)
-                .toLocaleString()}{" "}
-              $
-            </span>
+            <span>{orderData.itemPrice.toLocaleString()} $</span>
           </TotalRow>
           <TotalRow>
             <span>Phí vận chuyển:</span>
-            <span>30 $</span>
+            <span>{orderData.shippingPrice.toLocaleString()} $</span>
           </TotalRow>
           <TotalRow>
             <span>Khuyến mãi:</span>
-            <span>-5 $</span>
+            <span>-{orderData.taxPrice.toLocaleString()} $</span>
           </TotalRow>
           <TotalRow bold>
             <span>Tổng cộng:</span>

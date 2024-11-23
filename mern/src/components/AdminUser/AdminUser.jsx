@@ -1,16 +1,17 @@
-import { Form, Input, Button, Modal, Upload } from "antd";
-import React, { useState, useEffect } from "react";
+import { Form, Input, Button, Modal, Upload, Checkbox } from "antd";
+import React, { useState } from "react";
 import { WrapperHeader } from "./style";
-import { PlusOutlined } from "@ant-design/icons";
+import { PlusOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import * as UserService from "../../services/UserServices"; // Giả sử bạn đã tạo dịch vụ này
+import * as UserService from "../../services/UserServices";
 import TableComponentUser from "../TableComponent/TableComponentUser";
 import * as message from "../../components/Message/Mesage";
+
+const { confirm } = Modal;
 
 const AdminUser = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [form] = Form.useForm();
-  const [fileList, setFileList] = useState([]);
   const [editingUser, setEditingUser] = useState(null);
   const queryClient = useQueryClient();
 
@@ -22,18 +23,14 @@ const AdminUser = () => {
     setIsModalOpen(false);
   };
 
-  const { data: users, error } = useQuery(
-    ["users"],
-    UserService.getAllUser,
-    {
-      onSuccess: (data) => {
-        console.log("Fetched users:", data);
-      },
-      onError: (error) => {
-        message.error("Error fetching users: " + error.message);
-      },
-    }
-  );
+  const { data: users } = useQuery(["users"], UserService.getAllUser, {
+    onSuccess: (data) => {
+      console.log("Fetched users:", data);
+    },
+    onError: (error) => {
+      message.error("Error fetching users: " + error.message);
+    },
+  });
 
   const updateMutation = useMutation(
     (updateUser) => UserService.updateUser(updateUser),
@@ -60,35 +57,44 @@ const AdminUser = () => {
     }
   );
 
-  const handleEdit = (users) => {
-    //console.log(users)
-    setEditingUser(users._id);
+  const handleEdit = (user) => {
+    setEditingUser(user._id);
     setIsModalOpen(true);
-    form.setFieldsValue(users);
-    setFileList([{ uid: "-1", name: "image.png", status: "done" }]);
+    form.setFieldsValue(user);
   };
 
-  const handleDelete = (userId) => {
-    deleteMutation.mutate(userId);
+  const showDeleteConfirm = (userId) => {
+    confirm({
+      title: "Bạn có chắc muốn xóa người dùng này không?",
+      icon: <ExclamationCircleOutlined />,
+      content: "Thao tác này không thể hoàn tác.",
+      okText: "Đồng ý",
+      okType: "danger",
+      cancelText: "Hủy bỏ",
+      onOk() {
+        deleteMutation.mutate(userId);
+      },
+      onCancel() {
+        console.log("Hủy xóa người dùng");
+      },
+    });
   };
 
-  const onFinish = async (values) => {
-    const formData = new FormData();
-    formData.append("name", values.name);
-    formData.append("email", values.email);
-    formData.append("phone", values.phone);
-    formData.append("address", values.address);
-    //formData.append("password", values.password || "");  // Cẩn thận với các giá trị undefined
-    formData.append("isAdmin", values.isAdmin || false);
+  const onFinish = (values) => {
+    const formData = {
+      name: values.name,
+      email: values.email,
+      phone: values.phone,
+      address: values.address,
+      isAdmin: values.isAdmin || false,
+    };
 
     if (editingUser) {
-      //console.log("Editing Product ID:", editingUser);
       updateMutation.mutate({ id: editingUser, data: formData });
     } else {
       console.error("No editing user found!");
     }
-  }
-  
+  };
 
   return (
     <div>
@@ -101,13 +107,13 @@ const AdminUser = () => {
         }}
         type="primary"
       >
-        <PlusOutlined /> Add User
+        <PlusOutlined /> Thêm Người Dùng
       </Button>
       <div style={{ marginTop: "20px" }}>
         <TableComponentUser
           users={users || []}
           handleEdit={handleEdit}
-          handleDelete={handleDelete}
+          handleDelete={showDeleteConfirm}
           columns={[
             {
               title: "Tên",
@@ -130,13 +136,16 @@ const AdminUser = () => {
               key: "action",
               render: (_, record) => (
                 <>
-                  <Button onClick={() => handleEdit(record)}>Edit</Button>
+                  <Button type="link" onClick={() => handleEdit(record)}>
+                    Sửa
+                  </Button>
                   <Button
+                    type="link"
                     danger
                     style={{ marginLeft: 8 }}
-                    onClick={() => handleDelete(record._id)}
+                    onClick={() => showDeleteConfirm(record._id)}
                   >
-                    Delete
+                    Xóa
                   </Button>
                 </>
               ),
@@ -146,7 +155,7 @@ const AdminUser = () => {
         />
       </div>
       <Modal
-        title={editingUser ? "Edit User" : "Add User"}
+        title={editingUser ? "Sửa Người Dùng" : "Thêm Người Dùng"}
         open={isModalOpen}
         onOk={handleOk}
         onCancel={handleCancel}
@@ -162,9 +171,9 @@ const AdminUser = () => {
           autoComplete="off"
         >
           <Form.Item
-            label="Username"
+            label="Tên Người Dùng"
             name="name"
-            rules={[{ required: true, message: "Please input username!" }]}
+            rules={[{ required: true, message: "Vui lòng nhập tên người dùng!" }]}
           >
             <Input />
           </Form.Item>
@@ -173,31 +182,31 @@ const AdminUser = () => {
             label="Email"
             name="email"
             rules={[
-              { required: true, message: "Please input email!" },
-              { type: "email", message: "Please enter a valid email!" },
+              { required: true, message: "Vui lòng nhập email!" },
+              { type: "email", message: "Vui lòng nhập email hợp lệ!" },
             ]}
           >
             <Input />
           </Form.Item>
 
           <Form.Item
-            label="Phone"
+            label="Số Điện Thoại"
             name="phone"
-            rules={[{ required: true, message: "Please input phone number!" }]}
+            rules={[{ required: true, message: "Vui lòng nhập số điện thoại!" }]}
           >
             <Input />
           </Form.Item>
 
           <Form.Item
-            label="Address"
+            label="Địa Chỉ"
             name="address"
-            rules={[{ required: true, message: "Please input address!" }]}
+            rules={[{ required: true, message: "Vui lòng nhập địa chỉ!" }]}
           >
             <Input />
           </Form.Item>
 
           <Form.Item label="Admin" name="isAdmin" valuePropName="checked">
-            <Input type="checkbox" />
+            <Checkbox />
           </Form.Item>
 
           <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
@@ -206,7 +215,14 @@ const AdminUser = () => {
               htmlType="submit"
               loading={updateMutation.isLoading || deleteMutation.isLoading}
             >
-              Submit
+              Xác Nhận
+            </Button>
+            <Button
+              type="default"
+              style={{ marginLeft: 8 }}
+              onClick={() => form.resetFields()}
+            >
+              Reset
             </Button>
           </Form.Item>
         </Form>

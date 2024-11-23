@@ -1,3 +1,4 @@
+const Order = require("../models/OrderProduct");
 const OrderService = require("../services/OrderService");
 
 const createOrder = async (req, res) => {
@@ -10,7 +11,10 @@ const createOrder = async (req, res) => {
       shippingPrice,
       taxPrice,
       totalPrice,
-      user, // Lấy user từ req.body
+      user,
+      isPaid,
+      paidAt,
+      paymentResult,
     } = req.body;
 
     if (!orderItems || orderItems.length === 0) {
@@ -25,7 +29,10 @@ const createOrder = async (req, res) => {
       shippingPrice,
       taxPrice,
       totalPrice,
-      user, // Sử dụng user từ req.body
+      user,
+      isPaid,
+      paidAt,
+      paymentResult,
     };
 
     const response = await OrderService.createOrder(newOrder);
@@ -70,8 +77,50 @@ const cancelOrder = async (req, res) => {
     });
   }
 };
+
+const getAllOrder = async (req, res) => {
+  try {
+    const orderId = req.params.id;
+    const response = await OrderService.getAllOrder();
+    return res.status(200).json(response);
+  } catch (e) {
+    return res.status(e.status || 500).json({
+      message: e.message || "An error occurred",
+    });
+  }
+};
+
+const updateOrderStatus = async (req, res) => {
+  try {
+    const { orderId, isDelivered } = req.body;
+
+    // Tìm đơn hàng theo ID
+    const order = await Order.findById(orderId);
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    // Cập nhật trạng thái giao hàng
+    order.isDelivered = isDelivered;
+    if (isDelivered && order.paymentMethod === "COD") {
+      order.isPaid = true; // Nếu là COD và đã giao hàng, cập nhật đã thanh toán
+    }
+
+    const updatedOrder = await order.save();
+
+    res.status(200).json({
+      message: "Order updated successfully",
+      data: updatedOrder,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   createOrder,
   getOrderDetails,
-  cancelOrder
+  cancelOrder,
+  getAllOrder,
+  updateOrderStatus
 };
