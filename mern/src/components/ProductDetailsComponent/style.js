@@ -21,37 +21,37 @@ export const WrapperStyleImageSmall = styled(Image)`
 `;
 
 /* Wrapper for Image Column */
+/* Wrapper for Image Column */
 export const WrapperStyleColImage = styled(Col)`
-    flex: none;
-    padding: 8px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  flex: none;
+  padding: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-    @media (max-width: 768px) {
-        padding: 6px;
-    }
+  @media (max-width: 768px) {
+    padding: 6px;
+  }
 `;
 
 /* Product Name */
 export const WrapperStyleNameProduct = styled.h1`
-   
-    margin: 0;
-    color: #27272a;
-    font-size: 36px;
-    font-weight: 500;
-    line-height: 1.5;
-    word-break: break-word;
-    white-space: normal;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  margin: 0;
+  color: #27272a;
+  font-size: 36px;
+  font-weight: 600;
+  line-height: 1.5;
+  word-break: break-word;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  text-transform: capitalize;
 
-    @media (max-width: 768px) {
-        font-size: 18px;
-    }
+  @media (max-width: 768px) {
+    font-size: 18px;
+  }
 
-    @media (max-width: 480px) {
-        font-size: 16px;
-    }
+  @media (max-width: 480px) {
+    font-size: 16px;
+  }
 `;
 
 /* Sell Text */
@@ -73,23 +73,28 @@ export const WrapperStyleTextSell = styled.span`
 
 /* Price Product Container */
 export const WrapperPriceProduct = styled.div`
-    background: #fafafa;
-    border-radius: 8px;
-    padding: 16px;
-    display: flex;
-    align-items: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    margin-top: 16px;
+  background: #fafafa;
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  margin-top: 16px;
+  transition: background-color 0.3s ease;
 
-    @media (max-width: 768px) {
-        padding: 12px;
-        margin-top: 12px;
-    }
+  &:hover {
+    background-color: #fefefe;
+  }
 
-    @media (max-width: 480px) {
-        flex-direction: column;
-        align-items: flex-start;
-    }
+  @media (max-width: 768px) {
+    padding: 12px;
+    margin-top: 12px;
+  }
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 `;
 
 /* Price Text */
@@ -123,120 +128,117 @@ export const WrapperPriceTextProduct = styled.h1`
 
 /* Address and Change Address */
 export const WrapperAddresstProduct = styled.div`
-    margin-top: 16px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 
-    span.address { 
-        text-decoration: underline;
-        font-size: 15px;
-        line-height: 24px;
-        font-weight: 500;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 200px;
+  span.address {
+    text-decoration: underline;
+    font-size: 15px;
+    line-height: 24px;
+    font-weight: 500;
+    color: #333;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
 
-        @media (max-width: 768px) {
-            max-width: 150px;
-            font-size: 14px;
-        }
-
-        @media (max-width: 480px) {
-            max-width: 120px;
-            font-size: 13px;
-        }
-    }
-
-    span.change-address { 
-        color: #0b74e5;
-        font-size: 16px;
-        font-weight: 500;
-        line-height: 1.5;
-        cursor: pointer;
-
-        &:hover {
-            text-decoration: underline;
-        }
-
-        @media (max-width: 768px) {
-            font-size: 15px;
-        }
-
-        @media (max-width: 480px) {
-            font-size: 14px;
-        }
+    @media (max-width: 768px) {
+      max-width: 150px;
+      font-size: 14px;
     }
 
     @media (max-width: 480px) {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 4px;
+      max-width: 120px;
+      font-size: 13px;
     }
-`;
+  }
 
-/* Quantity Selector */
-export const WrapperQualityProduct = styled.div`
-    display: flex;
-    gap: 8px;
-    align-items: center;
-    border-radius: 4px;
-    max-width: 120px;
-    border: 1px solid #a6a6b0;
-    padding: 4px 8px;
-    background-color: #ffffff;
-    transition: border-color 0.3s ease;
+  span.change-address {
+    color: #0b74e5;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: color 0.3s ease;
 
     &:hover {
-        border-color: #ee4d2d;
+      color: #0056b3;
+      text-decoration: underline;
     }
 
     @media (max-width: 768px) {
-        max-width: 100px;
-        gap: 6px;
-        padding: 3px 6px;
+      font-size: 15px;
     }
 
     @media (max-width: 480px) {
-        max-width: 80px;
-        gap: 4px;
-        padding: 2px 4px;
+      font-size: 14px;
     }
+  }
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+`;
+/* Quantity Selector */
+export const WrapperQualityProduct = styled.div`
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  border-radius: 4px;
+  max-width: 120px;
+  border: 1px solid #a6a6b0;
+  padding: 4px 8px;
+  background-color: #ffffff;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+
+  &:hover {
+    border-color: #ee4d2d;
+    background-color: #fdf5f5;
+  }
+
+  @media (max-width: 768px) {
+    max-width: 100px;
+    gap: 6px;
+    padding: 3px 6px;
+  }
+
+  @media (max-width: 480px) {
+    max-width: 80px;
+    gap: 4px;
+    padding: 2px 4px;
+  }
 `;
 
 /* Input Number for Quantity */
 export const WrapperInputNumber = styled(InputNumber)`
-    width: 60px;
-    border: none;
-    font-size: 16px;
-    text-align: center;
-    background-color: #f5f5f5;
-    border-radius: 4px;
-    padding: 4px 0;
-    transition: background-color 0.3s ease;
+  width: 60px;
+  border: none;
+  font-size: 16px;
+  text-align: center;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  padding: 4px 0;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
 
-    .ant-input-number-handler-wrap {
-        display: none;
-    }
+  &:focus {
+    box-shadow: 0 0 4px rgba(250, 79, 49, 0.5);
+    background-color: #eaeaea;
+  }
 
-    &:focus {
-        box-shadow: none;
-        border: none;
-        background-color: #eaeaea;
-    }
+  @media (max-width: 768px) {
+    width: 50px;
+    font-size: 14px;
+    padding: 3px 0;
+  }
 
-    @media (max-width: 768px) {
-        width: 50px;
-        font-size: 14px;
-        padding: 3px 0;
-    }
-
-    @media (max-width: 480px) {
-        width: 40px;
-        font-size: 12px;
-        padding: 2px 0;
-    }
+  @media (max-width: 480px) {
+    width: 40px;
+    font-size: 12px;
+    padding: 2px 0;
+  }
 `;
 export const StyledInputNumber = styled(InputNumber)`
   width: 60px;

@@ -24,6 +24,8 @@ import {
 } from "./style";
 import { addOrderProduct } from "../../redux/slides/orderSlice";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
 const ProductDetailsComponent = ({ idProduct }) => {
   const [quantity, setQuantity] = useState(1);
   const dispatch = useDispatch();
@@ -44,7 +46,30 @@ const ProductDetailsComponent = ({ idProduct }) => {
     }
   );
   const user = useSelector((state) => state.user);
+  const navigate = useNavigate();
+  const handleNavigateBuyNow = () => {
+    navigate("/order");
+    // Kiểm tra xem người dùng đã đăng nhập chưa
+    if (!user?.id) {
+      message.info("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng.");
+      return;
+    }
 
+    // Kiểm tra xem sản phẩm còn hàng không
+    if (product.countInStock === 0) {
+      message.error("Sản phẩm đã hết hàng!");
+      return;
+    }
+
+    dispatch(
+      addOrderProduct({
+        ...product,
+        id: product._id,
+        quantity: quantity,
+      })
+    );
+    
+  };
   const cartItems = useSelector((state) => state.cartItems);
   if (isLoading) {
     return <div>Loading...</div>;
@@ -262,10 +287,11 @@ const ProductDetailsComponent = ({ idProduct }) => {
                   boxShadow: "0 1px 1px 0 rgba(0, 0, 0, .09)",
                 }}
                 textButton={"Bỏ Vào Giỏ Hàng"}
+                onClick={handleAddOrderProduct}
                 styleTextButton={{ color: "#ee4d2d", fontSize: "14px" }}
                 // Thêm onClick nếu cần thiết
               />
-              <ButtonComponent
+              <ButtonComponent 
                 border={false}
                 size={40}
                 styleButton={{
@@ -277,7 +303,9 @@ const ProductDetailsComponent = ({ idProduct }) => {
                   borderRadius: "2px",
                   boxShadow: "0 1px 1px 0 rgba(0, 0, 0, .09)",
                 }}
-                onClick={handleAddOrderProduct}
+                onClick={handleNavigateBuyNow }
+                
+               
                 textButton={"Mua Ngay Đi"}
                 styleTextButton={{ color: "#fff", fontSize: "14px" }}
               />

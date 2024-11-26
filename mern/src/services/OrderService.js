@@ -30,6 +30,15 @@ export const getAllOrder = () => {
   return axiosInstance.get(`/order/get-all-order`);
 };
 
+// export const getAllOrder = async () => {
+//   try {
+//     const response = await axiosInstance.get(`/order/get-all-order`);
+//     return response.data; // Trả về dữ liệu thực tế từ API
+//   } catch (error) {
+//     throw error.response?.data || { message: "Error fetching orders" };
+//   }
+// };
+
 
 export const updateOrderStatus = (orderId, isDelivered) => {
   return axiosInstance.put("/order/update-order-status", { orderId, isDelivered });

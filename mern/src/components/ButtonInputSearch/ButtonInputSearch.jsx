@@ -20,7 +20,7 @@ const ButtonInputSearch = (props) => {
     } = props;
   
     return (
-      <div style={{ display: 'flex', background: '#EC8313', padding: '10px', borderRadius: '10px', width: '100%' }}>
+      <div style={{ display: 'flex', padding: '10px', borderRadius: '10px', width: '100%' }}>
         <InputComponent
           size={size}
           placeholder={placeholder}

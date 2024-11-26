@@ -1,92 +1,47 @@
-/* Button Edit Hover State */
-.button-edit:hover {
+/* Cập nhật cho Button Edit và Delete */
+.button-edit {
+    width: 80px; /* Chiều dài cố định */
+    text-align: center;
+    border: 1px solid #d9d9d9;
+    color: #333;
+    font-weight: bold;
+    border-radius: 5px;
+    padding: 6px 0;
+    transition: all 0.3s ease;
+  }
+  
+  .button-edit:hover {
     border: 1px solid #f95230 !important;
     color: #f95230 !important;
-    transition: all 0.3s ease;
-}
-
-/* Ant Design Pagination Item Styles */
-.ant-pagination-item a {
+    background-color: #fff;
+  }
+  
+  /* Pagination */
+  .ant-pagination-item a {
     background: #f95230 !important;
-    border-radius: 20px;
-    border: 1px solid #f95230 !important;
+    border-radius: 10px;
+    border: none;
     color: #ffffff;
     transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-/* Ant Design Pagination Item Focus State */
-.ant-pagination-item:focus,
-.ant-pagination-item:focus a {
-    background-color: #f95230 !important;
-    border: 1px solid #f95230 !important;
-    color: #ffffff;
-    outline: none; /* Remove default focus outline */
-}
-
-/* Ant Design Active Pagination Item */
-.ant-pagination-item-active a {
-    background-color: #f95230 !important;
-    border: none;
+  }
+  
+  .ant-pagination-item-active a {
+    background-color: #d43d1a !important;
     color: #ffffff !important;
-}
-
-/* Responsive Enhancements */
-@media (max-width: 1200px) {
-    .ant-pagination-item a {
-        border-radius: 18px;
-        font-size: 15px;
-    }
-
-    .button-edit {
-        font-size: 15px;
-        padding: 7px 14px;
-    }
-}
-
-@media (max-width: 992px) {
-    .ant-pagination-item a {
-        border-radius: 16px;
-        font-size: 14px;
-    }
-
-    .button-edit {
-        font-size: 14px;
-        padding: 6px 12px;
-    }
-}
-
-@media (max-width: 768px) {
-    .ant-pagination-item a {
-        border-radius: 14px;
-        font-size: 13px;
-    }
-
-    .button-edit {
-        font-size: 13px;
-        padding: 5px 10px;
-    }
-}
-
-@media (max-width: 576px) {
-    .ant-pagination-item a {
-        border-radius: 12px;
-        font-size: 12px;
-    }
-
-    .button-edit {
-        font-size: 12px;
-        padding: 4px 8px;
-    }
-}
-
-@media (max-width: 480px) {
-    .ant-pagination-item a {
-        border-radius: 10px;
-        font-size: 11px;
-    }
-
-    .button-edit {
-        font-size: 11px;
-        padding: 3px 6px;
-    }
-}
+  }
+  
+  .ant-pagination-item:hover a {
+    background-color: #fa4f31 !important;
+    color: #ffffff;
+  }
+  
+  .ant-pagination-item {
+    margin: 0 5px;
+  }
+  
+  .ant-pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+  }
+  

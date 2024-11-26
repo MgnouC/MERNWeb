@@ -169,6 +169,21 @@ const getAllOrder = () => {
     }
   });
 };
+const getAllOrderAdmin = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      //const checkUser = await User.findOne({ _id: id })
+      const allOrder = await Order.find().sort({ createdAt: -1 });
+      resolve({
+        status: "OK",
+        message: "SUCCESS",
+        data: allOrder,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
 const updateOrderStatus = async (req, res) => {
   try {
     const { orderId, isDelivered } = req.body;

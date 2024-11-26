@@ -22,7 +22,6 @@ const { confirm } = Modal;
 const AdminOrderPage = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
-  console.log(user);
   const orders = useSelector((state) => state.order.userOrders);
   const loading = useSelector((state) => state.order.loading);
   const [selectedOrder, setSelectedOrder] = useState(null);
@@ -139,7 +138,7 @@ const AdminOrderPage = () => {
         if (record.paymentMethod === "COD" && record.isDelivered) {
           isPaid = true;
         }
-    
+
         return (
           <Tag color={isPaid ? "green" : "volcano"}>
             {isPaid ? "Đã thanh toán" : "Chưa thanh toán"}
@@ -147,7 +146,7 @@ const AdminOrderPage = () => {
         );
       },
     },
-    
+
     {
       title: "Hành động",
       key: "action",
@@ -161,6 +160,8 @@ const AdminOrderPage = () => {
             Chi tiết
           </ActionButton>
           <ActionButton
+          type="primary"
+            style={{ marginRight: 8, marginBottom: 8 }}
             disabled={record.isDelivered} // Disable nút nếu đã giao
             onClick={() => handleUpdateDeliveryStatus(record._id, true)}
           >
@@ -177,7 +178,7 @@ const AdminOrderPage = () => {
     XLSX.utils.book_append_sheet(workbook, worksheet, "Orders");
     XLSX.writeFile(workbook, "orders_data.xlsx");
   };
-
+  console.log("name", orders.name);
   return (
     <OrderContainer>
       <WrapperHeader>QUẢN LÍ ĐƠN HÀNG</WrapperHeader>
@@ -199,6 +200,7 @@ const AdminOrderPage = () => {
         dataSource={orders}
         rowKey="_id"
         loading={loading}
+        pagination={{ pageSize: 5 }} // Hiển thị 5 đơn hàng mỗi trang
       />
 
       {/* Modal hiển thị chi tiết đơn hàng */}
@@ -215,7 +217,7 @@ const AdminOrderPage = () => {
               <strong>Mã đơn hàng:</strong> {selectedOrder._id}
             </p>
             <p>
-              <strong>Người dùng:</strong> {selectedOrder.user?.name || "N/A"}
+              <strong>Người dùng:</strong> {selectedOrder.user || "N/A"}
             </p>
             <p>
               <strong>Email:</strong> {selectedOrder.user?.email || "N/A"}

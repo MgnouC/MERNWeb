@@ -36,9 +36,8 @@ export const WrapperHeader = styled.h1`
 export const OrderContent = styled(Row)`
   background-color: #ffffff;
   padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-
+  border-radius: 10px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.05);
   @media (max-width: 768px) {
     flex-direction: column;
     padding: 10px; // Giảm padding để phù hợp với màn hình nhỏ hơn
@@ -66,7 +65,7 @@ export const SummaryCol = styled(Col)`
 export const CartItem = styled(Card)`
   margin-bottom: 20px;
   border: 1px solid #e8e8e8;
-
+  border-radius: 8px;
   .ant-card-body {
     display: flex;
     align-items: center;
@@ -74,7 +73,9 @@ export const CartItem = styled(Card)`
     justify-content: space-between; // Đảm bảo tất cả các thành phần được căn chỉnh đều
     flex-wrap: wrap;
   }
-
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
   @media (max-width: 768px) {
     flex-direction: column;
     align-items: flex-start;
@@ -108,10 +109,10 @@ export const ItemDetails = styled.div`
 
 // Item Name - Để đảm bảo tên không chiếm quá nhiều chỗ
 export const ItemName = styled.h3`
-  font-size: 16px;
-  margin-bottom: 5px;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  flex: 1;
+   font-size: 16px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 8px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -136,6 +137,7 @@ export const ItemPrice = styled.div`
   color: #f95230;
   font-weight: bold;
   margin-right: 20px;
+  
   font-size: 24px;
   @media (max-width: 768px) {
     font-size: 14px;
@@ -251,15 +253,14 @@ export const PlaceOrderButton = styled(Button)`
   background-color: #f95230;
   color: #ffffff;
   font-size: 16px;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: bold;
+  border-radius: 8px;
   border: none;
+  transition: background-color 0.3s ease;
 
-  &:hover{
-  color: #f95230 !important;
-  },
-  &:focus {
+  &:hover {
     background-color: #d43d1a;
-    color: #ffffff;
+    color: #f95230 !important;
   }
 
   @media (max-width: 768px) {

@@ -100,10 +100,8 @@ const TableComponentUser = ({ users, handleEdit, handleDelete }) => {
         rowKey="key" // Khóa chính của bảng
         pagination={{
           style: {
-            color: "#f95230",
             display: "flex",
             justifyContent: "center",
-            alignItems: "center",
           },
           pageSize: 7,
         }}

@@ -208,7 +208,7 @@ const PaymentPage = () => {
                 <ItemDetails>
                   <ItemName>{item.name}</ItemName>
                   <ItemPrice>{item.price.toLocaleString()} $</ItemPrice>
-                  <QuantityText>Số lượng: {item.quantity}</QuantityText>
+                  Số lượng: {item.quantity}
                 </ItemDetails>
               </CartItem>
             ))}

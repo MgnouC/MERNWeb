@@ -1,17 +1,10 @@
 import React, { useState } from "react";
-import {
-  AppstoreOutlined,
-  UserOutlined,
-} from "@ant-design/icons";
+import { AppstoreOutlined, UserOutlined } from "@ant-design/icons";
 import AdminUser from "../../components/AdminUser/AdminUser";
 import AdminProduct from "../../components/AdminProduct/AdminProduct";
 import AdminOrder from "../../components/AdminOrder/AdminOrder";
-import {
-  AdminPageContainer,
-  StyledMenu,
-  AdminContent,
-} from "./style";
-
+import { AdminPageContainer, StyledMenu, AdminContent } from "./style";
+import Chart from "../../components/Chart/Chart";
 const AdminPage = () => {
   // Các mục trong menu
   const items = [
@@ -33,6 +26,12 @@ const AdminPage = () => {
       label: "Đơn Hàng",
       style: { color: "#f95230" },
     },
+    {
+      key: "chart",
+      icon: <AppstoreOutlined />,
+      label: "Chart",
+      style: { color: "#f95230" },
+    },
   ];
 
   // State để lưu giữ key của menu được chọn
@@ -47,6 +46,8 @@ const AdminPage = () => {
         return <AdminProduct />;
       case "order":
         return <AdminOrder />;
+      case "chart":
+        return <Chart />;
       default:
         return <></>;
     }
@@ -66,9 +67,7 @@ const AdminPage = () => {
         items={items}
         onClick={handleOnclick}
       />
-      <AdminContent>
-        {renderPage(stateOpenKeys)}
-      </AdminContent>
+      <AdminContent>{renderPage(stateOpenKeys)}</AdminContent>
     </AdminPageContainer>
   );
 };

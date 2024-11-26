@@ -6,8 +6,8 @@ export const SuccessContainer = styled.div`
   max-width: 800px;
   margin: 20px auto;
   background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   text-align: center;
 
   @media (max-width: 768px) {
@@ -18,7 +18,7 @@ export const SuccessContainer = styled.div`
 // Tiêu đề thông báo
 export const SuccessHeader = styled.h1`
   font-size: 28px;
-  color: #333;
+  color: #f95230;
   margin: 20px 0;
   font-weight: bold;
 
@@ -46,7 +46,7 @@ export const OrderInfo = styled.div`
     margin: 5px 0;
 
     strong {
-      color: #333;
+      color: #f95230;
     }
 
     @media (max-width: 768px) {
@@ -63,9 +63,9 @@ export const UserInfo = styled.div`
   p {
     font-size: 16px;
     margin: 5px 0;
-    
+
     strong {
-      color: #f95230;
+      color: #333;
     }
 
     @media (max-width: 768px) {
@@ -93,6 +93,12 @@ export const ProductRow = styled.div`
   align-items: center;
   margin-bottom: 15px;
   flex-wrap: wrap;
+
+  &:hover {
+    background-color: #fafafa;
+    border-radius: 8px;
+    padding: 8px;
+  }
 
   &:last-child {
     margin-bottom: 0;
@@ -145,6 +151,12 @@ export const TotalRow = styled.div`
   font-size: ${(props) => (props.bold ? "18px" : "16px")};
   font-weight: ${(props) => (props.bold ? "bold" : "normal")};
   margin-bottom: 15px;
+
+  &:hover {
+    background-color: #f9f9f9;
+    border-radius: 6px;
+    padding: 5px 10px;
+  }
 
   &:last-child {
     margin-bottom: 0;

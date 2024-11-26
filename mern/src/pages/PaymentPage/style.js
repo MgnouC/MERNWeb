@@ -1,11 +1,14 @@
-// style.js
 import styled from "styled-components";
-import { Row, Col, Card, Input, Select, Button } from "antd";
+import { Row, Col, Card, Select, Button, Input } from "antd";
 
 export const PaymentContainer = styled.div`
   padding: 40px 20px;
-  background-color: #f5f5f5;
+  background-color: #fafafa;
   min-height: 100vh;
+
+  @media (max-width: 768px) {
+    padding: 20px 10px;
+  }
 `;
 
 export const WrapperHeader = styled.h1`
@@ -13,49 +16,70 @@ export const WrapperHeader = styled.h1`
   color: #f95230;
   font-size: 32px;
   margin-bottom: 30px;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+  @media (max-width: 768px) {
+    font-size: 24px;
+  }
 `;
 
 export const PaymentContent = styled(Row)`
   background-color: #ffffff;
   padding: 20px;
-  border-radius: 8px;
-  margin-Bottom: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    padding: 15px;
+  }
 `;
 
 export const CartItemsCol = styled(Col)`
   flex: 1 1 60%;
-  padding-right: 20px;
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
 `;
 
 export const SummaryCol = styled(Col)`
   flex: 1 1 35%;
   padding-left: 20px;
+
+  @media (max-width: 768px) {
+    padding-left: 0;
+    margin-top: 20px;
+  }
 `;
 
 export const CartItem = styled(Card)`
   margin-bottom: 20px;
-  border: 1px solid #e8e8e8;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
 
   .ant-card-body {
     display: flex;
     align-items: center;
     padding: 10px;
-    justify-content: space-between; // Đảm bảo tất cả các thành phần được căn chỉnh đều
-    flex-wrap: wrap;
+  }
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
 
   @media (max-width: 768px) {
     flex-direction: column;
     align-items: flex-start;
-    margin-bottom: 15px;
   }
 `;
+
 export const ItemImage = styled.img`
   width: 80px;
   height: 80px;
   object-fit: cover;
-  border-radius: 4px;
+  border-radius: 8px;
   margin-right: 20px;
 
   @media (max-width: 768px) {
@@ -75,71 +99,51 @@ export const ItemDetails = styled.div`
 
 export const ItemName = styled.h3`
   font-size: 16px;
-  margin-bottom: 5px;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  flex: 1;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-
-  @media (max-width: 768px) {
-    font-size: 14px;
-  }
-`;
-export const ItemPrice = styled.div`
-  display: flex;
-  align-items: center;
-  justify-item: center;
-  gap: 4px; // Khoảng cách giữa giá và đơn vị tiền tệ
-  color: #f95230;
   font-weight: bold;
-  margin-right: 20px;
-  font-size: 24px;
+  color: #333;
+  margin-bottom: 8px;
+
   @media (max-width: 768px) {
     font-size: 14px;
   }
 `;
 
-export const QuantityText = styled.p`
-  font-size: 14px;
-`;
-
-export const OrderContent = styled(Row)`
-  background-color: #ffffff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+export const ItemPrice = styled.div`
+  font-size: 16px;
+  font-weight: bold;
+  color: #f95230;
 
   @media (max-width: 768px) {
-    flex-direction: column;
-    padding: 10px; // Giảm padding để phù hợp với màn hình nhỏ hơn
+    font-size: 14px;
   }
 `;
+
 export const AddressSection = styled.div`
   margin-bottom: 20px;
 `;
 
 export const AddressHeader = styled.h2`
   font-size: 18px;
-  color: "#fa4f31";
+  font-weight: bold;
+  color: #f95230;
   margin-bottom: 15px;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 
   @media (max-width: 768px) {
     font-size: 16px;
   }
 `;
 
-
 export const AddressForm = styled.div`
   display: flex;
-  flex-direction: row; /* Sắp xếp các phần tử theo hàng ngang */
-  align-items: center; /* Căn giữa theo chiều dọc */
-  gap: 20px; /* Khoảng cách giữa các phần tử */
+  align-items: center;
+  gap: 20px;
   width: 100%;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 10px;
+  }
 `;
-
-
 
 export const PaymentSection = styled.div`
   margin-bottom: 20px;
@@ -147,19 +151,25 @@ export const PaymentSection = styled.div`
 
 export const PaymentHeader = styled.h2`
   font-size: 18px;
+  font-weight: bold;
   color: #333;
   margin-bottom: 10px;
 `;
 
 export const PaymentMethodSelect = styled(Select)`
   width: 100%;
+  border-radius: 8px;
+
+  &.ant-select-selector {
+    border: 1px solid #e0e0e0;
+  }
 `;
 
 export const SummaryCard = styled(Card)`
-  margin-top: 20px;
-  margin-bottom: 20px;
+  border: none;
+  box-shadow: none;
+
   .ant-card-body {
-    background-color:#fff !important;
     padding: 0;
   }
 `;
@@ -169,12 +179,20 @@ export const SummaryItem = styled.div`
   justify-content: space-between;
   margin-bottom: 10px;
   font-size: 16px;
+
+  @media (max-width: 768px) {
+    font-size: 14px;
+  }
 `;
 
 export const TotalPrice = styled(SummaryItem)`
   font-weight: bold;
   font-size: 18px;
   color: #f95230;
+
+  @media (max-width: 768px) {
+    font-size: 16px;
+  }
 `;
 
 export const PlaceOrderButton = styled(Button)`
@@ -182,15 +200,13 @@ export const PlaceOrderButton = styled(Button)`
   background-color: #f95230;
   color: #ffffff;
   font-size: 16px;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  border: none;
+  font-weight: bold;
+  border-radius: 8px;
 
-  &:hover{
-  color: #f95230 !important;
-  },
-  &:focus {
+  &:hover {
     background-color: #d43d1a;
-    color: #ffffff;
+    color:  #f95230 !important;
+    border: none; 
   }
 
   @media (max-width: 768px) {

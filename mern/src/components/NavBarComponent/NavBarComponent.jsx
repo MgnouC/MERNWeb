@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Checkbox, Rate } from "antd";
-import { useQuery } from "@tanstack/react-query";
 import * as ProductService from "../../services/ProductServices";
 import {
-  WrapperLableText,
+  WrapperLabelText,
   WrapperTextContent,
   WrapperTextValue,
+  StyledCheckboxGroup,
+  StyledRate,
+  StyledPriceTag,
 } from "./style";
 
 const NavBarComponent = () => {
@@ -45,87 +47,57 @@ const NavBarComponent = () => {
   const renderContent = (type, options) => {
     switch (type) {
       case "text":
-        return options.map((option, index) => {
-          return (
-            <WrapperTextValue key={index} >
-              <a style={{ color: "#fa4f31", fontWeight: 500 }} href={`/products/${option}`}>{option}</a>
-            </WrapperTextValue>
-          );
-        });
-        // case "text":
-        //   return options.map((option, index) => {
-        //     return (
-        //       <WrapperTextValue key={index}>
-        //         <a href={`/products?type=${option.slug}`}>{option.name}</a>
-        //       </WrapperTextValue>
-        //     );
-        //   });
-        
+        return options.map((option, index) => (
+          <WrapperTextValue key={index}>
+            <a href={`/products/${option}`} style={{ textDecoration: 'none' }}>
+              {option}
+            </a>
+          </WrapperTextValue>
+        ));
       case "checkbox":
         return (
-          <Checkbox.Group
-            style={{
-              width: "100%",
-              height: "100%",
-              display: "flex",
-              flexDirection: "column",
-              gap: "12px",
-            }}  
-            onChange={onChange}
-          >
-            {options.map((option, index) => {
-              return (
-                <Checkbox key={index} value={option.value}>
-                  {option.label}
-                </Checkbox>
-              );
-            })}
-          </Checkbox.Group>
+          <StyledCheckboxGroup>
+            {options.map((option, index) => (
+              <Checkbox key={index} value={option.value}>
+                {option.label}
+              </Checkbox>
+            ))}
+          </StyledCheckboxGroup>
         );
       case "star":
-        return options.map((option, index) => {
-          return (
-            <div key={index} style={{ display: "flex", alignItems: "center" }}>
-              <Rate
-                style={{ fontSize: "12px" }}
-                disabled
-                defaultValue={option}
-              />
-              <span style={{ paddingLeft: "5px" }}> Từ {option} sao</span>
-            </div>
-          );
-        });
+        return (
+          <StyledRate>
+            {options.map((option, index) => (
+              <div key={index}>
+                <Rate disabled defaultValue={option} />
+                <span>Từ {option} sao</span>
+              </div>
+            ))}
+          </StyledRate>
+        );
       case "price":
-        return options.map((option, index) => {
-          return (
-            <div key={index} style={{ display: "flex" }}>
-              <span
-                style={{
-                  padding: "5px",
-                  borderRadius: "10px",
-                  backgroundColor: "#efefef",
-                  width: "fit-content",
-                }}
-              >
-                {option}
-              </span>
-            </div>
-          );
-        });
+        return (
+          <StyledPriceTag>
+            {options.map((option, index) => (
+              <span key={index}>{option}</span>
+            ))}
+          </StyledPriceTag>
+        );
       default:
         return null;
     }
   };
 
+
   return (
     <div>
-      <WrapperLableText>Danh mục sản phẩm</WrapperLableText>
+      <WrapperLabelText>Danh mục sản phẩm</WrapperLabelText>
       <WrapperTextContent>
         {renderContent("text", typeProducts)}
       </WrapperTextContent>
 
       {/* Các phần khác giữ nguyên */}
-      <WrapperLableText>Chọn theo tính năng</WrapperLableText>
+      <WrapperLabelText>Chọn theo tính năng</WrapperLabelText>
       <WrapperTextContent>
         {renderContent("checkbox", [
           { value: "a", label: "Tính năng A" },
@@ -133,12 +105,12 @@ const NavBarComponent = () => {
         ])}
       </WrapperTextContent>
 
-      <WrapperLableText>Đánh giá sao</WrapperLableText>
+      <WrapperLabelText>Đánh giá sao</WrapperLabelText>
       <WrapperTextContent>
         {renderContent("star", [3, 4, 5])}
       </WrapperTextContent>
 
-      <WrapperLableText>Mức giá</WrapperLableText>
+      <WrapperLabelText>Mức giá</WrapperLabelText>
       <WrapperTextContent>
         {renderContent("price", ["<50,000 VND", ">50,000 VND"])}
       </WrapperTextContent>
