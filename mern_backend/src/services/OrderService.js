@@ -1,5 +1,6 @@
 const Order = require("../models/OrderProduct");
 const Product = require("../models/ProductModel");
+const { sendOrderDeliveredEmail } = require('../services/EmailService');
 
 const createOrder = (newOrder) => {
   return new Promise(async (resolve, reject) => {
@@ -90,11 +91,11 @@ const getOrderDetails = async (id) => {
 
     // Iterate over the orders
     orders.forEach((order) => {
-      console.log('Order ID:', order._id);
+      //console.log('Order ID:', order._id);
       if (order.orderItems && order.orderItems.length > 0) {
-        console.log('Order Items:', order.orderItems);
+        //console.log('Order Items:', order.orderItems);
       } else {
-        console.log('Order has no items.');
+        //console.log('Order has no items.');
       }
     });
 
@@ -201,7 +202,6 @@ const updateOrderStatus = async (req, res) => {
     }
 
     const updatedOrder = await order.save();
-
     res.status(200).json({
       message: "Order updated successfully",
       data: updatedOrder,

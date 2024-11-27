@@ -1,5 +1,9 @@
 import { Form, Input, Button, Modal, Upload, Select, InputNumber } from "antd";
-import { PlusOutlined, UploadOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
+import {
+  PlusOutlined,
+  UploadOutlined,
+  ExclamationCircleOutlined,
+} from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import * as ProductService from "../../services/ProductServices";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -19,17 +23,24 @@ const AdminProduct = () => {
   const queryClient = useQueryClient();
   const [adding, setAdding] = useState(false);
   const [newType, setNewType] = useState("");
-  const { data: products } = useQuery(["products"], ProductService.getAllProduct, {
-    onError: (error) => {
-      message.error("Error fetching products: " + error.message);
-    },
-  });
+  const [typeProducts, setTypeProducts] = useState([]);
+  const { data: products } = useQuery(
+    ["products"],
+    ProductService.getAllProduct,
+    {
+      onError: (error) => {
+        message.error("Error fetching products: " + error.message);
+      },
+    }
+  );
 
   const fetchAllTypeProduct = async () => {
     try {
       const response = await ProductService.getAllType();
       if (!response || !response.data || !Array.isArray(response.data)) {
-        throw new Error("All type product not found or data format is incorrect");
+        throw new Error(
+          "All type product not found or data format is incorrect"
+        );
       }
       return response.data;
     } catch (error) {
@@ -51,7 +62,8 @@ const AdminProduct = () => {
         queryClient.invalidateQueries("products");
         handleCancel();
       },
-      onError: (error) => message.error("Error creating product: " + error.message),
+      onError: (error) =>
+        message.error("Error creating product: " + error.message),
     }
   );
 
@@ -63,7 +75,8 @@ const AdminProduct = () => {
         queryClient.invalidateQueries(["products"]);
         handleCancel();
       },
-      onError: (error) => message.error("Error updating product: " + error.message),
+      onError: (error) =>
+        message.error("Error updating product: " + error.message),
     }
   );
 
@@ -74,7 +87,8 @@ const AdminProduct = () => {
         message.success("Product deleted successfully");
         queryClient.invalidateQueries("products");
       },
-      onError: (error) => message.error("Error deleting product: " + error.message),
+      onError: (error) =>
+        message.error("Error deleting product: " + error.message),
     }
   );
 
@@ -121,6 +135,85 @@ const AdminProduct = () => {
     ]);
   };
 
+  const handleAddType = () => {
+    if (newType.trim()) {
+      if (Array.isArray(typeProducts)) {
+        // Kiểm tra sự tồn tại bất kể viết hoa hay viết thường
+        const exists = typeProducts.some(
+          (type) =>
+            type.value &&
+            type.value.toLowerCase() === newType.trim().toLowerCase()
+        );
+        if (exists) {
+          message.warning("Loại sản phẩm đã tồn tại!");
+        } else {
+          const newTypeObj = { value: newType.trim(), label: newType.trim() };
+
+          // Cập nhật mảng các loại sản phẩm
+          setTypeProducts((prevTypes) => [...prevTypes, newTypeObj]);
+
+          // Đóng chế độ thêm và reset giá trị
+          setAdding(false);
+          setNewType("");
+
+          // Tự động chọn loại mới vừa thêm
+          form.setFieldsValue({ type: newTypeObj.value });
+          message.success("Thêm loại sản phẩm mới thành công!");
+        }
+      } else {
+        message.error(
+          "Không thể thêm loại sản phẩm mới vì dữ liệu loại không hợp lệ!"
+        );
+      }
+    } else {
+      message.warning("Vui lòng nhập tên loại sản phẩm mới!");
+    }
+  };
+  const dropdownRender = (menu) => (
+    <div>
+      {menu}
+      <div style={{ display: "flex", flexWrap: "nowrap", padding: 8 }}>
+        {adding ? (
+          <>
+            <Input
+              style={{ flex: "auto" }}
+              value={newType}
+              onChange={(e) => setNewType(e.target.value)}
+              onPressEnter={handleAddType}
+              placeholder="Nhập loại mới"
+            />
+            <Button
+              type="primary"
+              onClick={handleAddType}
+              icon={<PlusOutlined />}
+              style={{ marginLeft: 8 }}
+              // Không còn sử dụng loading vì không có mutation
+            >
+              Thêm
+            </Button>
+            <Button
+              onClick={() => {
+                setAdding(false);
+                setNewType("");
+              }}
+              style={{ marginLeft: 8 }}
+            >
+              Hủy
+            </Button>
+          </>
+        ) : (
+          <Button
+            type="link"
+            onClick={() => setAdding(true)}
+            style={{ width: "100%", textAlign: "left" }}
+            icon={<PlusOutlined />}
+          >
+            Thêm loại mới
+          </Button>
+        )}
+      </div>
+    </div>
+  );
   const onFinish = async (values) => {
     const formData = new FormData();
     formData.append("name", values.name);
@@ -129,7 +222,7 @@ const AdminProduct = () => {
     formData.append("countInStock", values.countInStock);
     formData.append("rating", values.rating);
     formData.append("description", values.description);
-  
+
     if (fileList && fileList.length > 0) {
       if (fileList[0].originFileObj) {
         formData.append("image", fileList[0].originFileObj);
@@ -196,26 +289,18 @@ const AdminProduct = () => {
           <Form.Item
             label="Loại Sản Phẩm"
             name="type"
-            rules={[{ required: true, message: "Vui lòng chọn loại sản phẩm!" }]}
+            rules={[{ required: true, message: "Please input type product!" }]}
           >
             <Select
+              //showSearch
               placeholder="--- Chọn ---"
-              dropdownRender={(menu) => (
-                <div>
-                  {menu}
-                  <div style={{ display: "flex", flexWrap: "nowrap", padding: 8 }}>
-                    <Button
-                      type="link"
-                      onClick={() => setAdding(true)}
-                      style={{ width: "100%", textAlign: "left" }}
-                      icon={<PlusOutlined />}
-                    >
-                      Thêm loại mới
-                    </Button>
-                  </div>
-                </div>
-              )}
+              optionFilterProp="children"
+              filterOption={(input, option) =>
+                option.toLowerCase().includes(option.toLowerCase())
+              }
+              dropdownRender={dropdownRender}
               options={renderOptions(typeProduct.data || [])}
+              // Không sử dụng defaultValue, để form quản lý giá trị
             />
           </Form.Item>
 
@@ -228,7 +313,7 @@ const AdminProduct = () => {
               min={1}
               style={{ width: "100%" }}
               formatter={(value) =>
-                `VND ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
               }
             />
           </Form.Item>
@@ -254,7 +339,9 @@ const AdminProduct = () => {
           <Form.Item
             label="Mô Tả"
             name="description"
-            rules={[{ required: true, message: "Vui lòng nhập mô tả sản phẩm!" }]}
+            rules={[
+              { required: true, message: "Vui lòng nhập mô tả sản phẩm!" },
+            ]}
           >
             <Input.TextArea rows={4} />
           </Form.Item>

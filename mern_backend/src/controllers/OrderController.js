@@ -1,5 +1,6 @@
 const Order = require("../models/OrderProduct");
 const OrderService = require("../services/OrderService");
+const { sendOrderDeliveredEmail } = require('../services/EmailService');
 
 const createOrder = async (req, res) => {
   try {
@@ -107,6 +108,8 @@ const updateOrderStatus = async (req, res) => {
     }
 
     const updatedOrder = await order.save();
+    sendOrderDeliveredEmail(order.user.email, order);
+    console.log(sendOrderDeliveredEmail)
 
     res.status(200).json({
       message: "Order updated successfully",
@@ -122,5 +125,6 @@ module.exports = {
   getOrderDetails,
   cancelOrder,
   getAllOrder,
-  updateOrderStatus
+  updateOrderStatus,
+  
 };

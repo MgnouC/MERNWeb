@@ -8,6 +8,7 @@ import {
   StyledPagination,
   StyledInput,
 } from "./style"; // Import các styled-components
+import * as XLSX from "xlsx";
 
 const TableComponent = ({ products, handleEdit, handleDelete }) => {
   const data = Array.isArray(products)
@@ -22,12 +23,19 @@ const TableComponent = ({ products, handleEdit, handleDelete }) => {
     : [];
 
   const getColumnSearchProps = (dataIndex) => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+    }) => (
       <div style={{ padding: 8 }}>
         <StyledInput
           placeholder={`Search ${dataIndex}`}
           value={selectedKeys[0]}
-          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onChange={(e) =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
           onPressEnter={() => confirm()}
         />
         <StyledButton type="primary" onClick={() => confirm()} size="small">
@@ -42,6 +50,14 @@ const TableComponent = ({ products, handleEdit, handleDelete }) => {
       <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
     ),
   });
+  const exportToExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(products?.data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Products");
+
+    // Ghi file và tải về
+    XLSX.writeFile(workbook, "products_data.xlsx");
+  };
 
   const columns = [
     {
@@ -75,7 +91,9 @@ const TableComponent = ({ products, handleEdit, handleDelete }) => {
       render: (_, record) => (
         <>
           <StyledButton onClick={() => handleEdit(record)}>Edit</StyledButton>
-          <StyledButton onClick={() => handleDelete(record._id)}>Delete</StyledButton>
+          <StyledButton onClick={() => handleDelete(record._id)}>
+            Delete
+          </StyledButton>
         </>
       ),
     },
@@ -83,7 +101,13 @@ const TableComponent = ({ products, handleEdit, handleDelete }) => {
 
   return (
     <TableContainer>
-      <ExportButton onClick={() => console.log("Export to Excel")}>
+      <ExportButton type="primary"
+        onClick={exportToExcel}
+        style={{
+          color: "white",
+          backgroundColor: "#f95230",
+          marginBottom: "5px",
+        }}>
         Export to Excel
       </ExportButton>
       <StyledTable

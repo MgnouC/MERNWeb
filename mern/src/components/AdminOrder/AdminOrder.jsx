@@ -160,7 +160,7 @@ const AdminOrderPage = () => {
             Chi tiết
           </ActionButton>
           <ActionButton
-          type="primary"
+            type="primary"
             style={{ marginRight: 8, marginBottom: 8 }}
             disabled={record.isDelivered} // Disable nút nếu đã giao
             onClick={() => handleUpdateDeliveryStatus(record._id, true)}
@@ -173,12 +173,40 @@ const AdminOrderPage = () => {
   ];
 
   const exportToExcel = () => {
-    const worksheet = XLSX.utils.json_to_sheet(orders?.data);
+    const transformedOrders = [];
+  
+    orders.forEach((order) => {
+      const { shippingAddress } = order;
+      const shippingAddressAddress = shippingAddress ? shippingAddress.address : "";
+      const shippingAddressPhone = shippingAddress ? shippingAddress.phone : "";
+  
+      const orderItems = order.orderItems || [];
+  
+      orderItems.forEach((item) => {
+        transformedOrders.push({
+          OrderID: order._id,
+          CreatedAt: order.createdAt,
+          IsPaid: order.isPaid,
+          IsDelivered: order.isDelivered,
+          TotalPrice: order.totalPrice,
+          ShippingAddress: shippingAddressAddress,
+          ShippingPhone: shippingAddressPhone,
+          PaymentMethod: order.paymentMethod,
+          ProductName: item.name,
+          ProductPrice: item.price,
+          ProductID: item.product,
+        });
+      });
+    });
+  
+    const worksheet = XLSX.utils.json_to_sheet(transformedOrders);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Orders");
-    XLSX.writeFile(workbook, "orders_data.xlsx");
+    XLSX.writeFile(workbook, "order_data.xlsx");
   };
-  console.log("name", orders.name);
+  
+
+  console.log(orders);
   return (
     <OrderContainer>
       <WrapperHeader>QUẢN LÍ ĐƠN HÀNG</WrapperHeader>

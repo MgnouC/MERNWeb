@@ -51,7 +51,7 @@ const HeaderComponent = () => {
       navigate("/sign-in");
     } else {
       navigate("/order");
-    }
+    } 
   };
 
   const accountMenu = (
