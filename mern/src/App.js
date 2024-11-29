@@ -87,32 +87,31 @@ function App() {
   return (
     <div>
       <Router>
-  <Routes>
-    {routes.map((route) => {
-      const Page = route.page;
-      const ischeckAuth = !route.isPrivate ||  user.isAdmin; // Cập nhật điều kiện xác thực
-      const Layout = route.isShowHeader ? DefaultComponent : Fragment;
-      
-      return (
-        <Route 
-          key={route.path} 
-          path={route.path}
-          element={
-            //route.path === '/system/admin'
-            ischeckAuth ? (  // Nếu người dùng được xác thực
-              <Layout>
-                <Page  />
-              </Layout>
-            ) : (
-              <Navigate to="/" />  // Nếu không, điều hướng tới /login
-            )
-          }
-        />
-      );
-    })}
-  </Routes>
-</Router>
+        <Routes>
+          {routes.map((route) => {
+            const Page = route.page;
+            const ischeckAuth = !route.isPrivate || user.isAdmin; // Cập nhật điều kiện xác thực
+            const Layout = route.isShowHeader ? DefaultComponent : Fragment;
 
+            return (
+              <Route
+                key={route.path}
+                path={route.path}
+                element={
+                  //route.path === '/system/admin'
+                  ischeckAuth ? ( // Nếu người dùng được xác thực
+                    <Layout>
+                      <Page />
+                    </Layout>
+                  ) : (
+                    <Navigate to="/" /> // Nếu không, điều hướng tới /login
+                  )
+                }
+              />
+            );
+          })}
+        </Routes>
+      </Router>
     </div>
   );
 }

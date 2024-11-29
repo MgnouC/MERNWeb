@@ -275,7 +275,7 @@ const AdminOrderPage = () => {
               {selectedOrder.orderItems.map((item) => (
                 <li key={item.product}>
                   {item.name} x {item.quantity} - {item.price.toLocaleString()}{" "}
-                  $
+                  VNĐ
                 </li>
               ))}
             </ul>
