@@ -28,26 +28,20 @@ export const getProductType = async (type) => {
     return response.data;
   } catch (error) {
     console.error("Error fetching products by type:", error);
-    throw new Error("Unable to fetch products by type. Please try again later.");
+    throw new Error(
+      "Unable to fetch products by type. Please try again later."
+    );
   }
 };
 
 export const getDetailsProduct = async (id) => {
   try {
-    const response = await axiosInstance.get(`/product/get-details-product/${id}`);
+    const response = await axiosInstance.get(
+      `/product/get-details-product/${id}`
+    );
     return response.data;
   } catch (error) {
     console.error("Error fetching product details:", error);
-    throw error.response?.data || { message: "Unknown error" };
-  }
-};
-
-export const getAllType = async () => {
-  try {
-    const response = await axiosInstance.get(`/product/get-all-type`);
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching product types:", error);
     throw error.response?.data || { message: "Unknown error" };
   }
 };
@@ -64,7 +58,10 @@ export const createProduct = async (data) => {
 
 export const updateProduct = async ({ id, data }) => {
   try {
-    const response = await axiosInstance.put(`/product/update-product/${id}`, data);
+    const response = await axiosInstance.put(
+      `/product/update-product/${id}`,
+      data
+    );
     return response.data;
   } catch (error) {
     console.error("Error updating product:", error);
@@ -74,10 +71,32 @@ export const updateProduct = async ({ id, data }) => {
 
 export const deleteProduct = async (id) => {
   try {
-    const response = await axiosInstance.delete(`/product/delete-product/${id}`);
+    const response = await axiosInstance.delete(
+      `/product/delete-product/${id}`
+    );
     return response.data;
   } catch (error) {
     console.error("Error deleting product:", error);
     throw new Error("Unable to delete product. Please try again later.");
+  }
+};
+
+export const getAllBrandTypes = async () => {
+  try {
+    const response = await axiosInstance.get(`/product/get-all-brand-types`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching brand types:", error);
+    throw error.response?.data || { message: "Unknown error" };
+  }
+};
+
+export const getAllType = async () => {
+  try {
+    const response = await axiosInstance.get(`/product/get-all-type`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching product types:", error);
+    throw error.response?.data || { message: "Unknown error" };
   }
 };

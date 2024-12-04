@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 // Tiêu đề của Hồ sơ cá nhân
 export const WrapperHeaderUser = styled.h1`
-  color: #000000;
+  color: #f95230;
   font-size: 24px;
   margin: 4px 0;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;

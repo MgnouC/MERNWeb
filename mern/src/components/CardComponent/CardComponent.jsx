@@ -31,6 +31,7 @@ const CardComponent = (props) => {
     rating,
     id,
     onClick,
+    brandType,
   } = props;
 
   return (

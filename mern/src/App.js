@@ -1,78 +1,64 @@
 import React, { Fragment, useEffect, useCallback } from "react";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { routes } from "./routes";
 import DefaultComponent from "./components/DefaultComponent/DefaultComponent";
 import { isJSONString } from "./utils";
-import { jwtDecode } from "jwt-decode";
+import {jwtDecode} from "jwt-decode"; // Import correctly
 import * as UserService from "./services/UserServices";
 import { useDispatch, useSelector } from "react-redux";
 import { updateUser } from "./redux/slides/userSlice";
-//import AdminRoute from "./components/AdminRoute/AdminRoute";
-// or
-//import axios from "axios";
 
 function App() {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
 
-  const handleGetDetailsUser = useCallback(
-    async (id, token) => {
-      try {
-        const res = await UserService.getDetailsUser(id, token);
-        dispatch(updateUser({ ...res?.data, access_token: token }));
-      } catch (error) {
-        console.error("Error fetching user details:", error);
-      }
-    },
-    [dispatch]
-  );
+  const handleGetDetailsUser = useCallback(async (id, token) => {
+    try {
+      const res = await UserService.getDetailsUser(id, token);
+      dispatch(updateUser({ ...res?.data, access_token: token }));
+    } catch (error) {
+      console.error("Error fetching user details:", error);
+    }
+  }, [dispatch]);
+
+  const setupInterceptor = useCallback(() => {
+    UserService.axiosJWT.interceptors.request.use(
+      async (config) => {
+        const { storageData, decoded } = handleDecoded();
+        const currentTime = Math.floor(Date.now() / 1000); // Convert to seconds
+        if (!storageData) {
+          console.log("No token found, user might need to log in again");
+          return config;
+        }
+        if (decoded?.exp < currentTime) {
+          try {
+            const data = await UserService.refreshToken();
+            if (data?.access_token) {
+              localStorage.setItem("access_token", JSON.stringify(data.access_token));
+              config.headers["Authorization"] = `Bearer ${data.access_token}`;
+            } else {
+              window.location.href = '/login';
+            }
+          } catch (error) {
+            console.error("Error refreshing token:", error);
+            window.location.href = '/login';
+          }
+        } else {
+          config.headers["Authorization"] = `Bearer ${storageData}`;
+        }
+        return config;
+      },
+      (error) => Promise.reject(error)
+    );
+  }, []);
 
   useEffect(() => {
-    const setupInterceptor = () => {
-      UserService.axiosJWT.interceptors.request.use(
-        async (config) => {
-          const { storageData, decoded } = handleDecoded();
-          const currentTime = Math.floor(Date.now() / 1000); // Convert to seconds
-          if (!storageData) {
-            console.log("No token found, user might need to log in again");
-            return config;
-          }
-          if (decoded?.exp < currentTime) {
-            try {
-              const data = await UserService.refreshToken();
-              localStorage.setItem(
-                "access_token",
-                JSON.stringify(data.access_token)
-              ); // Update token in Local Storage
-              config.headers["token"] = `Bearer ${data?.access_token}`;
-            } catch (error) {
-              console.error("Error refreshing token:", error);
-            }
-          } else {
-            config.headers["token"] = `Bearer ${storageData}`; // Use old token if not expired
-          }
-          return config;
-        },
-        function (error) {
-          return Promise.reject(error);
-        }
-      );
-    };
-
     setupInterceptor();
     const { storageData, decoded } = handleDecoded();
-    console.log("storageData", storageData);
-
-    // Fetch user details if decoded token contains user id
     if (decoded?.id) {
       handleGetDetailsUser(decoded?.id, storageData);
     }
-  }, [handleGetDetailsUser]); // Only handleGetDetailsUser is required as a dependency
+  }, [handleGetDetailsUser, setupInterceptor]);
 
   const handleDecoded = () => {
     let storageData = localStorage.getItem("access_token");
@@ -84,27 +70,28 @@ function App() {
     return { decoded, storageData };
   };
 
+  const checkAuthentication = (route) => {
+    return !route.isPrivate || user.isAdmin;
+  };
+
   return (
     <div>
       <Router>
         <Routes>
           {routes.map((route) => {
             const Page = route.page;
-            const ischeckAuth = !route.isPrivate || user.isAdmin; // Cập nhật điều kiện xác thực
             const Layout = route.isShowHeader ? DefaultComponent : Fragment;
-
             return (
               <Route
                 key={route.path}
                 path={route.path}
                 element={
-                  //route.path === '/system/admin'
-                  ischeckAuth ? ( // Nếu người dùng được xác thực
+                  checkAuthentication(route) ? (
                     <Layout>
                       <Page />
                     </Layout>
                   ) : (
-                    <Navigate to="/" /> // Nếu không, điều hướng tới /login
+                    <Navigate to="/" />
                   )
                 }
               />

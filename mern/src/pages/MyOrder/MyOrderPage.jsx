@@ -192,6 +192,7 @@ const MyOrderPage = () => {
         dataSource={orders}
         rowKey="_id"
         loading={loading}
+        pagination={{ pageSize: 5 }}
       />
     </OrderContainer>
   );

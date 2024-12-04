@@ -6,12 +6,12 @@ export const WrapperLabelText = styled.h4`
   font-size: 16px;
   line-height: 1.5;
   color: #333333;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   margin-bottom: 16px;
   transition: color 0.3s ease;
 
   &:hover {
-    color: #f95230;
+    color: #f95230  !important;
   }
 
   /* Responsive Font Sizes */
@@ -40,14 +40,14 @@ export const WrapperLabelText = styled.h4`
 export const WrapperTextValue = styled.span`
   font-size: 14px;
   line-height: 1.5;
-  color: #555555;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  color: #f95230 !important;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   margin-bottom: 8px;
   cursor: pointer;
   transition: color 0.3s ease;
 
   &:hover {
-    color: #f95230;
+    color: #f95230 !important;
   }
 
   /* Responsive Font Sizes */
@@ -112,7 +112,7 @@ export const StyledCheckboxGroup = styled.div`
   display: flex;
   flex-direction: column;
   gap: 12px;
-
+  color: #f95230 !important;
   .ant-checkbox-wrapper {
     font-size: 14px;
     color: #555555;

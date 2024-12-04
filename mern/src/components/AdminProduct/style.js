@@ -16,4 +16,5 @@ export const WrapperHeader = styled.h1`
     line-height: 32px;
   }
   font-family: san-serif;
+  
 `;

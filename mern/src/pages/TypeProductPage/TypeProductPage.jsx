@@ -58,9 +58,9 @@ const TypeProductPage = () => {
   };
 
   return (
-    <div style={{ width: "100%", background: "#efefef", height: "100%" }}>
+    <div style={{ width: "100%", background: "#efefef", minheight: "100%" }}>
       <div style={{ paddingLeft: "120px", margin: "0 auto" }}>
-        <Row style={{ flexWrap: "nowrap", paddingTop: "10px" }}>
+        <Row style={{ flexWrap: "nowrap", padding: "10px 0 10px 0" }}>
           <WrapperNavBar span={4}>
             <NavBarComponent />
           </WrapperNavBar>
@@ -77,6 +77,7 @@ const TypeProductPage = () => {
                     name={product.name}
                     image={product.image}
                     price={product.price}
+                    brandType={product.brandType}
                     type={product.type}
                     onClick={() => handleShowDetails(product?._id)}                  />
                 ))

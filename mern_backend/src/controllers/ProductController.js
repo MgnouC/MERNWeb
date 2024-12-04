@@ -1,9 +1,9 @@
-const ProductServiceCustomer = require('../services/ProductService');
+const ProductServiceCustomer = require("../services/ProductService");
 const fs = require("fs");
-
+const multer = require("multer");
 const createProduct = async (req, res) => {
   try {
-    const { name, type, price, description, rating, countInStock } = req.body;
+    const { name, brandType, type, price, description, rating, countInStock } = req.body;
     const file = req.file;
 
     if (!file) {
@@ -14,7 +14,7 @@ const createProduct = async (req, res) => {
     }
 
     // Lưu thông tin sản phẩm
-    if (!name || !type || !countInStock || !price || !rating || !description) {
+    if (!name || !brandType|| !type || !countInStock || !price || !rating || !description) {
       return res.status(400).json({
         status: "ERR",
         message: "Thiếu thông tin sản phẩm",
@@ -24,6 +24,7 @@ const createProduct = async (req, res) => {
     const response = await ProductServiceCustomer.createProduct({
       name,
       type,
+      brandType,
       price,
       description,
       rating,
@@ -57,7 +58,10 @@ const updateProduct = async (req, res) => {
       data.image = file.filename; // Cập nhật tên file ảnh vào data
     }
 
-    const response = await ProductServiceCustomer.updateProduct(productId, data);
+    const response = await ProductServiceCustomer.updateProduct(
+      productId,
+      data
+    );
 
     return res.status(200).json({
       status: "OK",
@@ -159,12 +163,43 @@ const getProductsByType = async (req, res) => {
     const response = await ProductServiceCustomer.getProductType(type);
     return res.status(200).json(response);
   } catch (e) {
-    console.error("Error while fetching products by type:", e);
+    //console.error("Error while fetching products by type:", e);
     return res.status(500).json({
       status: "ERROR",
       message: e.message || "An error occurred",
     });
   }
+};
+
+const getAllBrandTypes = async (req, res) => {
+  try {
+    const response = await ProductServiceCustomer.getAllBrandTypes();
+    return res.status(200).json(response);
+  } catch (e) {
+    console.error("Error in getAllBrandTypes:", e);
+    return res.status(500).json({
+      message: e.message || "An error occurred",
+    });
+  }
+  // try {
+  //   const { brandType } = req.query;
+
+  //   if (!brandType) {
+  //     return res.status(400).json({
+  //       status: "FAIL",
+  //       message: "Product brand is required",
+  //     });
+  //   }
+
+  //   const response = await ProductServiceCustomer.getAllBrandTypes(brandType);
+  //   return res.status(200).json(response);
+  // } catch (e) {
+  //   console.error("Error while fetching products by brand:", e);
+  //   return res.status(500).json({
+  //     status: "ERROR",
+  //     message: e.message || "An error occurred",
+  //   });
+  // }
 };
 
 module.exports = {
@@ -175,4 +210,5 @@ module.exports = {
   getAllProduct,
   getAllType,
   getProductsByType,
+  getAllBrandTypes
 };

@@ -90,7 +90,7 @@ const AdminOrderPage = () => {
       dataIndex: "user",
       key: "user",
       render: (user) => {
-        console.log("Rendering user:", user);
+        //console.log("Rendering user:", user);
         return <span>{user || "N/A"}</span>;
       },
     },
@@ -248,7 +248,7 @@ const AdminOrderPage = () => {
               <strong>Người dùng:</strong> {selectedOrder.user || "N/A"}
             </p>
             <p>
-              <strong>Email:</strong> {selectedOrder.user?.email || "N/A"}
+              <strong>Ngày đặt hàng:</strong> {selectedOrder?.createdAt || "N/A"}
             </p>
             <p>
               <strong>Địa chỉ giao hàng:</strong>{" "}
@@ -275,7 +275,7 @@ const AdminOrderPage = () => {
               {selectedOrder.orderItems.map((item) => (
                 <li key={item.product}>
                   {item.name} x {item.quantity} - {item.price.toLocaleString()}{" "}
-                  VNĐ
+                  $
                 </li>
               ))}
             </ul>

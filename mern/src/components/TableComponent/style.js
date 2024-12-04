@@ -94,9 +94,10 @@ export const StyledPagination = styled.div`
   .ant-pagination-item a {
     background: #f95230;
     border-radius: 10px;
-    border: none;
+    border: none !important;
     color: #ffffff;
     transition: background-color 0.3s ease, color 0.3s ease;
+    
   }
 
   .ant-pagination-item-active a {

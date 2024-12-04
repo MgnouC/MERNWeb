@@ -96,14 +96,14 @@ const NavBarComponent = () => {
         {renderContent("text", typeProducts)}
       </WrapperTextContent>
 
-      {/* Các phần khác giữ nguyên */}
+      {/* 
       <WrapperLabelText>Chọn theo tính năng</WrapperLabelText>
       <WrapperTextContent>
         {renderContent("checkbox", [
           { value: "a", label: "Tính năng A" },
           { value: "b", label: "Tính năng B" },
         ])}
-      </WrapperTextContent>
+      </WrapperTextContent> */}
 
       <WrapperLabelText>Đánh giá sao</WrapperLabelText>
       <WrapperTextContent>
@@ -112,7 +112,7 @@ const NavBarComponent = () => {
 
       <WrapperLabelText>Mức giá</WrapperLabelText>
       <WrapperTextContent>
-        {renderContent("price", ["<50,000 VND", ">50,000 VND"])}
+        {renderContent("price", ["<50 $", ">50 $"])}
       </WrapperTextContent>
     </div>
   );

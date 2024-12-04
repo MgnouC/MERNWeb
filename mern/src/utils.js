@@ -35,8 +35,16 @@ export const renderOptions = (arr) => {
 
   return result;
 };
-
-
+// export const renderOptions = (array) => {
+//   if (!Array.isArray(array)) {
+//     console.error("Input is not an array:", array);
+//     return [];
+//   }
+//   return array.map((item) => ({
+//     value: item.value,
+//     label: item.label,
+//   }));
+// };
 
 
 

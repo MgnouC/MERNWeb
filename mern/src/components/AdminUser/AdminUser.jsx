@@ -25,7 +25,7 @@ const AdminUser = () => {
 
   const { data: users } = useQuery(["users"], UserService.getAllUser, {
     onSuccess: (data) => {
-      console.log("Fetched users:", data);
+      //console.log("Fetched users:", data);
     },
     onError: (error) => {
       message.error("Error fetching users: " + error.message);

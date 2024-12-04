@@ -3,8 +3,16 @@ const Product = require("../models/ProductModel");
 const createProduct = (newProduct) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const { name, type, price, image, description, rating, countInStock } =
-        newProduct;
+      const {
+        name,
+        type,
+        price,
+        image,
+        description,
+        rating,
+        countInStock,
+        brandType,
+      } = newProduct;
 
       // Kiểm tra nếu sản phẩm đã tồn tại
       const checkProduct = await Product.findOne({ name });
@@ -15,6 +23,7 @@ const createProduct = (newProduct) => {
       const createdProduct = await Product.create({
         name,
         type,
+        brandType,
         price,
         image,
         description,
@@ -155,7 +164,9 @@ const getAllType = async () => {
 
 const getProductType = async (type) => {
   try {
-    const products = await Product.find({ type: new RegExp('^' + type.trim() + '$', 'i') });
+    const products = await Product.find({
+      type: new RegExp("^" + type.trim() + "$", "i"),
+    });
     if (!products.length) {
       throw { message: "No products found for this type", status: 404 };
     }
@@ -169,6 +180,33 @@ const getProductType = async (type) => {
   }
 };
 
+const getAllBrandTypes = async () => {
+  try {
+    const allBrand = await Product.distinct("brandType");
+    return {
+      status: "OK",
+      message: "SUCCESS",
+      data: allBrand,
+    };
+  } catch (e) {
+    throw { message: e.message || "An error occurred", status: 500 };
+  }
+  // try {
+  //   const products = await Product.find({
+  //     type: new RegExp("^" + brandType.trim() + "$", "i"),
+  //   });
+  //   if (!products.length) {
+  //     throw { message: "No products found for this type", status: 404 };
+  //   }
+  //   return {
+  //     status: "OK",
+  //     message: "SUCCESS",
+  //     data: products,
+  //   };
+  // } catch (e) {
+  //   throw { message: e.message || "An error occurred", status: 500 };
+  // }
+};
 module.exports = {
   createProduct,
   updateProduct,
@@ -177,4 +215,5 @@ module.exports = {
   getAllProduct,
   getAllType,
   getProductType,
+  getAllBrandTypes,
 };

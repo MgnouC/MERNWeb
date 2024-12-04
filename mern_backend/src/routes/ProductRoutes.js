@@ -57,5 +57,5 @@ routes.delete(
 routes.get("/get-all", productController.getAllProduct);
 routes.get("/get-all-type", productController.getAllType);
 routes.get("/get-products-by-type", productController.getProductsByType);
-
+routes.get("/get-all-brand-types", productController.getAllBrandTypes);
 module.exports = routes;

@@ -18,6 +18,7 @@ const TableComponent = ({ products, handleEdit, handleDelete }) => {
         name: product.name,
         price: product.price,
         type: product.type,
+        brandType: product.brandType,
         countInStock: product.countInStock,
       }))
     : [];
@@ -50,6 +51,7 @@ const TableComponent = ({ products, handleEdit, handleDelete }) => {
       <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
     ),
   });
+
   const exportToExcel = () => {
     const worksheet = XLSX.utils.json_to_sheet(products?.data);
     const workbook = XLSX.utils.book_new();
@@ -74,16 +76,39 @@ const TableComponent = ({ products, handleEdit, handleDelete }) => {
       render: (price) => `$${price.toFixed(2)}`,
     },
     {
+      title: "Thương Hiệu",
+      dataIndex: "brandType",
+      key: "brandType",
+      render: (brandType) => brandType || "N/A",
+      ...getColumnSearchProps("brandType"),  // Thêm tính năng tìm kiếm cho thương hiệu
+    },
+    {
       title: "Type",
       dataIndex: "type",
       key: "type",
       render: (type) => type || "N/A",
+      ...getColumnSearchProps("type"),  // Thêm tính năng tìm kiếm cho loại sản phẩm
     },
     {
       title: "Count In Stock",
       dataIndex: "countInStock",
       key: "countInStock",
       sorter: (a, b) => a.countInStock - b.countInStock,
+    },
+    {
+      title: "Hình Ảnh",
+      dataIndex: "image",
+      key: "image",
+      render: (imageUrl) => (
+        <img
+          style={{ height: "80px", width: "100%" }}
+          src={`http://localhost:3000/uploads/${imageUrl}`}
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src = "/path/to/placeholder-image.png"; // Hình ảnh thay thế
+          }}
+        />
+      ),
     },
     {
       title: "Action",
@@ -101,13 +126,15 @@ const TableComponent = ({ products, handleEdit, handleDelete }) => {
 
   return (
     <TableContainer>
-      <ExportButton type="primary"
+      <ExportButton
+        type="primary"
         onClick={exportToExcel}
         style={{
           color: "white",
           backgroundColor: "#f95230",
           marginBottom: "5px",
-        }}>
+        }}
+      >
         Export to Excel
       </ExportButton>
       <StyledTable
@@ -115,7 +142,7 @@ const TableComponent = ({ products, handleEdit, handleDelete }) => {
         dataSource={products.data}
         rowKey="key"
         pagination={{
-          pageSize: 7,
+          pageSize: 5,
           position: ["bottomCenter"],
           className: StyledPagination,
         }}

@@ -84,14 +84,12 @@ const HomePage = () => {
           id="container"
           style={{
             backgroundColor: "#fff",
-            padding: "0px 120px",
-            height: "1000px",
+            padding: "0px 120px 10px 120px",
+            minHeight: "1000px",
             margin: "0 auto",
           }}
         >
-          <SliderComponent
-            arrImages={[Slide1, Slide2, Slide3]}
-          />
+          <SliderComponent arrImages={[Slide1, Slide2, Slide3]} />
           <WrapperProducts>
             {/* Hiển thị số sản phẩm dựa trên visibleProducts */}
             {stateProduct.slice(0, visibleProducts).map((product) => (
@@ -128,7 +126,7 @@ const HomePage = () => {
                 styleButton={{
                   border: "1px solid rgb(250, 79, 49)",
                   width: "240px",
-                  height: "40px",
+                  mieight: "40px",
                   marginTop: "12px",
                   padding: "8px 12px",
                   borderRadius: "4px",
