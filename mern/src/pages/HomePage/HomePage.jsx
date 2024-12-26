@@ -1,10 +1,6 @@
 import React, { useEffect, useState } from "react";
 import TypeProduct from "../../components/TypeProduct/TypeProduct";
-import {
-  WrapperButtonMore,
-  WrapperProducts,
-  WrapperTypeProduct,
-} from "./style";
+import { WrapperButtonMore, WrapperProducts, WrapperTypeProduct } from "./style";
 import SliderComponent from "../../components/SliderComponent/SliderComponent";
 import Slide1 from "../../assets/images/Slide1.webp";
 import Slide2 from "../../assets/images/Slide2.webp";
@@ -15,29 +11,35 @@ import * as ProductService from "../../services/ProductServices";
 import { useDebounce } from "../../hooks/useDebounce";
 
 const HomePage = () => {
-  const searchProduct = useSelector((state) => state?.product?.search); // Redux search term
-  const [stateProduct, setStateProduct] = useState([]);
-  const [visibleProducts, setVisibleProducts] = useState(4); // Số sản phẩm hiển thị ban đầu
+  const searchProduct = useSelector((state) => state?.product?.search);
   const searchDebounce = useDebounce(searchProduct, 1000);
-  const [typeProducts, setTypeProducts] = useState([]); // Danh sách loại sản phẩm
-  //const arr = ["TV", "Laptop", "Phone", "Tablet", "Headphone"];
+
+  const [stateProduct, setStateProduct] = useState([]);
+  const [visibleProducts, setVisibleProducts] = useState(4);
+  const [typeProducts, setTypeProducts] = useState([]);
 
   const fetchAllTypeProduct = async () => {
     try {
-      const response = await ProductService.getAllType(); // Fetch all type product
-      //console.log("All type product:", response);
-      setTypeProducts(response?.data);
-      if (!response) {
-        throw { message: "All type product not found", status: 400 };
-      }
-      return {
-        status: "OK",
-        message: "SUCCESS",
-        data: response,
-      };
+      const response = await ProductService.getAllType();
+      // Nếu API trả về { data: [...] } thì response.data là mảng các type
+      setTypeProducts(response?.data || []);
     } catch (error) {
       console.error("Error fetching all type product:", error.message);
-      return { status: "ERR", message: "Error fetching all type product" };
+      setTypeProducts([]);
+    }
+  };
+
+  const fetchProducts = async (query) => {
+    try {
+      const response = query?.length > 0
+        ? await ProductService.getAllProduct(query)
+        : await ProductService.getAllProduct();
+
+      // Nếu API trả về { data: [...] } thì response.data là mảng sản phẩm
+      setStateProduct(Array.isArray(response?.data) ? response.data : []);
+    } catch (error) {
+      console.error("Error fetching products:", error.message);
+      setStateProduct([]);
     }
   };
 
@@ -46,30 +48,11 @@ const HomePage = () => {
   }, []);
 
   useEffect(() => {
-    const fetcProduct = async () => {
-      try {
-        // Fetch products based on search term
-        const response =
-          searchProduct?.length > 0
-            ? await ProductService.getAllProduct(searchProduct) // Fetch based on search
-            : await ProductService.getAllProduct(); // Fetch all if no search term
+    fetchProducts(searchDebounce);
+  }, [searchDebounce]);
 
-        // Ensure stateProduct is always an array
-        setStateProduct(
-          Array.isArray(response) ? response : response?.data || []
-        );
-      } catch (error) {
-        console.error("Error fetching products:", error.message);
-        setStateProduct([]); // Set to empty array on error
-      }
-    };
-
-    fetcProduct();
-  }, [searchDebounce]); // Refetch whenever search term changes
-
-  // Hàm xử lý khi nhấn "Xem thêm"
   const handleLoadMore = () => {
-    setVisibleProducts((prevVisible) => prevVisible + 4); // Tăng số lượng sản phẩm hiển thị thêm 8
+    setVisibleProducts((prev) => prev + 4);
   };
 
   return (
@@ -91,7 +74,6 @@ const HomePage = () => {
         >
           <SliderComponent arrImages={[Slide1, Slide2, Slide3]} />
           <WrapperProducts>
-            {/* Hiển thị số sản phẩm dựa trên visibleProducts */}
             {stateProduct.slice(0, visibleProducts).map((product) => (
               <CardComponent
                 key={product._id}
@@ -108,7 +90,7 @@ const HomePage = () => {
               />
             ))}
           </WrapperProducts>
-          {/* Kiểm tra nếu còn sản phẩm chưa hiển thị thì hiển thị nút "Xem thêm" */}
+
           {visibleProducts < stateProduct.length && (
             <div
               style={{
@@ -120,13 +102,12 @@ const HomePage = () => {
               }}
             >
               <WrapperButtonMore
-                onClick={handleLoadMore} // Gọi hàm khi nhấn
+                onClick={handleLoadMore}
                 textButton="Xem thêm"
                 type="outline"
                 styleButton={{
                   border: "1px solid rgb(250, 79, 49)",
                   width: "240px",
-                  mieight: "40px",
                   marginTop: "12px",
                   padding: "8px 12px",
                   borderRadius: "4px",

@@ -80,3 +80,16 @@ export const refreshToken = async () => {
   );
   return res.data;
 };
+export const banUser = async ({ id, ban }) => {
+  const res = await axios.patch(
+    `${process.env.REACT_APP_API_URL_BACKEND}/user/ban-user/${id}`,
+    { ban }, // gửi ban: true/false
+    {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  return res.data;
+};

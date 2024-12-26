@@ -1,11 +1,6 @@
 import { Col, Image, Row } from "antd";
 import React, { useState } from "react";
-import {
-  MinusOutlined,
-  PlusOutlined,
-  StarFilled,
-  StarTwoTone,
-} from "@ant-design/icons";
+import { MinusOutlined, PlusOutlined, StarFilled, StarTwoTone } from "@ant-design/icons";
 import ButtonComponent from "../ButtonComponent/ButtonComponent";
 import { useQuery } from "@tanstack/react-query";
 import * as message from "../../components/Message/Mesage";
@@ -23,54 +18,27 @@ import {
   WrapperTextLight,
 } from "./style";
 import { addOrderProduct } from "../../redux/slides/orderSlice";
-import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const ProductDetailsComponent = ({ idProduct }) => {
   const [quantity, setQuantity] = useState(1);
   const dispatch = useDispatch();
-  const {
-    data: productResponse,
-    isLoading,
-    isError,
-  } = useQuery(
+  const user = useSelector((state) => state.user);
+  const navigate = useNavigate();
+
+  // Lấy thông tin sản phẩm qua useQuery
+  const { data: productResponse, isLoading, isError } = useQuery(
     ["product", idProduct],
     () => ProductService.getDetailsProduct(idProduct),
     {
-      enabled: !!idProduct, // Chỉ thực hiện truy vấn khi có idProduct
+      enabled: !!idProduct,
       onError: (error) => {
-        message.error(
-          "Error fetching product: " + (error.message || "Unknown error")
-        );
+        message.error("Error fetching product: " + (error.message || "Unknown error"));
       },
     }
   );
-  const user = useSelector((state) => state.user);
-  const navigate = useNavigate();
-  const handleNavigateBuyNow = () => {
-    navigate("/order");
-    // Kiểm tra xem người dùng đã đăng nhập chưa
-    if (!user?.id) {
-      message.info("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng.");
-      return;
-    }
 
-    // Kiểm tra xem sản phẩm còn hàng không
-    if (product.countInStock === 0) {
-      message.error("Sản phẩm đã hết hàng!");
-      return;
-    }
-
-    dispatch(
-      addOrderProduct({
-        ...product,
-        id: product._id,
-        quantity: quantity,
-      })
-    );
-    
-  };
-  const cartItems = useSelector((state) => state.cartItems);
+  // Kiểm tra trạng thái load và lỗi
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -78,24 +46,26 @@ const ProductDetailsComponent = ({ idProduct }) => {
   if (isError || !productResponse || !productResponse.data) {
     return (
       <div>
-        Error loading product details:{" "}
-        {productResponse?.message || "Unknown error"}
+        Error loading product details: {productResponse?.message || "Unknown error"}
       </div>
     );
   }
-  const product =
-    productResponse?.data && Array.isArray(productResponse.data)
-      ? productResponse.data[0]
-      : productResponse.data;
 
+  // Lấy product từ productResponse
+  const product = Array.isArray(productResponse.data)
+    ? productResponse.data[0]
+    : productResponse.data;
+
+  const pricebefore = product.price + (product.price * 5) / 100;
+
+  // Hàm xử lý thêm vào giỏ hàng
   const handleAddOrderProduct = () => {
-    // Kiểm tra xem người dùng đã đăng nhập chưa
     if (!user?.id) {
       message.info("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng.");
+      navigate("/sign-in");
       return;
     }
 
-    // Kiểm tra xem sản phẩm còn hàng không
     if (product.countInStock === 0) {
       message.error("Sản phẩm đã hết hàng!");
       return;
@@ -112,6 +82,30 @@ const ProductDetailsComponent = ({ idProduct }) => {
     message.success("Sản phẩm đã được thêm vào giỏ hàng!");
   };
 
+  // Hàm xử lý khi click Mua Ngay
+  const handleNavigateBuyNow = () => {
+    if (!user?.id) {
+      message.info("Vui lòng đăng nhập để mua hàng.");
+      navigate("/sign-in");
+      return;
+    }
+
+    if (product.countInStock === 0) {
+      message.error("Sản phẩm đã hết hàng!");
+      return;
+    }
+
+    dispatch(
+      addOrderProduct({
+        ...product,
+        id: product._id,
+        quantity: quantity,
+      })
+    );
+
+    navigate("/order");
+  };
+
   const handleInputChange = (value) => {
     if (value >= 1 && value <= product.countInStock) {
       setQuantity(value);
@@ -121,22 +115,6 @@ const ProductDetailsComponent = ({ idProduct }) => {
       setQuantity(0);
     }
   };
-  const pricebefore = product.price + (product.price * 5) / 100;
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (isError || !productResponse || !productResponse.data) {
-    return (
-      <div>
-        Error loading product details:{" "}
-        {productResponse?.message || "Unknown error"}
-      </div>
-    );
-  }
-
-  // Extract product data from the response
 
   return (
     <Row style={{ padding: "15px", background: "#fff" }}>
@@ -150,13 +128,7 @@ const ProductDetailsComponent = ({ idProduct }) => {
             e.target.onerror = null;
           }}
         />
-        <Row
-          style={{
-            display: "flex",
-            paddingTop: "10px",
-            justifyContent: "space-between",
-          }}
-        >
+        <Row style={{ display: "flex", paddingTop: "10px", justifyContent: "space-between" }}>
           {[...Array(5)].map((_, i) => (
             <Col span={4} key={i}>
               <WrapperStyleImageSmall
@@ -169,7 +141,6 @@ const ProductDetailsComponent = ({ idProduct }) => {
         </Row>
       </Col>
       <Col span={14} style={{ padding: "20px 0 35px 20px" }}>
-        {/* <WrapperStyleNameProduct>{product.name}</WrapperStyleNameProduct> */}
         <WrapperStyleNameProduct>{product.name}</WrapperStyleNameProduct>
         {product.countInStock === 0 && (
           <span style={{ color: "red", fontWeight: "bold" }}>Hết Hàng</span>
@@ -177,46 +148,24 @@ const ProductDetailsComponent = ({ idProduct }) => {
         <div>
           <WrapperStyleTextSell>
             {[...Array(5)].map((_, i) => {
-              // Kiểm tra để xác định loại sao cần hiển thị
               if (i + 1 <= Math.floor(product.rating)) {
-                // Sao đầy đủ
-                return (
-                  <StarFilled
-                    key={i}
-                    style={{ fontSize: "16px", color: "#fac700" }}
-                  />
-                );
+                return <StarFilled key={i} style={{ fontSize: "16px", color: "#fac700" }} />;
               } else if (i < product.rating) {
-                // Sao nửa
-                return (
-                  <StarTwoTone
-                    key={i}
-                    twoToneColor="#fac700"
-                    style={{ fontSize: "16px" }}
-                  />
-                );
+                return <StarTwoTone key={i} twoToneColor="#fac700" style={{ fontSize: "16px" }} />;
               } else {
-                // Sao trống
-                return (
-                  <StarFilled
-                    key={i}
-                    style={{ fontSize: "16px", color: "#ddd" }}
-                  />
-                );
+                return <StarFilled key={i} style={{ fontSize: "16px", color: "#ddd" }} />;
               }
             })}
             | Đã bán {product.sell || "100+"}+
           </WrapperStyleTextSell>
         </div>
         <WrapperPriceProduct>
-          <span style={{ fontSize: "16px", fontWeight: "500" }}>
-            Mua ngay với giá
-          </span>
+          <span style={{ fontSize: "16px", fontWeight: "500" }}>Mua ngay với giá</span>
           <WrapperPriceTextProduct>
             {product.price ? `${product.price.toLocaleString()} $` : "N/A"}
           </WrapperPriceTextProduct>
           <span style={{ fontSize: "16px", fontWeight: "500" }}>
-            tiết kiệm ngay so với{" "}
+            tiết kiệm so với{" "}
             <span
               style={{
                 color: "#ee8216",
@@ -264,9 +213,7 @@ const ProductDetailsComponent = ({ idProduct }) => {
                   quantity < product.countInStock ? quantity + 1 : quantity
                 )
               }
-              disabled={
-                quantity >= product.countInStock || product.countInStock === 0
-              }
+              disabled={quantity >= product.countInStock || product.countInStock === 0}
             >
               <PlusOutlined style={{ color: "#fa4f31", fontSize: "20px" }} />
             </button>
@@ -289,9 +236,8 @@ const ProductDetailsComponent = ({ idProduct }) => {
                 textButton={"Bỏ Vào Giỏ Hàng"}
                 onClick={handleAddOrderProduct}
                 styleTextButton={{ color: "#ee4d2d", fontSize: "14px" }}
-                // Thêm onClick nếu cần thiết
               />
-              <ButtonComponent 
+              <ButtonComponent
                 border={false}
                 size={40}
                 styleButton={{
@@ -303,9 +249,7 @@ const ProductDetailsComponent = ({ idProduct }) => {
                   borderRadius: "2px",
                   boxShadow: "0 1px 1px 0 rgba(0, 0, 0, .09)",
                 }}
-                onClick={handleNavigateBuyNow }
-                
-               
+                onClick={handleNavigateBuyNow}
                 textButton={"Mua Ngay Đi"}
                 styleTextButton={{ color: "#fff", fontSize: "14px" }}
               />

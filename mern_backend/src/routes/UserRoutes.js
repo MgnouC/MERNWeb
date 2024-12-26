@@ -14,6 +14,6 @@ routes.delete('/delete-user/:id' ,userController.deleteUser)
 routes.get('/get-all' ,userController.getAllUser) 
 routes.get('/get-detail-user/:id',authUserMiddleware ,userController.getDetailsUser) 
 routes.post('/refresh-token',userController.refreshToken) 
-
+routes.patch('/ban-user/:id', userController.banUser);
 
 module.exports = routes

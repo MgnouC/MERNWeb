@@ -1,47 +1,79 @@
-/* Cập nhật cho Button Edit và Delete */
-.button-edit {
-    width: 80px; /* Chiều dài cố định */
-    text-align: center;
-    border: 1px solid #d9d9d9;
-    color: #333;
-    font-weight: bold;
-    border-radius: 5px;
-    padding: 6px 0;
-    transition: all 0.3s ease;
-  }
-  
-  .button-edit:hover {
-    border: 1px solid #f95230 !important;
-    color: #f95230 !important;
-    background-color: #fff;
-  }
-  
-  /* Pagination */
-  .ant-pagination-item a {
-    background: #f95230 !important;
-    border-radius: 10px;
-    border: none;
-    color: #ffffff;
-    transition: background-color 0.3s ease, color 0.3s ease;
-  }
-  
-  .ant-pagination-item-active a {
-    background-color: #d43d1a !important;
-    color: #ffffff !important;
-  }
-  
-  .ant-pagination-item:hover a {
-    background-color: #fa4f31 !important;
-    color: #ffffff;
-  }
-  
-  .ant-pagination-item {
-    margin: 0 5px;
-  }
-  
-  .ant-pagination {
-    display: flex;
-    justify-content: center;
-    margin-top: 15px;
-  }
-  
+/* CSS cho Button Ban */
+.button-ban {
+  width: 80px; /* Chiều dài cố định */
+  text-align: center;
+  border: 1px solid #d9d9d9;
+  color: #333;
+  font-weight: bold;
+  border-radius: 5px;
+  padding: 6px 0;
+  transition: all 0.3s ease;
+  background-color: #fff; /* Màu nền mặc định */
+}
+
+.button-ban:hover {
+  border: 1px solid #f95230 !important;
+  color: #f95230 !important;
+  background-color: #fff;
+}
+
+/* Trạng thái Banned */
+.button-ban.banned {
+  border: 1px solid #fa4f31;
+  color: #fa4f31;
+  background-color: #fff;
+}
+
+.button-ban.banned:hover {
+  border: 1px solid #fa4f31 !important;
+  color: #fa4f31 !important;
+  background-color: #fff;
+}
+
+/* Cập nhật cho Button Edit và Delete nếu cần */
+.button-edit,
+.button-delete {
+  width: 80px; /* Chiều dài cố định */
+  text-align: center;
+  border: 1px solid #d9d9d9;
+  color: #333;
+  font-weight: bold;
+  border-radius: 5px;
+  padding: 6px 0;
+  transition: all 0.3s ease;
+  background-color: #fff; /* Màu nền mặc định */
+}
+
+.button-edit:hover,
+.button-delete:hover {
+  border: 1px solid #f95230 !important;
+  color: #f95230 !important;
+  background-color: #fff;
+}
+
+/* Optional: Cập nhật trạng thái khi cần thiết cho Edit và Delete */
+.button-edit.active,
+.button-delete.active {
+  border: 1px solid #fa4f31;
+  color: #fa4f31;
+  background-color: #fff;
+}
+
+.button-edit.active:hover,
+.button-delete.active:hover {
+  border: 1px solid #fa4f31 !important;
+  color: #fa4f31 !important;
+  background-color: #fff;
+}
+/* CSS cho Button Delete khi người dùng bị cấm */
+.button-delete.banned {
+  border: 1px solid #fa4f31;
+  color: #fa4f31;
+  background-color: #fff;
+}
+
+.button-delete.banned:hover {
+  border: 1px solid #fa4f31 !important;
+  color: #fa4f31 !important;
+  background-color: #fff;
+}

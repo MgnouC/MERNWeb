@@ -1,44 +1,36 @@
 import React, { useEffect, useState } from "react";
 import NavBarComponent from "../../components/NavBarComponent/NavBarComponent";
 import CardComponent from "../../components/CardComponent/CardComponent";
-import { Modal, Col, Pagination, Row } from "antd";
+import { Col, Pagination, Row } from "antd";
 import { WrapperNavBar, WrapperProducts } from "./style";
 import * as ProductService from "../../services/ProductServices";
-import { useParams } from "react-router-dom";
-import ProductDetailsComponent from "../../components/ProductDetailsComponent/ProductDetailsComponent";
-import { useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 const TypeProductPage = () => {
-  const { type } = useParams(); // Lấy giá trị type từ URL
-  const [products, setProducts] = useState([]);
-  const [showProductDetails, setShowProductDetails] = useState(false);
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [selectedProductId, setSelectedProductId] = useState(null);
+  const { type } = useParams();
+  const decodedType = decodeURIComponent(type); // "Nón"
   const navigate = useNavigate();
 
-  const fetchProductType = async (type) => {
-    try {
-      const result = await ProductService.getProductType(type);
+  const [products, setProducts] = useState([]);
 
-      if (result && result.status === "OK") {
-        console.log("Products with type:", type, result.data);
+  const fetchProductType = async (decodedType) => {
+    try {
+      const result = await ProductService.getProductType(decodedType);
+      if (result?.status === "OK" && Array.isArray(result.data)) {
         setProducts(result.data);
-        // setSelectedProductId(result?.data?.id);
-        // setShowProductDetails(true);
       } else {
         console.error("No products found or error occurred:", result?.message);
+        setProducts([]);
       }
     } catch (error) {
       console.error("Fetch error:", error.message);
+      setProducts([]);
     }
   };
 
   useEffect(() => {
     if (type) {
-      //console.log("Type từ useParams:", type);
       const decodedType = decodeURIComponent(type);
-      //console.log("Type sau khi decode:", decodedType);
-
       if (decodedType) {
         fetchProductType(decodedType);
       } else {
@@ -48,46 +40,36 @@ const TypeProductPage = () => {
   }, [type]);
 
   const handleShowDetails = (id) => {
-    //console.log("Clicked product ID:", id); // Log để kiểm tra
-    navigate(`/product-details/${id}`); // Chuyển hướng tới trang chi tiết sản phẩm
-  };
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
-    setSelectedProductId(null);
+    navigate(`/product-details/${id}`);
   };
 
   return (
-    <div style={{ width: "100%", background: "#efefef", minheight: "100%" }}>
+    <div style={{ width: "100%", background: "#efefef", minHeight: "100%" }}>
       <div style={{ paddingLeft: "120px", margin: "0 auto" }}>
-        <Row style={{ flexWrap: "nowrap", padding: "10px 0 10px 0" }}>
+        <Row style={{ flexWrap: "nowrap", padding: "10px 0" }}>
           <WrapperNavBar span={4}>
             <NavBarComponent />
           </WrapperNavBar>
           <Col span={20}>
-            {/* Đặt ProductDetailsComponent ở đây để hiển thị ở đầu */}
-            {showProductDetails && selectedProductId && (
-              <ProductDetailsComponent idProduct={selectedProductId} />
-            )}
             <WrapperProducts>
               {products.length > 0 ? (
-                products.map((product) => (
-                  <CardComponent
-                    key={product._id}
-                    name={product.name}
-                    image={product.image}
-                    price={product.price}
-                    brandType={product.brandType}
-                    type={product.type}
-                    onClick={() => handleShowDetails(product?._id)}                  />
-                ))
+                products.map((product) =>
+                  product._id ? (
+                    <CardComponent
+                      key={product._id}
+                      id={product._id}
+                      name={product.name}
+                      image={product.image}
+                      price={product.price}
+                      brandType={product.brandType}
+                      type={product.type}
+                    />
+                  ) : null
+                )
               ) : (
-                <p>
-                  Không có sản phẩm nào phù hợp với loại sản phẩm được chọn.
-                </p>
+                <p>Không có sản phẩm nào phù hợp.</p>
               )}
             </WrapperProducts>
-
             <Pagination
               defaultCurrent={1}
               total={products.length}

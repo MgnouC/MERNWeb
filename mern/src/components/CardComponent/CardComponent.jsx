@@ -1,5 +1,5 @@
 import { Card, Image } from "antd";
-import { Meta } from "antd/es/list/Item";
+import { StarFilled } from "@ant-design/icons";
 import React from "react";
 import {
   StyleNameProduct,
@@ -9,16 +9,10 @@ import {
   WrapperCardStyle,
   WrapperStyleTextSell,
 } from "./style";
-import { StarFilled } from "@ant-design/icons";
-import logo from "../../assets/images/logo.png";
 import { useNavigate } from "react-router-dom";
 
 const CardComponent = (props) => {
   const navigate = useNavigate();
-  const handleDetailProduct = (id) => {
-    // Thay đổi URL và chuyển hướng đến trang chi tiết sản phẩm
-    navigate(`/product-details/${id}`);
-  };
 
   const {
     countInStock,
@@ -30,9 +24,13 @@ const CardComponent = (props) => {
     discount,
     rating,
     id,
-    onClick,
     brandType,
   } = props;
+
+  const handleDetailProduct = (productId) => {
+    // Chuyển hướng đến trang chi tiết sản phẩm
+    navigate(`/product-details/${productId}`);
+  };
 
   return (
     <WrapperCardStyle
@@ -47,14 +45,12 @@ const CardComponent = (props) => {
           src={`http://localhost:3000/uploads/${image}`}
           onError={(e) => {
             e.target.onerror = null;
-            e.target.src = "/path/to/placeholder-image.png"; // Thêm hình ảnh thay thế
+            e.target.src = "/path/to/placeholder-image.png"; // Hình ảnh thay thế
           }}
         />
       }
-      onClick={() => {
-        if (onClick) onClick();
-        handleDetailProduct(id);
-      }} // Sử dụng prop onClick
+      // Khi click vào card sẽ gọi handleDetailProduct
+      onClick={() => handleDetailProduct(id)}
     >
       <StyleNameProduct>{name}</StyleNameProduct>
       <WrapperReportText>
@@ -67,14 +63,14 @@ const CardComponent = (props) => {
                 paddingRight: "2px",
               }}
             />{" "}
-            <span>{rating} </span>| Đã bán {sell || 100}+
+            <span>{rating}</span> | Đã bán {sell || 100}+
           </WrapperStyleTextSell>
         </span>
       </WrapperReportText>
       <WrapperPriceText style={{ boxSizing: "border-box" }}>
         <span style={{ marginRight: "5px" }}>{price}</span>
         <div style={{ display: "flex", gap: "4px", height: "18px" }}>
-          <WrapperDiscountText> {discount || 5}%</WrapperDiscountText>
+          <WrapperDiscountText>{discount || 5}%</WrapperDiscountText>
         </div>
       </WrapperPriceText>
     </WrapperCardStyle>

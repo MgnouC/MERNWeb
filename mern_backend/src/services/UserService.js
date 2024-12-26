@@ -38,6 +38,15 @@ const loginUser = (userLogin) => {
       if (checkUser === null) {
         reject({ message: "Email not found", status: 400 });
       }
+      // Trong logic loginUser
+      if (checkUser.isBanned) {
+        reject({
+          message: "Tài khoản của bạn đã bị vô hiệu hóa.",
+          status: 403,
+        });
+        return;
+      }
+
       const comparePassword = await bcrypt.compare(
         password,
         checkUser.password
@@ -70,7 +79,7 @@ const updateUser = (id, data) => {
   return new Promise(async (resolve, reject) => {
     try {
       const checkUser = await User.findOne({ _id: id });
-      console.log('checkuser',checkUser)
+      console.log("checkuser", checkUser);
       if (checkUser === null) {
         reject({ message: "User not found", status: 400 });
       }
@@ -78,8 +87,8 @@ const updateUser = (id, data) => {
       await User.updateOne({ _id: id }, { $set: data });
 
       const updatedUser = await User.findOne({ _id: id });
-      
-      console.log('updatedUser', updatedUser);
+
+      console.log("updatedUser", updatedUser);
       resolve({
         status: "OK",
         message: "SUCCESS",
@@ -145,6 +154,45 @@ const getDetailsUser = (id) => {
   });
 };
 
+const banUser = async (req, res) => {
+  const { id } = req.params;
+  const { ban } = req.body;
+  try {
+    const userBanned = await User.findById(id);
+    if (!userBanned) return res.status(404).json({message: "User not found"});
+    userBanned.isBanned = ban;
+    await userBanned.save();
+    console.log("updatedUser", userBanned);
+
+    return res.status(200).json({ status: "Banned", message: "User ban status updated", data: userBanned });
+  } catch (error) {
+    return res.status(500).json({message: error.message});
+  }
+};
+// const banUser = (id, data) => {
+//   return new Promise(async (resolve, reject) => {
+//     try {
+//       const checkUser = await User.findOne({ _id: id });
+//       console.log("checkuser", checkUser);
+//       if (checkUser === null) {
+//         reject({ message: "User not found", status: 400 });
+//       }
+
+//       await User.updateOne({ _id: id }, { $set: data });
+
+//       const updatedUser = await User.findOne({ _id: id });
+
+//       console.log("updatedUser", updatedUser);
+//       resolve({
+//         status: "OK",
+//         message: "SUCCESS",
+//         data: updatedUser,
+//       });
+//     } catch (e) {
+//       reject(e);
+//     }
+//   });
+// };
 module.exports = {
   createUser,
   loginUser,
@@ -152,4 +200,5 @@ module.exports = {
   deleteUser,
   getAllUser,
   getDetailsUser,
+  banUser,
 };

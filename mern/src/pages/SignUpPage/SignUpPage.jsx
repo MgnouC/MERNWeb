@@ -40,7 +40,7 @@ const SignUpPage = () => {
       handleNavigateSignIn();
     }
     if (isError) {
-      message.error("Sign up failed");
+      message.error("Tên đăng nhập đã tồn tạitại");
     }
   }, [isSuccess, isError]);
 

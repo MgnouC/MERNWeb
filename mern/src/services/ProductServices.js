@@ -20,8 +20,8 @@ export const getAllProduct = async (search) => {
   }
 };
 
-export const getProductType = async (type) => {
-  const url = `/product/get-products-by-type?type=${encodeURIComponent(type)}`;
+export const getProductType = async (decodedType) => {
+  const url = `/product/get-products-by-type?type=${encodeURIComponent(decodedType)}`;
 
   try {
     const response = await axiosInstance.get(url);

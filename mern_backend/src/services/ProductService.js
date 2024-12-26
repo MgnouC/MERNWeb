@@ -164,8 +164,9 @@ const getAllType = async () => {
 
 const getProductType = async (type) => {
   try {
+    const regex = new RegExp(type.trim(), "i"); // Tìm kiếm không phân biệt hoa thường
     const products = await Product.find({
-      type: new RegExp("^" + type.trim() + "$", "i"),
+      type: new RegExp(`^${type.trim()}$`, "iu") 
     });
     if (!products.length) {
       throw { message: "No products found for this type", status: 404 };
@@ -179,6 +180,7 @@ const getProductType = async (type) => {
     throw { message: e.message || "An error occurred", status: 500 };
   }
 };
+
 
 const getAllBrandTypes = async () => {
   try {

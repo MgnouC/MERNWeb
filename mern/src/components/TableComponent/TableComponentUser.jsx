@@ -3,7 +3,12 @@ import { Table, Button } from "antd";
 import "./style.css";
 import * as XLSX from "xlsx";
 
-const TableComponentUser = ({ users, handleEdit, handleDelete }) => {
+const TableComponentUser = ({
+  users,
+  handleEdit,
+  handleDelete,
+  handleBanUser,
+}) => {
   const data = Array.isArray(users)
     ? users.map((user) => ({
         key: user._id, // Sử dụng _id từ sản phẩm để làm key.
@@ -13,6 +18,7 @@ const TableComponentUser = ({ users, handleEdit, handleDelete }) => {
         phone: user.phone,
         address: user.address,
         isAdmin: user.isAdmin,
+        isBanned: user.isBanned,
       }))
     : [];
   // Cột của bảng
@@ -61,11 +67,18 @@ const TableComponentUser = ({ users, handleEdit, handleDelete }) => {
             Edit
           </Button>
           <Button
-            className="button-edit"
-            onClick={() => handleDelete(record._id)}
+            className={`button-ban ${record.isBanned ? "banned" : ""}`}
+            style={{ marginRight: "10px" }}
+            onClick={() => handleBanUser(record._id, !record.isBanned)}
+          >
+            {record.isBanned ? "Unban" : "Ban"}
+          </Button>
+          {/* <Button
+            className={`button-delete ${record.isBanned ? "banned" : ""}`}
+            onClick={() => handleBanUser(record._id)}
           >
             Delete
-          </Button>
+          </Button> */}
         </span>
       ),
     },

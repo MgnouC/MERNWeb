@@ -6,6 +6,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import * as UserService from "../../services/UserServices";
 import TableComponentUser from "../TableComponent/TableComponentUser";
 import * as message from "../../components/Message/Mesage";
+import axios from "axios";
 
 const { confirm } = Modal;
 
@@ -21,19 +22,18 @@ const AdminUser = () => {
 
   const handleCancel = () => {
     setIsModalOpen(false);
+    setEditingUser(null);
+    form.resetFields();
   };
 
   const { data: users } = useQuery(["users"], UserService.getAllUser, {
-    onSuccess: (data) => {
-      //console.log("Fetched users:", data);
-    },
     onError: (error) => {
       message.error("Error fetching users: " + error.message);
     },
   });
 
   const updateMutation = useMutation(
-    (updateUser) => UserService.updateUser(updateUser),
+    ({ id, data }) => UserService.updateUser({ id, data }),
     {
       onSuccess: () => {
         message.success("User updated successfully");
@@ -46,11 +46,11 @@ const AdminUser = () => {
   );
 
   const deleteMutation = useMutation(
-    (deleteUser) => UserService.deleteUser(deleteUser),
+    (userId) => UserService.deleteUser(userId),
     {
       onSuccess: () => {
         message.success("User deleted successfully");
-        queryClient.invalidateQueries("users");
+        queryClient.invalidateQueries(["users"]);
       },
       onError: (error) =>
         message.error("Error deleting user: " + error.message),
@@ -63,6 +63,22 @@ const AdminUser = () => {
     form.setFieldsValue(user);
   };
 
+  const banUserMutation = useMutation(
+    ({ id, ban }) => UserService.banUser({ id, ban }),
+    {
+      onSuccess: () => {
+        message.success("User ban/unban successfully");
+        queryClient.invalidateQueries(["users"]);
+      },
+      onError: (error) =>
+        message.error("Error banning/unbanning user: " + error.message),
+    }
+  );
+  const handleBanUser = (id, banStatus) => {
+    console.log(id, banStatus);
+    banUserMutation.mutate({ id, ban: banStatus });
+    console.log(id, banStatus);
+  };
   const showDeleteConfirm = (userId) => {
     confirm({
       title: "Bạn có chắc muốn xóa người dùng này không?",
@@ -99,59 +115,23 @@ const AdminUser = () => {
   return (
     <div>
       <WrapperHeader>Quản Lí Người Dùng</WrapperHeader>
-      <Button
+      {/* <Button
         style={{ color: "white", backgroundColor: "#f95230" }}
         onClick={() => {
           setEditingUser(null);
+          form.resetFields();
           setIsModalOpen(true);
         }}
         type="primary"
       >
         <PlusOutlined /> Thêm Người Dùng
-      </Button>
+      </Button> */}
       <div style={{ marginTop: "20px" }}>
         <TableComponentUser
           users={users || []}
           handleEdit={handleEdit}
           handleDelete={showDeleteConfirm}
-          columns={[
-            {
-              title: "Tên",
-              dataIndex: "name",
-              key: "name",
-            },
-            {
-              title: "Email",
-              dataIndex: "email",
-              key: "email",
-            },
-            {
-              title: "Admin",
-              dataIndex: "isAdmin",
-              key: "isAdmin",
-              render: (isAdmin) => (isAdmin ? "Yes" : "No"),
-            },
-            {
-              title: "Action",
-              key: "action",
-              render: (_, record) => (
-                <>
-                  <Button type="link" onClick={() => handleEdit(record)}>
-                    Sửa
-                  </Button>
-                  <Button
-                    type="link"
-                    danger
-                    style={{ marginLeft: 8 }}
-                    onClick={() => showDeleteConfirm(record._id)}
-                  >
-                    Xóa
-                  </Button>
-                </>
-              ),
-            },
-          ]}
-          rowKey="_id"
+          handleBanUser={handleBanUser}
         />
       </div>
       <Modal
@@ -173,7 +153,9 @@ const AdminUser = () => {
           <Form.Item
             label="Tên Người Dùng"
             name="name"
-            rules={[{ required: true, message: "Vui lòng nhập tên người dùng!" }]}
+            rules={[
+              { required: true, message: "Vui lòng nhập tên người dùng!" },
+            ]}
           >
             <Input />
           </Form.Item>
@@ -192,7 +174,9 @@ const AdminUser = () => {
           <Form.Item
             label="Số Điện Thoại"
             name="phone"
-            rules={[{ required: true, message: "Vui lòng nhập số điện thoại!" }]}
+            rules={[
+              { required: true, message: "Vui lòng nhập số điện thoại!" },
+            ]}
           >
             <Input />
           </Form.Item>

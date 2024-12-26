@@ -26,7 +26,7 @@ const SignInPage = () => {
   const dispatch = useDispatch();
 
   const mutation = useMutationHooks((data) => UserService.loginUser(data));
-  const { data, isSuccess, isError } = mutation;
+  const { data, isSuccess, isError, error } = mutation;
 
   useEffect(() => {
     if (isSuccess) {
@@ -42,7 +42,20 @@ const SignInPage = () => {
       }
     }
     if (isError) {
-      message.error("Sign in failed");
+      // Kiểm tra nếu có phản hồi từ server
+      if (error.response && error.response.data) {
+        const errorData = error.response.data;
+        // Giả sử server trả về { message: "User is banned" } khi tài khoản bị vô hiệu hóa
+        if (errorData.message === "User is banned") {
+          message.error("Tài khoản bị vô hiệu hóa");
+        } else if (errorData.message === "Invalid credentials") {
+          message.error("Tên đăng nhập hoặc mật khẩu không đúng");
+        } else {
+          message.error("Đăng nhập không thành công");
+        }
+      } else {
+        message.error("Đăng nhập không thành công");
+      }
     }
   }, [isSuccess, isError]);
 
