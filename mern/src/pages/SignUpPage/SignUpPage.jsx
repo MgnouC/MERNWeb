@@ -20,11 +20,17 @@ const SignUpPage = () => {
 
   const handleSignUp = () => {
     if (!email || !password || !confirmPassword) {
-      message.error("Vui lòng nhập email và mật khẩu!");
+      message.error("Vui lòng nhập đầy đủ email và mật khẩu!");
+      return;
+    }
+    if (password !== confirmPassword) {
+      message.error("Mật khẩu và xác nhận mật khẩu không khớp!");
       return;
     }
     mutation.mutate({ email, password, confirmPassword });
   };
+  
+  
 
   const handleNavigateSignIn = () => {
     window.location.href = "/sign-in";

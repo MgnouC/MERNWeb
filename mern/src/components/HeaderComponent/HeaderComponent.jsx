@@ -27,7 +27,19 @@ const HeaderComponent = () => {
 
   const handleInputChange = (e) => {
     setSearch(e.target.value);
-    dispatch(searchProduct(e.target.value));
+  };
+
+  const handleSearch = () => {
+    if (search.trim() === "") {
+      message.info("Vui lòng nhập từ khóa để tìm kiếm!");
+      return;
+    }
+
+    // Dispatch action để tìm kiếm sản phẩm
+    dispatch(searchProduct(search));
+
+    // Reset ô tìm kiếm
+    setSearch("");
   };
 
   const handleLogout = async () => {
@@ -77,12 +89,14 @@ const HeaderComponent = () => {
           textButton="Tìm kiếm"
           variant={false}
           placeholder="Nhập sản phẩm cần tìm"
+          value={search} // Gắn giá trị ô input với state
           onChange={handleInputChange}
+          onClick={handleSearch} // Thêm hành động khi nhấn nút tìm kiếm
         />
       </SearchWrapper>
 
       <AccountWrapper>
-        <UserOutlined style={{ fontSize: "30px" , marginLeft: '1px'}} />
+        <UserOutlined style={{ fontSize: "30px", marginLeft: "1px" }} />
         {user.access_token ? (
           <Popover content={accountMenu} trigger="click">
             <UserName>{user?.name || user?.email}</UserName>
@@ -109,3 +123,4 @@ const HeaderComponent = () => {
 };
 
 export default HeaderComponent;
+

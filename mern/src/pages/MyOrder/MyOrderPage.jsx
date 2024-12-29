@@ -35,14 +35,18 @@ const MyOrderPage = () => {
         console.log("User ID:", userId);
         const response = await OrderService.getOrderDetails(userId);
         console.log("Response from API:", response);
-
+  
         // Kiểm tra cấu trúc response và cập nhật dữ liệu
         if (response.data && response.data.data) {
-          dispatch(setUserOrders(response.data.data));
+          // Sắp xếp danh sách đơn hàng theo createdAt (mới nhất lên đầu)
+          const sortedOrders = response.data.data.sort(
+            (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+          );
+          dispatch(setUserOrders(sortedOrders));
         } else {
           dispatch(setUserOrders([]));
         }
-
+  
         dispatch(setLoading(false));
       } catch (error) {
         console.error("Error fetching orders:", error);
@@ -51,11 +55,12 @@ const MyOrderPage = () => {
         message.error("Lỗi khi tải danh sách đơn hàng");
       }
     };
-
+  
     if (userId) {
       fetchUserOrders();
     }
   }, [dispatch, userId]);
+  
 
   const handleCancelOrder = async (orderId) => {
     try {
