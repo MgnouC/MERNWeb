@@ -510,7 +510,9 @@ const AdminProduct = () => {
               formatter={(value) =>
                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " $"
               }
-              parser={(value) => value.replace(/\s?$/g, "")}
+              parser={
+                (value) => value.replace(/[^0-9]/g, "") // Loại bỏ mọi ký tự không phải số
+              }
             />
           </Form.Item>
 
